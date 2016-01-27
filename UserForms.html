@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+   
+   <title>User Forms</title> 
+   
+</head>
+<header>
+</header>
+<body>
+<div class="container">
+
+	<div id="formLogin" class="row">
+		<div class="col-md-offset-3 col-md-6">
+			
+			<div class="panel panel-primary">
+				<div class="panel-heading text-center">Account Sign-In</div>
+				<div class="panel-body">
+				
+				<!--FORM ACTION needs to be completed!!!! -->
+					<form action="" method="GET">
+												
+						<div class="form-group row">
+							<label for="inputEmail3" class="col-sm-2 form-control-label">Email</label>
+							<div class="col-sm-10">
+								<input type="email" class="form-control form-control-lg" id="inputEmail3" placeholder="email@example.com">
+							</div>
+						</div>
+						
+						<div class="form-group row">
+							<label for="inputPassword3" class="col-sm-2 form-control-label">Password</label>
+							<div class="col-sm-10">
+								<input type="password" class="form-control form-control-lg" id="inputPassword3" placeholder="Password">
+							</div>
+						</div>
+						
+						<div class="form-group row">
+							<div class="col-sm-offset-2 col-sm-10">
+								<button type="submit" class="btn btn-primary">Sign in</button>
+							</div>
+						</div>	
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!--Form for creating Accounts-->
+	
+	<div id="createAccount" class="row">
+		<div class="col-md-offset-3 col-md-6">
+			
+			<div class="panel panel-primary">
+				<div class="panel-heading text-center">Creating an Account</div>
+				<div class="panel-body">
+				
+				<!--FORM ACTION needs to be completed!!!! -->
+				<form action="" method="GET">
+					
+					<div class="form-group row">
+						<label for="exampleInputName2" class="col-sm-2 form-control-label">First Name</label>
+						<div class="col-sm-10">
+						<input type="text" class="form-control" id="exampleInputName2" placeholder="First Name">
+						</div>
+					</div>
+				
+					<div class="form-group row">
+						<label for="exampleInputName2" class="col-sm-2 form-control-label">Last Name</label>
+						<div class="col-sm-10">
+						<input type="text" class="form-control" id="exampleInputName2" placeholder="Last Name">
+						</div>
+					</div>
+				
+					<div class="form-group row">
+						<label for="inputEmail3" class="col-sm-2 form-control-label">Email</label>
+						<div class="col-sm-10">
+							<input type="email" class="form-control" id="inputEmail3" placeholder="email@example.com">
+						</div>
+					</div>
+					
+					<div class="form-group row">
+						<label for="inputPassword3" class="col-sm-2 form-control-label">Password</label>
+						<div class="col-sm-10">
+							<input type="password" class="form-control" id="inputPassword3" placeholder="Password">
+						</div>
+					</div>
+					
+					<div class="form-group row">
+						<label for="inputPassword3" class="col-sm-2 form-control-label">Verify Password</label>
+						<div class="col-sm-10">
+							<input type="password" class="form-control" id="inputPassword3" placeholder="Verify Password">
+						</div>
+					</div>
+					
+					<div class="form-group row">
+						<div class="col-sm-offset-2 col-sm-10">
+							<button type="submit" class="btn btn-primary">Create Account</button>
+						</div>
+					</div>	
+				</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!--http://bootsnipp.com/snippets/featured/generic-postal-address-form-->	
+	
+	<div id="createAccount" class="row">
+		<div class="col-md-offset-3 col-md-6">
+			
+			<div class="panel panel-primary">
+				<div class="panel-heading text-center">Registering your Company</div>
+				<div class="panel-body">
+				
+				<!--FORM ACTION needs to be completed!!!! -->
+				<form action="" method="GET">
+					
+					<div class="form-group row">
+						<label for="exampleInputName2" class="col-sm-2 form-control-label">Company Name</label>
+						<div class="col-sm-10">
+						<input type="text" class="form-control" id="exampleInputName2" placeholder="Company">
+						</div>
+					</div>
+				
+                <!-- address-line1 input-->
+                <div class="form-group row">
+                    <label for="exampleInputAddress1" class="col-sm-2 form-control-label">Address Line 1</label>
+                    <div class="col-sm-10">
+                        <input id="address-line1" class="form-control" name="address-line1" type="text" placeholder="address line 1">
+						<p class="help-block">Street address, P.O. box, company name, c/o</p>
+                    </div>
+                </div>
+                <!-- address-line2 input-->
+                <div class="form-group row">
+                    <label for="exampleInputAddress2" class="col-sm-2">Address Line 2</label>
+                    <div class="col-sm-10">
+                        <input id="address-line2" class="form-control" name="address-line2" type="text" placeholder="address line 2">
+						<p class="help-block">Apartment, suite , unit, building, floor, etc.</p>
+                    </div>
+                </div>
+                <!-- city input-->
+                <div class="form-group row">
+                    <label for="exampleInputCity" class="col-sm-2">City / Town</label>
+                    <div class="col-sm-10">
+                        <input id="city" name="city" type="text" placeholder="City/Town" class="form-control">
+                        <p class="help-block"></p>
+                    </div>
+                </div>
+                <!-- region input-->
+                <div class="form-group row">
+                    <label class="col-sm-2">State / Province / Region</label>
+                    <div class="col-sm-10">
+                        <input id="region" name="region" type="text" placeholder="state / province / region" class="form-control">
+                        <p class="help-block"></p>
+                    </div>
+                </div>
+                <!-- postal-code input-->
+                <div class="form-group row">
+                    <label class="col-sm-2">Zip / Postal Code</label>
+                    <div class="col-sm-10">
+                        <input id="postal-code" name="postal-code" type="text" placeholder="zip or postal code" class="form-control">
+                        <p class="help-block"></p>
+                    </div>
+                </div>
+				
+					<div class="form-group row">
+						<label for="inputEmail3" class="col-sm-2 form-control-label">Company Email</label>
+						<div class="col-sm-10">
+							<input type="email" class="form-control" id="inputEmail3" placeholder="email@example.com">
+						</div>
+					</div>
+					
+					<div class="form-group row">
+						<label for="inputPassword3" class="col-sm-2 form-control-label">Password?</label>
+						<div class="col-sm-10">
+							<input type="password" class="form-control" id="inputPassword3" placeholder="Password">
+						</div>
+					</div>
+					
+					<div class="form-group row">
+						<label for="inputPassword3" class="col-sm-2 form-control-label">Verify Password?</label>
+						<div class="col-sm-10">
+							<input type="password" class="form-control" id="inputPassword3" placeholder="Verify Password">
+						</div>
+					</div>
+					
+					<div class="form-group row">
+						<div class="col-sm-offset-2 col-sm-10">
+							<button type="submit" class="btn btn-primary">Register</button>
+						</div>
+					</div>	
+				</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+<footer>
+</footer>
+</body>
+</html>
