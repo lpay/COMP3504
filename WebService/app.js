@@ -36,6 +36,7 @@ app.use(cookieParser());
 
 // api stub
 app.use('/api', require('./api/user'));
+app.use('/api', require('./api/auth'));
 
 // default route (angular app)
 app.get('/', function(request, response) {
@@ -43,10 +44,9 @@ app.get('/', function(request, response) {
 });
 
 
-/*
 // catch 404 and forward to error handler
 app.use(function(request, response, next) {
-  var error = new Error('Not Found');
+  var error = new Error('Resource Not Found');
   error.status = 404;
   next(err);
 });
@@ -54,26 +54,16 @@ app.use(function(request, response, next) {
 // error handlers
 
 // development error handler
-// will print stacktrace
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err
-    });
+      res.status(err.status || 500).json({ error: err, message: err.message });
   });
 }
 
 // production error handler
-// no stacktraces leaked to user
 app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
-  });
+  res.status(err.status || 500).json({ error: {}, message: err.message });
 });
-*/
+
 
 module.exports = app;

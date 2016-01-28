@@ -21,15 +21,20 @@ router.route('/users')
     /**
      * Get a list of users.
      */
-    .get(function(req, res) {
+    .get(function(req, res, next) {
         User.find({}, 'email created_at updated_at last_login', function(err, users) {
 
-            if (err) throw err;
+            if (err) {
+                next(err);
+                return;
+            }
 
             if (users && users.length > 0) {
-                res.status(200).json({ status: "success", data: users });
+                // success
+                res.status(200).json(users);
             } else {
-                res.status(404).json({ status: "error", type: "UserNotFound", message: "no users found" });
+                // not found
+                res.status(404).json({ error: "UserNoUsers", message: "no users found" });
             }
         });
     })
@@ -37,7 +42,7 @@ router.route('/users')
     /**
      * Create a new user.
      */
-    .post(function(req, res) {
+    .post(function(req, res, next) {
 
         if (req.body.email) {
 
@@ -49,10 +54,13 @@ router.route('/users')
                 // validate email uniqueness
                 User.findOne({ email: req.body.email }, 'email', function(err, user) {
 
-                    if (err) throw err;
+                    if (err) {
+                        next(err);
+                        return;
+                    }
 
                     if (user) {
-                        res.status(400).json({ status: "error", type: "UserDuplicateEmail", message: "email address exists" })
+                        res.status(400).json( { error: "UserEmailExists", message: "email address exists" })
                     } else {
                         // if password is set, create the account, otherwise just perform email validation
                         if (req.body.password) {
@@ -62,30 +70,30 @@ router.route('/users')
                             // create user
                             var newUser = new User({
                                 email: req.body.email,
-                                // TODO: encryption of some sort
                                 password: req.body.password
                             });
 
                             newUser.save(function(err) {
 
-                                if (err) throw err;
+                                if (err) {
+                                    next(err);
+                                    return;
+                                }
 
-                                res.status(200).json({ status: "success", reason: "UserCreated" });
-
+                                res.status(200).json();
                             });
                         } else {
-                            res.status(200).json({ status: "success", reason: "UserEmailValid" });
+                            res.status(200).json();
                         }
                     }
                 });
 
             } else {
-                res.status(400).json({ status: "error", type: "UserInvalidEmail", message: "invalid email address" });
+                res.status(400).json({ error: "UserInvalidEmail", message: "invalid email address" });
             }
 
         } else {
-            // Bad request
-            res.status(400).json({ status: "error", type: "UserBadRequest", message: "email address is required" });
+            res.status(400).json({ error: "UserBadRequest", message: "email address is required" });
         }
     });
 
@@ -94,21 +102,24 @@ router.route('/users/:email')
     /**
      * Get user details.
      */
-    .get(function(req, res) {
+    .get(function(req, res, next) {
         if (req.params.email) {
 
             User.findOne({ email: req.params.email }, 'email created_at updated_at last_login', function (err, user) {
 
-                if (err) throw err;
+                if (err) {
+                    next(err);
+                    return;
+                }
 
                 if (user) {
-                    res.status(200).json({status: "success", data: user });
+                    res.status(200).json(user);
                 } else {
-                    res.status(404).json({status: "error", type: "UserNotFound", message: "user not found"});
+                    res.status(404).json({ error: "UserNotFound", message: "user not found" });
                 }
             });
         } else {
-            res.status(400).json({ status: "error", type: "UserBadRequest", message: "email address is required" });
+            res.status(400).json({ error: "UserBadRequest", message: "email address is required" });
         }
     })
 
