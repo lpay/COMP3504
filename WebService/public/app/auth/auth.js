@@ -2,143 +2,116 @@
  * Created by mark on 1/14/17.
  */
 
-app.controller('AuthenticationController', function($scope, $http) {
+app.controller('AuthenticationController', function($scope, $http, AuthenticationService) {
 
-    /**
-     * login
-     */
-    $scope.login = function () {
-        /*
-        console.log($scope.username);
-        console.log($scope.password);
-        */
+        /**
+         * login
+         */
+        $scope.login = function() {
+            AuthenticationService.login($scope.email, $scope.password);
+        };
 
-        $http.post('/api/auth/login', { email: $scope.username, password: $scope.password })
+        /**
+         * google
+         */
+        $scope.google = function() {
+            console.log('google');
+        };
 
-            .success(function(res) {
+        /**
+         * facebook
+         */
+        $scope.facebook = function() {
+            console.log('facebook');
+        };
 
-            })
+        /**
+         * register
+         */
+        $scope.register = function () {
+            AuthenticationService.register($scope.email, $scope.password);
+        };
 
-            .error(function(res) {
+        /**
+         * logout
+         */
+        $scope.logout = function () {
+            AuthenticationService.logout();
+        };
+    })
 
-            });
-    };
-
-    /**
-     * google oauth2
-     */
-    $scope.google = function() {
-        console.log('google');
-    };
-
-    /**
-     * facebook oauth2
-     */
-    $scope.facebook = function() {
-        console.log('facebook');
-    };
-
-    /**
-     * register
-     */
-    $scope.register = function () {
-        console.log($scope);
-    };
-
-    /**
-     * logout
-     */
-    $scope.logout = function () {
-        console.log('logout!');
-    };
-
-});
-
-app.directive('emailValidator', function(AuthenticationService) {
-    return {
-        restrict: 'A',
-        require: 'ngModel',
-        link: function(scope, element, attrs, ngModel) {
-            ngModel.$asyncValidators.unique = AuthenticationService.isValidEmail;
+    .directive('emailValidator', function(AuthenticationService) {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: function(scope, element, attrs, ngModel) {
+                ngModel.$asyncValidators.unique = AuthenticationService.validateEmail;
+            }
         }
-    }
-});
+    })
 
-app.service('AuthenticationService', function($q, $http) {
-    return {
-        isValidEmail: function(email) {
-            var deferred = $q.defer();
-
-            $http.post('/api/users', { email: email })
+    .service('AuthenticationService', function($q, $http) {
+        var token;
 
 
-                .success(function(res) {
+        return {
+            validateEmail: function(email) {
+                var deferred = $q.defer();
 
-                    switch(res.status) {
-                        case "success":
-                            deferred.resolve();
-                            break;
-
-                        case "error":
-
-                            deferred.reject();
-
-                            switch (res.type) {
-                                case "UserExists":
-                                    break;
-                            }
-
-                            break;
-                    }
-                })
-
-                .error(function(res) {
-                    deferred.reject();
-                });
+                $http.post('/api/users', { email: email } )
 
 
-            return deferred.promise;
-        },
+                    .success(function(res) {
+                        deferred.resolve();
+                    })
 
-        register: function(email, password) {
+                    .error(function(res) {
+                        deferred.reject(res.error);
+                    });
 
-            $http.post('/api/users', { email: email, password: password } )
 
-                .success(function(res) {
-                    console.log(res);
-                })
+                return deferred.promise;
+            },
 
-                .error(function(res) {
-                    console.log(res);
-                });
+            register: function(email, password) {
 
-        },
+                $http.post('/api/users', { email: email, password: password } )
 
-        login: function(email, password) {
+                    .success(function(res) {
 
-            $http.post('/api/auth', { email: email, password: password } )
+                    })
 
-                .success(function(res) {
+                    .error(function(res) {
 
-                })
+                    });
 
-                .error(function(res) {
+            },
 
-                });
+            login: function(email, password) {
 
-        },
+                $http.get('/api/auth', { email: email, password: password } )
 
-        logout: function(sessionId) {
+                    .success(function(res) {
+                        console.log(res);
+                    })
 
-            $http.delete('/api/auth/' + sessionId)
+                    .error(function(res) {
 
-                .success(function(res) {
+                    });
 
-                })
+            },
 
-                .error(function(res) {
+            logout: function(token) {
 
-                });
+                $http.delete('/api/auth', { token: token } )
+
+                    .success(function(res) {
+
+                    })
+
+                    .error(function(res) {
+
+                    });
+            }
         }
-    }
-});
+    });
