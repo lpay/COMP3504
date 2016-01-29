@@ -8,7 +8,7 @@ app.controller('AuthenticationController', function($scope, $http, Authenticatio
          * login
          */
         $scope.login = function() {
-            AuthenticationService.login($scope.email, $scope.password);
+            AuthenticationService.login($scope.login.email, $scope.login.password);
         };
 
         /**
@@ -29,7 +29,7 @@ app.controller('AuthenticationController', function($scope, $http, Authenticatio
          * register
          */
         $scope.register = function () {
-            AuthenticationService.register($scope.email, $scope.password);
+            AuthenticationService.register($scope.register.email, $scope.register.password);
         };
 
         /**
@@ -75,7 +75,7 @@ app.controller('AuthenticationController', function($scope, $http, Authenticatio
 
             register: function(email, password) {
 
-                $http.post('/api/users', { email: email, password: password } )
+                $http.post('/api/users', { email: email, password: password })
 
                     .success(function(res) {
 
@@ -89,21 +89,21 @@ app.controller('AuthenticationController', function($scope, $http, Authenticatio
 
             login: function(email, password) {
 
-                $http.get('/api/auth', { email: email, password: password } )
+                $http.post('/api/auth', { "email": email, "password": password })
 
                     .success(function(res) {
                         console.log(res);
                     })
 
                     .error(function(res) {
-
+                        console.log(res);
                     });
 
             },
 
             logout: function(token) {
 
-                $http.delete('/api/auth', { token: token } )
+                $http.delete('/api/auth', { token: token })
 
                     .success(function(res) {
 

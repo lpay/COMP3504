@@ -15,7 +15,7 @@ var User = require('../models/user');
 
 router.route('/auth')
 
-    .get(function(req, res) {
+    .post(function(req, res) {
         if (req.body.email) {
             if (req.body.password) {
 
@@ -26,8 +26,8 @@ router.route('/auth')
 
                     if (user) {
                         // generate token
-                        var token = jwt.sign(user, 'secret', {
-                            expiresInMinutes: 1440
+                        var token = jwt.sign(user, req.app.get('authKey'), {
+                            expiresIn: 86400 // one day
                         });
 
                         res.status(200).json({ token: token });

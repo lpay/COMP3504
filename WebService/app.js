@@ -12,6 +12,7 @@ var mongoose = require('mongoose');
 var morgan = require('morgan');
 var favicon = require('serve-favicon');
 var bodyParser = require('body-parser');
+var crypto = require('crypto');
 //var cookieParser = require('cookie-parser');
 
 //
@@ -38,6 +39,12 @@ app.use(bodyParser.json());
 // accept application/x-www-form-urlencoded in requests
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// setup an authorization key for use with jwt
+// this method will effectively invalidate any jwt tokens on server restart
+crypto.randomBytes(48, function(err, buffer) {
+    app.set('authKey', buffer.toString('hex'));
+});
+
 //
 // API Stubs
 //
@@ -63,11 +70,13 @@ app.get('/', function(request, response) {
 //
 
 // catch 404 and forward to error handler
+/*
 app.use(function(request, response, next) {
-  var error = new Error('not found');
-  error.status = 404;
+  var err = new Error('not found');
+  err.status = 404;
   next(err);
 });
+
 
 // development error handler
 if (app.get('env') === 'development') {
@@ -81,6 +90,7 @@ app.use(function(err, req, res) {
   res.status(err.status || 500).json({ error: {}, message: err.message });
 });
 
+*/
 
 
 module.exports = app;
