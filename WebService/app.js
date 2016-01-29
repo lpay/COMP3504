@@ -16,9 +16,6 @@ mongoose.connect('mongodb://localhost/comp3504');
 // express application
 var app = express();
 
-// static file location (angular app location)
-app.use(express.static('public'));
-
 // log every request
 app.use(morgan('dev'));
 
@@ -37,6 +34,9 @@ app.use(cookieParser());
 // api stub
 app.use('/api', require('./api/user'));
 app.use('/api', require('./api/auth'));
+
+// static file location (angular app location)
+app.use(express.static('public'));
 
 // default route (angular app)
 app.get('/', function(request, response) {
