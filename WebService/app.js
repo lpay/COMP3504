@@ -1,69 +1,86 @@
 /**
  * Created by mark on 1/14/16.
+ *
  */
 
-// libraries
+//
+// Modules
+//
+
 var express = require('express');
 var mongoose = require('mongoose');
 var morgan = require('morgan');
 var favicon = require('serve-favicon');
-var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+//var cookieParser = require('cookie-parser');
 
-// connect to database
+//
+// Connect to MongoDB
+//
+
 mongoose.connect('mongodb://localhost/comp3504');
 
-// express application
+//
+// Express
+//
+
 var app = express();
 
-// log every request
+// log all requests
 app.use(morgan('dev'));
 
 // set favicon location
 app.use(favicon('./public/assets/images/favicon.ico'));
 
-// parse application/json in requests
+// accept application/json in requests
 app.use(bodyParser.json());
 
-// parse application/x-www-form-urlencoded in requests
+// accept application/x-www-form-urlencoded in requests
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// session cookies
-app.use(cookieParser());
+//
+// API Stubs
+//
 
-// api stub
+// TODO: perhaps there is a more modular way to do this (load the entire api with one call?)
 app.use('/api', require('./api/user'));
 app.use('/api', require('./api/auth'));
 
-// static file location (angular app location)
+//
+// Angular Application
+//
+
+// serve static files from this directory (assets, css, js, etc)
 app.use(express.static('public'));
 
-// default route (angular app)
+// default route handler (angular application)
 app.get('/', function(request, response) {
     response.sendFile('./public/index.html');
 });
 
+//
+// Error Handlers
+//
 
 // catch 404 and forward to error handler
 app.use(function(request, response, next) {
-  var error = new Error('Resource Not Found');
+  var error = new Error('not found');
   error.status = 404;
   next(err);
 });
 
-// error handlers
-
 // development error handler
 if (app.get('env') === 'development') {
-  app.use(function(err, req, res, next) {
+  app.use(function(err, req, res) {
       res.status(err.status || 500).json({ error: err, message: err.message });
   });
 }
 
 // production error handler
-app.use(function(err, req, res, next) {
+app.use(function(err, req, res) {
   res.status(err.status || 500).json({ error: {}, message: err.message });
 });
+
 
 
 module.exports = app;
