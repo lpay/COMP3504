@@ -2,9 +2,9 @@
  * Created by mark on 1/14/16.
  */
 
-var app = angular.module('app', [ 'ui.router', 'ngMessages' ])
+var app = angular.module('COMP3504', [ 'ui.router', 'ngMessages', 'satellizer' ])
 
-    .config([ '$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+    .config(function($authProvider, $stateProvider, $urlRouterProvider) {
 
         $urlRouterProvider.otherwise('/dashboard');
 
@@ -13,15 +13,56 @@ var app = angular.module('app', [ 'ui.router', 'ngMessages' ])
             .state('login', {
                 url: '/login',
                 templateUrl: '/app/auth/auth.html',
-                controller: 'AuthenticationController'
+                controller: 'AuthenticationController',
+                resolve: {
+                    skipIfLoggedIn: skipIfLoggedIn
+                }
+
+            })
+
+            .state('logout', {
+                url: '/logout',
+                template: null,
+                controller: 'LogoutController'
             })
 
             .state('dashboard', {
                 url: '/dashboard',
-                templateUrl: '/app/dashboard/dashboard.html'
+                templateUrl: '/app/dashboard/dashboard.html',
+                resolve: {
+                    loginRequired: loginRequired
+                }
             });
-    }])
 
-    .run(['$rootScope', '$state', '$stateParams', function($rootScope, $state, $stateParams) {
 
-    }]);
+        $authProvider.google({
+            //url: '/api/auth/google',
+            clientId: '870728536471-ilmvcb2obgo6ioucqokrgvcj211nj7t3.apps.googleusercontent.com'
+        });
+
+        function skipIfLoggedIn($q, $auth) {
+            var deferred = $q.defer();
+
+            if ($auth.isAuthenticated()) {
+                deferred.reject();
+            } else {
+                deferred.resolve();
+            }
+
+            return deferred.promise;
+        }
+
+        function loginRequired($q, $location, $auth) {
+            var deferred = $q.defer();
+
+            if ($auth.isAuthenticated()) {
+                deferred.resolve();
+            } else {
+                $location.path('/login');
+            }
+
+            return deferred.promise;
+        }
+    })
+
+    .run();
