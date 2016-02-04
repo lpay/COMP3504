@@ -17,13 +17,6 @@ var app = angular.module('COMP3504', [ 'ui.router', 'ngMessages', 'satellizer' ]
                 resolve: {
                     skipIfLoggedIn: skipIfLoggedIn
                 }
-
-            })
-
-            .state('logout', {
-                url: '/logout',
-                template: null,
-                controller: 'LogoutController'
             })
 
             .state('dashboard', {
@@ -32,6 +25,20 @@ var app = angular.module('COMP3504', [ 'ui.router', 'ngMessages', 'satellizer' ]
                 resolve: {
                     loginRequired: loginRequired
                 }
+            })
+
+            .state('join', {
+                url: '/join',
+                templateUrl: '/app/dashboard/join.html',
+                resolve: {
+                    loginRequired: loginRequired
+                }
+            })
+
+            .state('logout', {
+                url: '/logout',
+                template: null,
+                controller: 'LogoutController'
             });
 
 
