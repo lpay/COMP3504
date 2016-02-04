@@ -40,7 +40,7 @@ userSchema.pre('save', function(next) {
 userSchema.methods.validatePassword = function(password, done) {
     var user = this;
 
-    bcrypt.compare(user.password, password, function(err, isMatch) {
+    bcrypt.compare(password, user.password, function(err, isMatch) {
         done(err, isMatch);
     });
 };

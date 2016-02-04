@@ -19,8 +19,54 @@ var router = express.Router();
 // Routes
 //
 
-router.post('/auth/register', function(req, res, next) {
+router.post('/auth/signup', function(req, res, next) {
 
+    if (req.body.email) {
+
+        // validate email format
+        var regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+        if (regex.test(req.body.email)) {
+
+            // validate email uniqueness
+            User.findOne({ email: req.body.email }, 'email', function(err, existingUser) {
+
+                if (err) return next(err);
+
+                if (existingUser) {
+                    res.status(400).json({ error: "UserEmailExists", message: "email address exists" })
+                } else {
+
+                    // if password is set, create the account, otherwise just perform email validation
+                    if (req.body.password) {
+
+                        // TODO: Validate password? (restrictions are probably not a good idea...)
+
+                        // create user
+                        var user = new User({
+                            email: req.body.email,
+                            password: req.body.password
+                        });
+
+                        user.save(function(err) {
+
+                            if (err) return next(err);
+
+                            res.json({ token: jwt.sign(user._id, req.app.get('authKey')) });
+                        });
+                    } else {
+                        res.json({ message: "valid email" });
+                    }
+                }
+            });
+
+        } else {
+            res.status(400).json({ error: "UserInvalidEmail", message: "invalid email address" });
+        }
+
+    } else {
+        res.status(400).json({ error: "UserBadRequest", message: "email address is required" });
+    }
 });
 
 router.post('/auth/login', function(req, res, next) {

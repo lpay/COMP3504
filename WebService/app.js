@@ -29,7 +29,7 @@ mongoose.connect('mongodb://localhost/comp3504');
 var app = express();
 
 // log all requests
-//app.use(morgan('dev'));
+app.use(morgan('dev'));
 
 // set favicon location
 app.use(favicon('./public/assets/images/favicon.ico'));

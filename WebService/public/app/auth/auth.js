@@ -9,23 +9,40 @@ app.controller('AuthenticationController', function($scope, $location, $auth) {
                 .then(function() {
                     $location.path('/dashboard');
                 })
-                .catch(function(error) {
-
+                .catch(function(res) {
+                    console.log(res);
                 });
         };
 
-        $scope.submit = function() {
-
+        $scope.login = function() {
+            $auth.login($scope.user)
+                .then(function() {
+                    $location.path('/dashboard');
+                })
+                .catch(function(res) {
+                    console.log(res);
+                });
         };
+
+        $scope.signup = function() {
+            $auth.signup($scope.register)
+                .then(function() {
+                    $location.path('/dashboard');
+                })
+                .catch(function(res) {
+                    console.log(res);
+                });
+        }
 
     })
 
     .controller('LogoutController', function($location, $auth) {
-        if (!$auth.isAuthenticated())
-            return;
-
-        $auth.logout()
-            .then(function() {
-                $location.path('/login');
-            })
+        if ($auth.isAuthenticated()) {
+            $auth.logout()
+                .then(function() {
+                    $location.path('/login');
+                })
+        } else {
+            $location.path('/login');
+        }
     });
