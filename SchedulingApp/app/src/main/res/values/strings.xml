@@ -17,4 +17,9 @@
 
 
     <string name="password_confirm">Confirm Password</string>
+    <string name="search_button">Search</string>
+    <string name="search_prompt">Search</string>
+    <string name="button_searchbychiro">Search By Chiropractor</string>
+    <string name="button_searchbyclinic">Search By Clinic</string>
+    <string name="button_searchbylocation">Search By Location</string>
 </resources>
