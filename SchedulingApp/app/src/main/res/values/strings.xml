@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SchedulingApp</string>
+    <string name="app_name">Scheduling App</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -14,4 +14,7 @@
     </string>
     <string name="action_goto_create_account">Create Account</string>
     <string name="get_name">Name</string>
+
+
+    <string name="password_confirm">Confirm Password</string>
 </resources>
