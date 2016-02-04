@@ -23,16 +23,11 @@ router.get('/users')
     .get(function(req, res, next) {
         User.find({}, 'email created_at updated_at last_login', function(err, users) {
 
-            if (err) {
-                next(err);
-                return;
-            }
+            if (err) return next(err);
 
             if (users && users.length > 0) {
-                // success
-                res.status(200).json(users);
+                res.json(users);
             } else {
-                // not found
                 res.status(404).json({ error: "UserNoUsers", message: "no users found" });
             }
         });
@@ -48,13 +43,10 @@ router.route('/users/:email')
 
             User.findOne({ email: req.params.email }, 'email created_at updated_at last_login', function (err, user) {
 
-                if (err) {
-                    next(err);
-                    return;
-                }
+                if (err) return next(err);
 
                 if (user) {
-                    res.status(200).json(user);
+                    res.json(user);
                 } else {
                     res.status(404).json({ error: "UserNotFound", message: "user not found" });
                 }

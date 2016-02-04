@@ -49,8 +49,9 @@ app.set('authKey', 'superSecretKey!');
 //
 
 // TODO: perhaps there is a more modular way to do this (load the entire api with one call?)
-//app.use('/api', require('./api/user'));
 app.use('/', require('./api/auth'));
+app.use('/', require('./api/group'));
+app.use('/', require('./api/user'));
 
 //
 // Angular Application

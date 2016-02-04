@@ -27,7 +27,7 @@ app.controller('AuthenticationController', function($scope, $location, $auth) {
         $scope.signup = function() {
             $auth.signup($scope.register)
                 .then(function() {
-                    $location.path('/dashboard');
+                    $location.path('/join');
                 })
                 .catch(function(res) {
                     console.log(res);

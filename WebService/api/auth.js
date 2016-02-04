@@ -1,11 +1,12 @@
 /**
- * Created by mark on 1/14/19.
+ * Created by mark on 1/14/16.
  *
  *
  * API ENDPOINTS
  *
- * POST     /auth/login     validate credentials and generate session token
- * POST     /auth/google
+ * POST     /auth/signup    create user and generate json web token
+ * POST     /auth/login     validate credentials and generate json web token
+ * POST     /auth/google    validate google access token and generate json web token
  */
 
 var express = require('express');
@@ -13,11 +14,12 @@ var request = require('request');
 var jwt = require('jsonwebtoken');
 
 var User = require('../models/user');
-var router = express.Router();
+
 
 //
 // Routes
 //
+var router = express.Router();
 
 router.post('/auth/signup', function(req, res, next) {
 
@@ -34,7 +36,7 @@ router.post('/auth/signup', function(req, res, next) {
                 if (err) return next(err);
 
                 if (existingUser) {
-                    res.status(400).json({ error: "UserEmailExists", message: "email address exists" })
+                    res.status(400).json({ error: "UserEmailExists", message: "email address exists" });
                 } else {
 
                     // if password is set, create the account, otherwise just perform email validation
@@ -81,7 +83,9 @@ router.post('/auth/login', function(req, res, next) {
                 if (err) return next(err);
 
                 if (isMatch) {
-                    res.json({ token: jwt.sign(user._id, req.app.get('authKey')) });
+                    var token = jwt.sign({ sub: user._id }, req.app.get('authKey'));
+                    res.json({ token: token });
+
                 } else {
                     res.json(401, { message: 'invalid password' });
                 }
@@ -115,13 +119,14 @@ router.post('/auth/google', function(req, res, next) {
 
             if (req.headers.authorization) {
                 User.findOne({ google: profile.sub }, function(err, existingUser) {
+
                     if (existingUser)
                         return res.status(409).send({ message: 'google account exists'});
 
                     var token = req.headers.authorization.split(' ')[1];
                     var payload = jwt.decode(token, req.app.get('authKey'));
 
-                    User.findById(payload, function(err, user) {
+                    User.findById(payload.sub, function(err, user) {
 
                         if (err) return next(err);
 
@@ -146,7 +151,8 @@ router.post('/auth/google', function(req, res, next) {
                 User.findOne({ google: profile.sub }, function(err, existingUser) {
 
                     if (existingUser) {
-                        return res.json({ token: jwt.sign(existingUser._id, req.app.get('authKey')) });
+                        var token = jwt.sign({ sub: existingUser._id }, req.app.get('authKey'));
+                        return res.json({ token: token });
                     }
 
                     var user = new User();
@@ -157,7 +163,7 @@ router.post('/auth/google', function(req, res, next) {
                     user.save(function(err) {
                         if (err) return next(err);
 
-                        var token = jwt.sign(user._id, req.app.get('authKey'));
+                        var token = jwt.sign({ sub: user._id }, req.app.get('authKey'));
 
                         console.log(token);
                         res.json({ token: token });
@@ -167,6 +173,5 @@ router.post('/auth/google', function(req, res, next) {
         })
     });
 });
-
 
 module.exports = router;
