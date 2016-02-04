@@ -108,6 +108,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         startActivity(intent);
     }
 
+    public void goToSearch(){
+        Intent intent = new Intent(this, SearchActivity.class);
+        startActivity(intent);
+    }
+
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {
             return;
@@ -209,6 +214,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask.execute((Void) null);
 
         }
+
+        goToSearch();
     }
 
     private boolean isEmailValid(String email) {

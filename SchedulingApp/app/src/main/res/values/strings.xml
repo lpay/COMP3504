@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Scheduling App</string>
+    <string name="app_name">EvoDev</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
