@@ -8,15 +8,17 @@ var groupSchema = new mongoose.Schema({
     city: { type: String, required: true },
     province: { type: String, required: true },
     postalCode: { type: String, required: true },
+    admins: [{
+        type: ObjectId,
+        ref: 'users'
+    }],
     users: [{
         type: ObjectId,
-        ref: 'users',
-        admin: Boolean
+        ref: 'users'
     }],
     pending: [{
         type: ObjectId,
-        ref: 'users',
-        admin: Boolean
+        ref: 'users'
     }]
 });
 

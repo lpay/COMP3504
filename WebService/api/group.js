@@ -4,7 +4,7 @@
  *
  * API ENDPOINTS
  *
- * GET  /groups/:search     retrieve a list of groups
+ * GET  /groups/:search     retrieve a list of groups matching :search
  */
 
 var express = require('express');
@@ -17,28 +17,27 @@ var ensureAuthenticated = require('./middleware').ensureAuthenticated;
 
 var router = express.Router();
 
-router.route('/groups/:search')
-    .get(function(req, res, next) {
-        var search = {};
+router.get('/groups/:search', function(req, res, next) {
+    var search = {};
 
-        if (req.params.search) {
-            search.name = { $regex: new RegExp(req.params.search, "i") }
+    if (req.params.search) {
+        search.name = { $regex: new RegExp(req.params.search, "i") }
+    }
+
+    Group.find(search, 'name address city province postalCode', function(err, groups) {
+
+        if (err) return next(err);
+
+        if (groups && groups.length > 0) {
+            res.send(groups);
+        } else {
+            res.status(404).send({ error: "GroupNoGroups", message: "no groups found" });
         }
 
-        Group.find({}, 'name address city province postalCode', function(err, groups) {
+    });
+});
 
-            if (err) return next(err);
-
-            if (groups && groups.length > 0) {
-                res.json(groups);
-            } else {
-                res.status(404).send({ error: "GroupNoGroups", message: "no groups found" });
-            }
-
-        });
-    })
-
-    .post(ensureAuthenticated, function(req, res, next) {
+router.post('/groups', ensureAuthenticated, function(req, res, next) {
 
         // validate request
         if (!req.body.name)
@@ -62,7 +61,8 @@ router.route('/groups/:search')
                 address: req.body.address,
                 city: req.body.city,
                 province: req.body.province,
-                postalCode: req.body.postalCode
+                postalCode: req.body.postalCode,
+                admins: [ req.user ]
             });
 
             group.save(function(err) {
@@ -73,5 +73,23 @@ router.route('/groups/:search')
             });
         })
     });
+
+router.post('/groups/join', ensureAuthenticated, function(req, res, next) {
+    Group.findById(req.body.group, function(err, group) {
+        if (err) return next(err);
+
+        if (!group)
+            return res.status(404).send({ error: "GroupNotFound", message: "group not found" });
+
+        group.users.push(req.user);
+
+        group.save(function(err) {
+            if (err) return next(err);
+
+            res.json(group);
+        });
+    })
+
+});
 
 module.exports = router;

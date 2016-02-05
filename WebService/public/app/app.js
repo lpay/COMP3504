@@ -2,7 +2,7 @@
  * Created by mark on 1/14/16.
  */
 
-var app = angular.module('COMP3504', [ 'ui.router', 'ngMessages', 'satellizer' ])
+var app = angular.module('COMP3504', [ 'ui.router', 'ngMessages', 'satellizer', 'selectize' ])
 
     .config(function($authProvider, $stateProvider, $urlRouterProvider) {
 
@@ -30,6 +30,7 @@ var app = angular.module('COMP3504', [ 'ui.router', 'ngMessages', 'satellizer' ]
             .state('join', {
                 url: '/join',
                 templateUrl: '/app/dashboard/join.html',
+                controller: 'GroupController',
                 resolve: {
                     loginRequired: loginRequired
                 }

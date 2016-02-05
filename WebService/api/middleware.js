@@ -9,7 +9,7 @@ var User = require('../models/user');
 exports.ensureAuthenticated = function(req, res, next) {
 
     if (!req.headers.authorization)
-        return res.status(401).send({ message: 'missing auth header' });
+        return res.status(401).send({ message: 'authorization required' });
 
     var token = req.headers.authorization.split(' ')[1];
 
@@ -17,8 +17,7 @@ exports.ensureAuthenticated = function(req, res, next) {
 
     try {
         payload = jwt.decode(token, req.app.get('authKey'));
-    }
-    catch (err) {
+    } catch (err) {
         return res.status(401).send({ message: err.message });
     }
 
