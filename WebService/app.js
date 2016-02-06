@@ -40,10 +40,6 @@ app.use(bodyParser.json());
 // accept application/x-www-form-urlencoded in requests
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// setup an authorization key for use with jwt
-app.set('authKey', 'superSecretKey!');
-
-
 //
 // API Stubs
 //

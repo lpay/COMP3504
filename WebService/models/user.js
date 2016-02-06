@@ -4,7 +4,10 @@
  */
 
 var mongoose = require('mongoose');
+var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
+var moment = require('moment');
+var config = require('../config');
 
 var ObjectId = mongoose.Schema.ObjectId;
 
@@ -53,6 +56,18 @@ userSchema.methods.validatePassword = function(password, done) {
     bcrypt.compare(password, user.password, function(err, isMatch) {
         done(err, isMatch);
     });
+};
+
+userSchema.methods.generateToken = function(done) {
+    var user = this;
+
+    var token = jwt.sign({
+        sub: user._id,
+        iat: moment().unix(),
+        exp: moment().add(14, 'days').unix()
+    }, config.AUTH_SECRET);
+
+    done(token);
 };
 
 var User = mongoose.model('User', userSchema);

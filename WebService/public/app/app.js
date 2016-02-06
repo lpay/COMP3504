@@ -75,10 +75,8 @@ var app = angular.module('COMP3504', [ 'ui.router', 'ngMessages', 'satellizer', 
         function groupRequired($q, $http, $location) {
             var deferred = $q.defer();
 
-
             $http.get('/profile')
                 .success(function(data) {
-                    console.log(data);
                     if (data.groups.length) {
                         deferred.resolve();
                     } else {

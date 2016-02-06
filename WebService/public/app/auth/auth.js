@@ -33,17 +33,16 @@ app.controller('AuthenticationController', function($scope, $location, $auth) {
                 .catch(function(res) {
                     console.log(res);
                 });
-        }
+        };
 
     })
 
     .controller('LogoutController', function($location, $auth) {
-        if ($auth.isAuthenticated()) {
-            $auth.logout()
-                .then(function() {
-                    $location.path('/login');
-                })
-        } else {
+        if (!$auth.isAuthenticated())
             $location.path('/login');
-        }
+
+        $auth.logout()
+            .then(function() {
+                $location.path('/login');
+            });
     });
