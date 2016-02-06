@@ -19,20 +19,21 @@ var app = angular.module('COMP3504', [ 'ui.router', 'ngMessages', 'satellizer', 
                 }
             })
 
-            .state('dashboard', {
-                url: '/dashboard',
-                templateUrl: '/app/dashboard/dashboard.html',
+            .state('join', {
+                url: '/join',
+                templateUrl: '/app/auth/join.html',
+                controller: 'GroupController',
                 resolve: {
                     loginRequired: loginRequired
                 }
             })
 
-            .state('join', {
-                url: '/join',
-                templateUrl: '/app/dashboard/join.html',
-                controller: 'GroupController',
+            .state('dashboard', {
+                url: '/dashboard',
+                templateUrl: '/app/dashboard/dashboard.html',
                 resolve: {
-                    loginRequired: loginRequired
+                    loginRequired: loginRequired,
+                    groupRequired: groupRequired
                 }
             })
 
@@ -44,7 +45,6 @@ var app = angular.module('COMP3504', [ 'ui.router', 'ngMessages', 'satellizer', 
 
 
         $authProvider.google({
-            //url: '/api/auth/google',
             clientId: '870728536471-ilmvcb2obgo6ioucqokrgvcj211nj7t3.apps.googleusercontent.com'
         });
 
@@ -68,6 +68,26 @@ var app = angular.module('COMP3504', [ 'ui.router', 'ngMessages', 'satellizer', 
             } else {
                 $location.path('/login');
             }
+
+            return deferred.promise;
+        }
+
+        function groupRequired($q, $http, $location) {
+            var deferred = $q.defer();
+
+
+            $http.get('/profile')
+                .success(function(data) {
+                    console.log(data);
+                    if (data.groups.length) {
+                        deferred.resolve();
+                    } else {
+                        $location.path('/join');
+                    }
+                })
+                .error(function() {
+                    deferred.reject();
+                });
 
             return deferred.promise;
         }

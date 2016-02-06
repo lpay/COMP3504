@@ -12,8 +12,13 @@
 
 var express = require('express');
 var router = express.Router();
+var ensureAuthenticated = require('./middleware').ensureAuthenticated;
 
 var User = require('../models/user');
+
+router.get('/profile', ensureAuthenticated, function(req, res) {
+    return res.send(req.user);
+});
 
 router.get('/users')
 

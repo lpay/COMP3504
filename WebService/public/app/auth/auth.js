@@ -26,7 +26,8 @@ app.controller('AuthenticationController', function($scope, $location, $auth) {
 
         $scope.signup = function() {
             $auth.signup($scope.register)
-                .then(function() {
+                .then(function(token) {
+                    $auth.setToken(token);
                     $location.path('/join');
                 })
                 .catch(function(res) {

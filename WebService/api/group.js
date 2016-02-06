@@ -39,40 +39,45 @@ router.get('/groups/:search', function(req, res, next) {
 
 router.post('/groups', ensureAuthenticated, function(req, res, next) {
 
-        // validate request
-        if (!req.body.name)
-            return res.status(400).send({ error: "GroupNameRequired", message: "group name is required" });
+    // validate request
+    if (!req.body.name)
+        return res.status(400).send({ error: "GroupNameRequired", message: "group name is required" });
 
-        if (!req.body.address)
-            return res.status(400).send({ error: "GroupAddressRequired", message: "group address is required" });
+    if (!req.body.address)
+        return res.status(400).send({ error: "GroupAddressRequired", message: "group address is required" });
 
-        if (!req.body.city)
-            res.status(400).send({ error: "GroupCityRequired", message: "group city is required" });
+    if (!req.body.city)
+        res.status(400).send({ error: "GroupCityRequired", message: "group city is required" });
 
-        Group.findOne({ name: { $regex: new RegExp(req.body.name, "i") } }, function(err, existingGroup) {
+    Group.findOne({ name: { $regex: new RegExp(req.body.name, "i") } }, function(err, existingGroup) {
+
+        if (err) return next(err);
+
+        if (existingGroup)
+            return res.status(400).send({ error: "GroupExists", message: "group exists" });
+
+        Group.create({
+            name: req.body.name,
+            address: req.body.address,
+            city: req.body.city,
+            province: req.body.province,
+            postalCode: req.body.postalCode,
+            admins: [ req.user ]
+        }, function(err, group) {
 
             if (err) return next(err);
 
-            if (existingGroup)
-                return res.status(400).send({ error: "GroupExists", message: "group exists" });
+            req.user.groups.push(group);
 
-            var group = new Group({
-                name: req.body.name,
-                address: req.body.address,
-                city: req.body.city,
-                province: req.body.province,
-                postalCode: req.body.postalCode,
-                admins: [ req.user ]
-            });
-
-            group.save(function(err) {
+            req.user.save(function(err, user) {
 
                 if (err) return next(err);
 
-                return res.send(group);
+                return res.send(user);
             });
-        })
-    });
+        });
+    })
+});
 
 router.post('/groups/join', ensureAuthenticated, function(req, res, next) {
     Group.findById(req.body.group, function(err, group) {
@@ -86,7 +91,13 @@ router.post('/groups/join', ensureAuthenticated, function(req, res, next) {
         group.save(function(err) {
             if (err) return next(err);
 
-            res.json(group);
+            req.user.groups.push(group);
+
+            req.user.save(function(err, user) {
+                if (err) return next(err);
+
+                return res.send(user);
+            });
         });
     })
 

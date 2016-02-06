@@ -1,10 +1,12 @@
 /**
- *
+ * Created by mark on 1/14/16.
  *
  */
 
 var mongoose = require('mongoose');
 var bcrypt = require('bcryptjs');
+
+var ObjectId = mongoose.Schema.ObjectId;
 
 var userSchema =  new mongoose.Schema({
     email: { type: String, required: true, unique: true, lowercase: true },
@@ -15,7 +17,11 @@ var userSchema =  new mongoose.Schema({
     last_login: Date,
     google: String,
     facebook: {},
-    twitter: {}
+    twitter: {},
+    groups: [{
+        type: ObjectId,
+        ref: 'groups'
+    }]
 });
 
 userSchema.pre('save', function(next) {

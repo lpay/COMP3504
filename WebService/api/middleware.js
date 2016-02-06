@@ -21,7 +21,7 @@ exports.ensureAuthenticated = function(req, res, next) {
         return res.status(401).send({ message: err.message });
     }
 
-    User.findById(payload.sub, function(err, user) {
+    User.findById(payload.sub, 'email created_at groups',function(err, user) {
 
         if (err) return next(err);
 

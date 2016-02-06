@@ -23,52 +23,39 @@ var router = express.Router();
 
 router.post('/auth/signup', function(req, res, next) {
 
-    if (req.body.email) {
+    if (!req.body.email)
+        return res.status(400).send({ error: "UserBadRequest", message: "email address is required" });
 
-        // validate email format
-        var regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    // validate email format
+    var regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-        if (regex.test(req.body.email)) {
+    if (!regex.test(req.body.email))
+        return res.status(400).json({ error: "UserInvalidEmail", message: "invalid email address" });
 
-            // validate email uniqueness
-            User.findOne({ email: req.body.email }, 'email', function(err, existingUser) {
+    // validate email uniqueness
+    User.findOne({ email: req.body.email }, 'email', function(err, existingUser) {
 
-                if (err) return next(err);
+        if (err) return next(err);
 
-                if (existingUser) {
-                    res.status(400).json({ error: "UserEmailExists", message: "email address exists" });
-                } else {
+        if (existingUser)
+            return res.status(400).json({ error: "UserEmailExists", message: "email address exists" });
 
-                    // if password is set, create the account, otherwise just perform email validation
-                    if (req.body.password) {
+        // if password is set, create the account, otherwise just perform email validation
 
-                        // TODO: Validate password? (restrictions are probably not a good idea...)
+        if (!req.body.password)
+            return res.send({ message: "valid email" });
 
-                        // create user
-                        var user = new User({
-                            email: req.body.email,
-                            password: req.body.password
-                        });
+        // create user
+        User.create({
+            email: req.body.email,
+            password: req.body.password
+        }, function(err, user) {
 
-                        user.save(function(err) {
+            if (err) return next(err);
 
-                            if (err) return next(err);
-
-                            res.json({ token: jwt.sign(user._id, req.app.get('authKey')) });
-                        });
-                    } else {
-                        res.json({ message: "valid email" });
-                    }
-                }
-            });
-
-        } else {
-            res.status(400).json({ error: "UserInvalidEmail", message: "invalid email address" });
-        }
-
-    } else {
-        res.status(400).json({ error: "UserBadRequest", message: "email address is required" });
-    }
+            return res.send({ token: jwt.sign({ sub: user._id }, req.app.get('authKey')) });
+        });
+    });
 });
 
 router.post('/auth/login', function(req, res, next) {
@@ -138,7 +125,7 @@ router.post('/auth/google', function(req, res, next) {
 
                                 if (err) return next(err);
 
-                                res.send({ token: jwt.sign(user._id, req.app.get('authKey'))});
+                                res.send({ token: jwt.sign({ sub: user._id }, req.app.get('authKey'))});
 
                             });
 
@@ -165,8 +152,7 @@ router.post('/auth/google', function(req, res, next) {
 
                         var token = jwt.sign({ sub: user._id }, req.app.get('authKey'));
 
-                        console.log(token);
-                        res.json({ token: token });
+                        res.send({ token: token });
                     })
                 });
             }
