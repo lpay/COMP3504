@@ -67,7 +67,11 @@ userSchema.methods.generateToken = function(done) {
         exp: moment().add(14, 'days').unix()
     }, config.AUTH_SECRET);
 
-    done(token);
+    user.last_login = new Date();
+
+    user.save(function() {
+        done(token);
+    });
 };
 
 var User = mongoose.model('User', userSchema);

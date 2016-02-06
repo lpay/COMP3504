@@ -117,7 +117,7 @@ router.post('/auth/google', function(req, res, next) {
                 User.findOne({ google: profile.sub }, function(err, existingUser) {
 
                     if (existingUser)
-                        return res.status(409).send({ message: 'google account exists'});
+                        return res.status(409).send({ message: 'google account exists' });
 
                     var token = req.headers.authorization.split(' ')[1];
                     var payload = jwt.decode(token, config.AUTH_SECRET);

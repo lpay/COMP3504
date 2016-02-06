@@ -26,7 +26,8 @@ router.get('/groups/:search', function(req, res, next) {
 
     Group.find(search, 'name address city province postalCode', function(err, groups) {
 
-        if (err) return next(err);
+        if (err)
+            return next(err);
 
         if (groups && groups.length > 0) {
             res.send(groups);
@@ -71,9 +72,10 @@ router.post('/groups', ensureAuthenticated, function(req, res, next) {
 
             req.user.save(function(err, user) {
 
-                if (err) return next(err);
+                if (err)
+                    return next(err);
 
-                return res.send(user);
+                res.send(user);
             });
         });
     })
@@ -81,7 +83,9 @@ router.post('/groups', ensureAuthenticated, function(req, res, next) {
 
 router.post('/groups/join', ensureAuthenticated, function(req, res, next) {
     Group.findById(req.body.group, function(err, group) {
-        if (err) return next(err);
+
+        if (err)
+            return next(err);
 
         if (!group)
             return res.status(404).send({ error: "GroupNotFound", message: "group not found" });
@@ -89,14 +93,18 @@ router.post('/groups/join', ensureAuthenticated, function(req, res, next) {
         group.users.push(req.user);
 
         group.save(function(err) {
-            if (err) return next(err);
+
+            if (err)
+                return next(err);
 
             req.user.groups.push(group);
 
             req.user.save(function(err, user) {
-                if (err) return next(err);
 
-                return res.send(user);
+                if (err)
+                    return next(err);
+
+                res.send(user);
             });
         });
     })

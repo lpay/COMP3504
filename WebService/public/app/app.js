@@ -2,7 +2,7 @@
  * Created by mark on 1/14/16.
  */
 
-var app = angular.module('COMP3504', [ 'ui.router', 'ngMessages', 'satellizer', 'selectize' ])
+var app = angular.module('COMP3504', [ 'ui.router', 'ngMessages', 'satellizer', 'selectize', 'ui.calendar' ])
 
     .config(function($authProvider, $stateProvider, $urlRouterProvider) {
 
@@ -31,6 +31,7 @@ var app = angular.module('COMP3504', [ 'ui.router', 'ngMessages', 'satellizer', 
             .state('dashboard', {
                 url: '/dashboard',
                 templateUrl: '/app/dashboard/dashboard.html',
+                controller: 'DashboardController',
                 resolve: {
                     loginRequired: loginRequired,
                     groupRequired: groupRequired

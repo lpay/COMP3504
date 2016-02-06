@@ -5,6 +5,8 @@
 
 app.controller('GroupController', function($scope, $location, $http) {
 
+    $scope.showCreate = false;
+
     $scope.create = function() {
         $http.post('/groups', $scope.group)
             .success(function() {
