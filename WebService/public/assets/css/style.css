@@ -26,3 +26,47 @@
     padding: 10px 12px;
     pointer-events: none;
 }
+
+.container{
+     background: url("http://localhost:3504/assets/images/blue-abstract-background.jpg") no-repeat center center fixed;
+     -webkit-background-size: cover;
+     -moz-background-size: cover;
+     -o-background-size: cover;
+     background-size: cover;
+ }
+
+#logo{
+    color:white;
+    font-family: "Arial Black";
+    text-align: center;
+}
+
+#loginForm .bckimg{
+    background: url("http://localhost:3504/assets/images/blue-background-image-2-hi.png") no-repeat;
+    color: #e0e0e0;
+}
+
+#loginForm h1{
+    color:white;
+    font-family: "Arial Black";
+    text-align: center;
+}
+
+#forgotPass {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#forgotPass a{
+    color: #e0e0e0;
+}
+
+#signUp h1{
+    color:white;
+    font-family: "Arial Black";
+}
+
+#signUp p,label{
+    text-align: none;
+    color:white;
+}
