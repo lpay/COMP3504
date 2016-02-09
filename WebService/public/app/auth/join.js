@@ -5,9 +5,10 @@
 
 app.controller('GroupController', function($scope, $location, $http) {
 
+    $scope.selectedGroup = null;
     $scope.showCreate = false;
 
-    $scope.create = function() {
+    $scope.createGroup = function() {
         $http.post('/groups', $scope.group)
             .success(function() {
                 $location.path('/dashboard');
@@ -17,7 +18,7 @@ app.controller('GroupController', function($scope, $location, $http) {
             });
     };
 
-    $scope.join = function() {
+    $scope.joinGroup = function() {
         $http.post('/groups/join', { group: $scope.selectedGroup })
             .success(function() {
                $location.path('/dashboard');
