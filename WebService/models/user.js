@@ -24,6 +24,21 @@ var userSchema =  new mongoose.Schema({
     groups: [{
         type: ObjectId,
         ref: 'groups'
+    }],
+    availability: [{
+        group: { type: ObjectId, ref: 'groups' },
+        startTime: Number,
+        endTime: Number,
+        date: Date,
+        recurring: {
+            startDate: Date,
+            endDate: Date,
+            days: [{ type: String }]
+        }
+
+    }],
+    events: [{
+
     }]
 });
 

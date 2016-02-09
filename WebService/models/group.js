@@ -14,6 +14,8 @@ var groupSchema = new mongoose.Schema({
     city: { type: String, required: true },
     province: { type: String, required: true },
     postalCode: { type: String, required: true },
+    phone: { type: String },
+    email: { type: String },
     admins: [{
         type: ObjectId,
         ref: 'users'
