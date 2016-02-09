@@ -35,7 +35,6 @@ var userSchema =  new mongoose.Schema({
             endDate: Date,
             days: [{ type: String }]
         }
-
     }],
     events: [{
 

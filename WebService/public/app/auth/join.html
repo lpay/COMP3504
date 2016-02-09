@@ -4,7 +4,7 @@
 
     <div class="row" ng-show="!showCreate">
         <div class="col-md-4 col-md-offset-4">
-            <form name="joinGroup" ng-submit="joinGroup()">
+            <form name="join" ng-submit="joinGroup()">
                 <div class="form-group">
                     <div class="row">
                         <div class="col-md-8">
@@ -28,7 +28,7 @@
     </div><!-- /.row -->
     <div class="row" ng-show="showCreate">
         <div class="col-md-4 col-md-offset-4">
-            <form name="createGroup" ng-submit="createGroup()">
+            <form name="create" ng-submit="createGroup()">
                 <div class="form-group">
                     <label class="control-label" for="name">Group Name</label>
                     <input type="text" id="name" ng-model="group.name" class="form-control" />
