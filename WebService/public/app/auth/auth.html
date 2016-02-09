@@ -20,7 +20,7 @@
                     <div class="col-md-12">
                         <div class="input-group input-group-lg">
                             <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                            <input type="text" class="form-control" placeholder="email..." ng-model="user.email" required />
+                            <input type="text" class="form-control" placeholder="Email..." ng-model="user.email" required />
                         </div>
                     </div>
                 </div>
@@ -29,7 +29,7 @@
                     <div class="col-md-12">
                         <div class="input-group input-group-lg">
                             <span class="input-group-addon"><i class="fa fa-lock"></i></span>
-                            <input type="password" class="form-control" placeholder="password..." ng-model="user.password" required />
+                            <input type="password" class="form-control" placeholder="Password..." ng-model="user.password" required />
                         </div>
                     </div>
                 </div>
@@ -73,6 +73,18 @@
             </div>
 
             <form name="signupForm" ng-submit="signup()">
+
+                <div id ="userNames" class="row form-group">
+                    <div class="col-md-6">
+                        <label for="firstName">First Name</label>
+                        <input type="text" id="firstName" ng-model="" class="form-control" placeholder="Enter your first name" required/>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName" ng-model="" class="form-control" placeholder="Enter your last name" required/>
+                    </div>
+                </div>
+
                 <!--first row in signup-->
                 <div class="row form-group">
                     <label for="email">Email</label>
