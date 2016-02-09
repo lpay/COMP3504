@@ -1,6 +1,15 @@
-var mongoose = require('mongoose');
-var bcrypt = require('bcryptjs');
+/**
+ * Created by mark on 1/14/16.
+ *
+ */
 
+var mongoose = require('mongoose');
+var jwt = require('jsonwebtoken');
+var bcrypt = require('bcryptjs');
+var moment = require('moment');
+var config = require('../config');
+
+var ObjectId = mongoose.Schema.ObjectId;
 
 var userSchema =  new mongoose.Schema({
     email: { type: String, required: true, unique: true, lowercase: true },
@@ -11,7 +20,25 @@ var userSchema =  new mongoose.Schema({
     last_login: Date,
     google: String,
     facebook: {},
-    twitter: {}
+    twitter: {},
+    groups: [{
+        type: ObjectId,
+        ref: 'groups'
+    }],
+    availability: [{
+        group: { type: ObjectId, ref: 'groups' },
+        startTime: Number,
+        endTime: Number,
+        date: Date,
+        recurring: {
+            startDate: Date,
+            endDate: Date,
+            days: [{ type: String }]
+        }
+    }],
+    events: [{
+
+    }]
 });
 
 userSchema.pre('save', function(next) {
@@ -40,8 +67,24 @@ userSchema.pre('save', function(next) {
 userSchema.methods.validatePassword = function(password, done) {
     var user = this;
 
-    bcrypt.compare(user.password, password, function(err, isMatch) {
+    bcrypt.compare(password, user.password, function(err, isMatch) {
         done(err, isMatch);
+    });
+};
+
+userSchema.methods.generateToken = function(done) {
+    var user = this;
+
+    var token = jwt.sign({
+        sub: user._id,
+        iat: moment().unix(),
+        exp: moment().add(14, 'days').unix()
+    }, config.AUTH_SECRET);
+
+    user.last_login = new Date();
+
+    user.save(function() {
+        done(token);
     });
 };
 

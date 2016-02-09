@@ -2,7 +2,7 @@
  * Created by mark on 1/14/16.
  */
 
-var app = angular.module('COMP3504', [ 'ui.router', 'ngMessages', 'satellizer' ])
+var app = angular.module('COMP3504', [ 'ui.router', 'ngMessages', 'satellizer', 'selectize', 'ui.calendar' ])
 
     .config(function($authProvider, $stateProvider, $urlRouterProvider) {
 
@@ -17,26 +17,35 @@ var app = angular.module('COMP3504', [ 'ui.router', 'ngMessages', 'satellizer' ]
                 resolve: {
                     skipIfLoggedIn: skipIfLoggedIn
                 }
+            })
 
+            .state('join', {
+                url: '/join',
+                templateUrl: '/app/auth/join.html',
+                controller: 'GroupController',
+                resolve: {
+                    loginRequired: loginRequired
+                }
+            })
+
+            .state('dashboard', {
+                url: '/dashboard',
+                templateUrl: '/app/dashboard/dashboard.html',
+                controller: 'DashboardController',
+                resolve: {
+                    loginRequired: loginRequired,
+                    groupRequired: groupRequired
+                }
             })
 
             .state('logout', {
                 url: '/logout',
                 template: null,
                 controller: 'LogoutController'
-            })
-
-            .state('dashboard', {
-                url: '/dashboard',
-                templateUrl: '/app/dashboard/dashboard.html',
-                resolve: {
-                    loginRequired: loginRequired
-                }
             });
 
 
         $authProvider.google({
-            //url: '/api/auth/google',
             clientId: '870728536471-ilmvcb2obgo6ioucqokrgvcj211nj7t3.apps.googleusercontent.com'
         });
 
@@ -60,6 +69,24 @@ var app = angular.module('COMP3504', [ 'ui.router', 'ngMessages', 'satellizer' ]
             } else {
                 $location.path('/login');
             }
+
+            return deferred.promise;
+        }
+
+        function groupRequired($q, $http, $location) {
+            var deferred = $q.defer();
+
+            $http.get('/profile')
+                .success(function(data) {
+                    if (data.groups.length) {
+                        deferred.resolve();
+                    } else {
+                        $location.path('/join');
+                    }
+                })
+                .error(function() {
+                    deferred.reject();
+                });
 
             return deferred.promise;
         }

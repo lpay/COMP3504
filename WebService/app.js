@@ -29,7 +29,7 @@ mongoose.connect('mongodb://localhost/comp3504');
 var app = express();
 
 // log all requests
-//app.use(morgan('dev'));
+app.use(morgan('dev'));
 
 // set favicon location
 app.use(favicon('./public/assets/images/favicon.ico'));
@@ -40,17 +40,14 @@ app.use(bodyParser.json());
 // accept application/x-www-form-urlencoded in requests
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// setup an authorization key for use with jwt
-app.set('authKey', 'superSecretKey!');
-
-
 //
 // API Stubs
 //
 
 // TODO: perhaps there is a more modular way to do this (load the entire api with one call?)
-//app.use('/api', require('./api/user'));
 app.use('/', require('./api/auth'));
+app.use('/', require('./api/group'));
+app.use('/', require('./api/user'));
 
 //
 // Angular Application
