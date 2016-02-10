@@ -1,4 +1,17 @@
 <div class="container">
+    <header>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed"
+                            data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
+                            aria-expanded="false">
+                    <a class="navbar-brand" href="#">Logo</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <body>
     <div class="row">
         <div class="col-md-12" style="margin-top: 100px">
             <!-- TODO: Header me... -->
@@ -6,8 +19,21 @@
     </div>
 
     <div class="row">
-        <div class="col-md-12">
-            <div ui-calendar="uiConfig.calendar" class="span8 calendar" ng-model="eventSources"></div>
+        <div class="col-md-12" ui-view>
+
         </div>
     </div>
+
+
+    <div class="row">
+        <div class="col-md-12">
+<<<<<<< HEAD
+            <!-- footer me -->
+=======
+            <div ui-calendar="uiConfig.calendar" class="span8 calendar" ng-model="eventSources"></div>
+>>>>>>> b35c987affd29751b5bab2750ecc24aaecd9d082
+        </div>
+    </div>
+    </body>
+    <footer></footer>
 </div>
