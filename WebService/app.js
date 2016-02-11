@@ -44,6 +44,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // API Stubs
 //
 
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+    next();
+});
+
 // TODO: perhaps there is a more modular way to do this (load the entire api with one call?)
 app.use('/', require('./api/auth'));
 app.use('/', require('./api/group'));
