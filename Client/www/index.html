@@ -23,17 +23,19 @@
     <script src="js/LoginController.js"></script>
   </head>
   <body ng-app="Client" ng-controller="LoginController">
-
     <ion-pane>
       <ion-header-bar class="bar-stable">
-        <h1 class="title">Welcome to my awesome app!!!!</h1>
+        <h1 class="title">Schedule-Up</h1>
       </ion-header-bar>
       <ion-content>
-        <br/><br/><br/><br/><br/><br/><br/>
-        <form name="register" ng-submit="signup()">
-          <input type="text" ng-model="$parent.email"/>
-          <button type="submit">Register!</button>
+        <br/>
+        <form name="login" ng-submit="signin()">
+          <input type="text" placeholder="Email" ng-model="$parent.email"/>
+          <input type="password" placeholder="Password" ng-model="$parent.password"/>
+          <button type="submit">Login</button><br/>
         </form>
+        or<br/>
+        <a href="Signup.html">Create an Account</a>
       </ion-content>
     </ion-pane>
   </body>
