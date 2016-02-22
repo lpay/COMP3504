@@ -9,6 +9,7 @@ app.controller('SignupController', function($scope, $http) {
     $http.post('http://localhost:3504/auth/signup', { name: $scope.name, email: $scope.email, password: $scope.password, password2: $scope.password2})
       .success(function(data) {
         console.log(data);
+        redirect('http://bestbuy.ca');
       })
       .error(function(err){
         console.log(err);
