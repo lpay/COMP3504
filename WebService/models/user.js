@@ -3,42 +3,30 @@
  *
  */
 
+var Promise = require('bluebird');
 var mongoose = require('mongoose');
 var jwt = require('jsonwebtoken');
-var bcrypt = require('bcryptjs');
+var bcrypt = Promise.promisifyAll(require('bcryptjs'));
 var moment = require('moment');
+var util = require('util');
 var config = require('../config');
-
-var ObjectId = mongoose.Schema.ObjectId;
 
 var userSchema =  new mongoose.Schema({
     email: { type: String, required: true, unique: true, lowercase: true },
     password: { type: String, select: false },
-    name: String,
+    name: {
+        type: {
+            first: String,
+            last: String
+        },
+        required: true
+    },
     created_at: Date,
     updated_at: Date,
     last_login: Date,
     google: String,
-    facebook: {},
-    twitter: {},
-    groups: [{
-        type: ObjectId,
-        ref: 'groups'
-    }],
-    availability: [{
-        group: { type: ObjectId, ref: 'groups' },
-        startTime: Number,
-        endTime: Number,
-        date: Date,
-        recurring: {
-            startDate: Date,
-            endDate: Date,
-            days: [{ type: String }]
-        }
-    }],
-    events: [{
-
-    }]
+    facebook: String,
+    twitter: String
 });
 
 userSchema.pre('save', function(next) {
@@ -53,41 +41,103 @@ userSchema.pre('save', function(next) {
 
     // update password hash
     if (user.isModified('password')) {
-        bcrypt.genSalt(10, function(err, salt) {
-            bcrypt.hash(user.password, salt, function(err, hash) {
-                user.password = hash;
-                next();
-            })
-        })
+        bcrypt.genSaltAsync(10)
+            .then(salt => bcrypt.hashAsync(user.password, salt))
+            .then(hash => user.password = hash)
+            .finally(next);
     } else {
         next();
     }
 });
 
-userSchema.methods.validatePassword = function(password, done) {
-    var user = this;
 
-    bcrypt.compare(password, user.password, function(err, isMatch) {
-        done(err, isMatch);
+userSchema.statics.Create = function(email, password, name)
+{
+    var model = this.model('User');
+
+    return model.validateEmail(email)
+        .then( email => model.create({ email: email, password: password, name: name }) );
+};
+
+userSchema.statics.validateEmail = function(email) {
+
+    var model = this.model('User');
+
+    return Promise.try( () => {
+
+        email = email.trim();
+
+        var regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+        if (!regex.test(email))
+            throw new InvalidEmailError('invalid email address');
+
+        return email;
+    })
+    .then(email => [ model.findOne({ email: email}, 'email'), email ])
+    .spread((existingUser, email) => {
+        if (existingUser)
+            throw new InvalidEmailError('email exists');
+
+        return email;
     });
 };
 
-userSchema.methods.generateToken = function(done) {
+userSchema.methods.validatePassword = function(password) {
     var user = this;
 
+    return bcrypt.compareAsync(password, user.password)
+        .then(match => {
+            if (!match)
+                throw new AuthenticationError('invalid password');
+
+            return user;
+        });
+};
+
+userSchema.methods.generateToken = function() {
+    var user = this;
+
+    // generate token
     var token = jwt.sign({
         sub: user._id,
         iat: moment().unix(),
         exp: moment().add(14, 'days').unix()
     }, config.AUTH_SECRET);
 
+    // update user
     user.last_login = new Date();
 
-    user.save(function() {
-        done(token);
-    });
+    return user.save()
+        .then(() => [ user, token ]);
 };
 
-var User = mongoose.model('User', userSchema);
+userSchema.statics.Authenticate = function(email, password) {
+    return this.model('User').findOne({ email: email }, '+password')
+        .then(user => {
+            if (!user)
+                throw new AuthenticationError('user not found');
 
-module.exports = User;
+            return user.validatePassword(password);
+        });
+};
+
+
+var AuthenticationError = function(message) {
+    Error.captureStackTrace(this, this.constructor);
+    this.name = this.constructor.name;
+    this.message = message;
+};
+util.inherits(AuthenticationError, Error);
+
+var InvalidEmailError = function(message) {
+    Error.captureStackTrace(this, this.constructor);
+    this.name = this.constructor.name;
+    this.message = message;
+};
+util.inherits(InvalidEmailError, Error);
+
+userSchema.statics.AuthenticationError = AuthenticationError;
+userSchema.statics.InvalidEmailError = InvalidEmailError;
+
+module.exports = mongoose.model('User', userSchema);

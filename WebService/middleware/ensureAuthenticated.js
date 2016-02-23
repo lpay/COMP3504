@@ -8,7 +8,7 @@ var jwt = require('jsonwebtoken');
 var config = require('../config');
 var User = require('../models/user');
 
-exports.ensureAuthenticated = function(req, res, next) {
+module.exports = function(req, res, next) {
 
     if (!req.headers.authorization)
         return res.status(401).send({ message: 'authorization required' });
@@ -26,15 +26,13 @@ exports.ensureAuthenticated = function(req, res, next) {
     if (payload.exp < moment().unix())
         return res.status(401).send({ message: 'token expired' });
 
-    User.findById(payload.sub, 'email created_at groups',function(err, user) {
+    User.findById(payload.sub, 'email')
+        .then(user => {
+            if (!user)
+                res.status(401).send({ message: 'user not found' });
 
-        if (err) return next(err);
+            req.user = user;
 
-        if (!user)
-            return res.status(401).send({ message: 'user not found' });
-
-        req.user = user;
-
-        next();
-    });
+            next();
+        });
 };

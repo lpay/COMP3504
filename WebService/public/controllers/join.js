@@ -20,8 +20,9 @@ app.controller('GroupController', function($scope, $location, $http) {
 
     $scope.joinGroup = function() {
         $http.post('/groups/join', { group: $scope.selectedGroup })
-            .success(function() {
-               $location.path('/dashboard');
+            .success(function(data) {
+                console.log(data);
+                $location.path('/dashboard');
             })
             .error(function(err) {
                 console.log(err);
@@ -58,7 +59,7 @@ app.controller('GroupController', function($scope, $location, $http) {
                             '</div>',
                         '</div>',
                     '</div>'
-                ].join('\n');
+                ].join('');
             }
         },
         load: function(query, callback) {
@@ -66,7 +67,7 @@ app.controller('GroupController', function($scope, $location, $http) {
             if (!query.length)
                 return callback();
 
-            $http.get('/groups/' + encodeURIComponent(query))
+            $http.get('/groups/search/' + encodeURIComponent(query))
                 .success(function(groups) {
                     callback(groups);
                 })

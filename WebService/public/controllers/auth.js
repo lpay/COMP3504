@@ -22,7 +22,7 @@ app.controller('AuthenticationController', function($scope, $location, $auth) {
                     $location.path('/dashboard');
                 })
                 .catch(function(res) {
-                    console.log(res);
+                    $("#login").effect('shake');
                 });
         };
 
@@ -33,7 +33,7 @@ app.controller('AuthenticationController', function($scope, $location, $auth) {
                     $location.path('/join');
                 })
                 .catch(function(res) {
-                    console.log(res);
+                    $("#signup").effect('shake');
                 });
         };
 
