@@ -12,7 +12,7 @@ var app = angular.module('COMP3504', [ 'ui.router', 'ngMessages', 'satellizer', 
 
             .state('login', {
                 url: '/login',
-                templateUrl: '/app/auth/auth.html',
+                templateUrl: 'partials/auth.html',
                 controller: 'AuthenticationController',
                 resolve: {
                     skipIfLoggedIn: skipIfLoggedIn
@@ -21,7 +21,7 @@ var app = angular.module('COMP3504', [ 'ui.router', 'ngMessages', 'satellizer', 
 
             .state('join', {
                 url: '/join',
-                templateUrl: '/app/auth/join.html',
+                templateUrl: 'partials/join.html',
                 controller: 'GroupController',
                 resolve: {
                     loginRequired: loginRequired
@@ -30,7 +30,7 @@ var app = angular.module('COMP3504', [ 'ui.router', 'ngMessages', 'satellizer', 
 
             .state('dashboard', {
                 url: '/dashboard',
-                templateUrl: '/app/dashboard/dashboard.html',
+                templateUrl: 'partials/dashboard.html',
                 controller: 'DashboardController',
                 resolve: {
                     loginRequired: loginRequired,

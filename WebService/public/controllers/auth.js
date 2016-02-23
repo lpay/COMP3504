@@ -4,6 +4,8 @@
 
 app.controller('AuthenticationController', function($scope, $location, $auth) {
 
+        $scope.showLogin = true;
+
         $scope.authenticate = function(provider) {
             $auth.authenticate(provider)
                 .then(function() {

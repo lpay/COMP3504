@@ -3,21 +3,28 @@
  *
  * API ENDPOINTS
  *
+ * GET      /profile        get authenticated users details
+ *
  * GET      /users          get a list of users
  * GET      /users/:email   get user details
  * PUT      /users/:email   update user details
- * DELETE   /users/:email   delete user details
+ * DELETE   /users/:email   delete user
  *
  */
 
 var express = require('express');
 var router = express.Router();
-var ensureAuthenticated = require('./middleware').ensureAuthenticated;
-
+var ensureAuthenticated = require('../middleware/ensureAuthenticated');
 var User = require('../models/user');
+var Group = require('../models/group');
 
-router.get('/profile', ensureAuthenticated, function(req, res) {
-    return res.send(req.user);
+router.get('/profile', ensureAuthenticated, function(req, res, next) {
+
+    Group.find({ $or: [
+        { 'professionals.admins': req.user },
+        { 'professionals.users': req.user}
+    ]}).exec()
+        .then( (groups) => { res.send({ profile: req.user, groups: groups }) });
 });
 
 router.get('/users')
@@ -30,11 +37,11 @@ router.get('/users')
 
             if (err) return next(err);
 
-            if (users && users.length > 0) {
-                res.json(users);
-            } else {
-                res.status(404).json({ error: "UserNoUsers", message: "no users found" });
-            }
+            if (users && users.length > 0)
+                return res.send(users);
+
+            return res.status(404).send({ message: "no users found" });
+
         });
     });
 
