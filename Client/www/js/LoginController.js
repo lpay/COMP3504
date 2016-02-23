@@ -21,6 +21,7 @@ app.controller('LoginController', function($scope, $http) {
       $http.post('http://localhost:3504/auth/login', { email: $scope.email, password: $scope.password})
         .success(function(data) {
           console.log(data);
+
         })
         .error(function(err){
           console.log(err);
