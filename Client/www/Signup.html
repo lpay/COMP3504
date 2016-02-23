@@ -23,19 +23,34 @@
 </head>
 <body ng-app="Client" ng-controller="SignupController">
 <ion-pane>
-  <div class="bar bar-header bar-assertive">
-    <ion-header-bar class="bar-stable">
-      <h1 class="title">Schedule-Up</h1>
-    </ion-header-bar>
-  </div>
+  <ion-header-bar class="bar bar-header bar-dark" >
+    <h1 class="title">Schedule-Up</h1>
+  </ion-header-bar>
+  <ion-header-bar class="bar bar-subheader bar-assertive">
+    <h2>SURPRISE!! YOU WON!!!!</h2>
+  </ion-header-bar>
   <ion-content>
     <br/>
     <form name="register" ng-submit="signup()">
-      <input type="text" placeholder="Name" ng-model="$parent.name"/>
-      <input type="text" placeholder="Email" ng-model="$parent.email"/>
-      <input type="password" placeholder="Password" ng-model="$parent.password"/>
-      <input type="password" placeholder="Comfirm Password" ng-model="$parent.password2"/>
-      <button class="button button-icon icon ion-navicon" type="submit">Register</button>
+      <div class="list">
+        <label class="item item-input item-floating-label">
+          <span class="input-label">Name</span>
+          <input type="text" placeholder="Name" ng-model="$parent.name"/>
+        </label>
+        <label class="item item-input item-floating-label">
+          <span class="input-label">Email</span>
+          <input type="text" placeholder="Email"  ng-model="$parent.email"/>
+        </label>
+        <label class="item item-input item-floating-label">
+          <span class="input-label">Password</span>
+          <input type="password"  placeholder="Password" ng-model="$parent.password"/>
+        </label>
+        <label class="item item-input item-floating-label">
+          <span class="input-label">Confirm Password</span>
+          <input type="password"  placeholder="Confirm Password"  ng-model="$parent.password2"/>
+        </label>
+        <button class="button swiper-button-black button-dark" type="submit">Register</button>
+      </div>
     </form>
   </ion-content>
 </ion-pane>
