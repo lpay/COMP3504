@@ -4,4 +4,9 @@
 
 app.controller('ProfileController', function($scope, $location, $http) {
 
+    $http.get('/profile')
+        .success(function(profile) {
+            $scope.profile = profile;
+        });
+
 });

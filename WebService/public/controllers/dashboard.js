@@ -5,10 +5,4 @@
 
 app.controller('DashboardController', function($scope) {
 
-    $scope.nav = [
-        { sref: 'calendar', label: 'Dashboard' },
-        { sref: 'profile',label: 'Profile' },
-        { sref: 'logout', label: 'Logout' }
-    ];
-
 });

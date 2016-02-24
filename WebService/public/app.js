@@ -34,8 +34,21 @@ var app = angular.module('COMP3504', [ 'ui.router', 'satellizer', 'selectize', '
                 }
             })
 
-            .state('dashboard', {
+            .state('app', {
                 abstract: true,
+                templateUrl: 'views/app.html',
+                controller: function($scope) {
+                    $scope.nav = [
+                        { sref: 'dashboard', label: 'Dashboard' },
+                        { sref: 'profile',label: 'Profile' },
+                        { sref: 'logout', label: 'Logout' }
+                    ];
+                }
+            })
+
+            .state('app.dashboard', {
+                parent: 'app',
+                url: '/dashboard',
                 templateUrl: 'views/dashboard.html',
                 controller: 'DashboardController',
                 resolve: {
@@ -44,15 +57,15 @@ var app = angular.module('COMP3504', [ 'ui.router', 'satellizer', 'selectize', '
                 }
             })
 
-            .state('calendar', {
-                parent: 'dashboard',
-                url: '/dashboard',
+            .state('app.dashboard.schedule', {
+                parent: 'app.dashboard',
+                url: '',
                 templateUrl: 'views/schedule.html',
                 controller: 'ScheduleController'
             })
 
-            .state('profile', {
-                parent: 'dashboard',
+            .state('app.profile', {
+                parent: 'app',
                 url: '/profile',
                 templateUrl: 'views/profile.html',
                 controller: 'ProfileController'

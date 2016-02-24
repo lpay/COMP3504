@@ -4,6 +4,7 @@
  * API ENDPOINTS
  *
  * GET      /profile        get authenticated user's details
+ * PUT      /profile        set authenticated user's details
  *
  * GET      /users          get a list of users
  *

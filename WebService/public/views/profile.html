@@ -1,49 +1,51 @@
-<div class="row">
-    <div class="col-xs-12">
-        <h4>Edit Profile</h4>
-        <hr/>
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <h4>Edit Profile</h4>
+            <hr/>
+        </div>
     </div>
-</div>
-<div class="row">
-    <div class="col-xs-4 col-xs-offset-1">
-        <form submit="save()">
-            <div class="form-group">
-                <div class="col-xs-6">
-                    <label for="firstName" class="control-label">First Name:</label>
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                        <input type="text" id="firstName" ng-model="profile.name.first" class="form-control" placeholder="first name" required />
+    <div class="row">
+        <div class="col-xs-4">
+            <form submit="save()">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="firstName" class="control-label">Name:</label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                <input type="text" id="firstName" ng-model="profile.name.first" style="width: 45%" class="form-control" placeholder="first name" required />
+
+                                <input type="text" id="lastName" ng-model="profile.name.last" style="width: 55%" class="form-control" placeholder="last name" required />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email" class="control-label">Email Address</label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                <input id="email" type="email" ng-model="profile.email" class="form-control" placeholder="email address" required />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="password" class="control-label">Change Password</label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                                <input id="password" type="password" ng-model="profile.password" class="form-control" placeholder="change password" required />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm" class="control-label">Confirm Password</label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                                <input id="confirm" type="password" ng-model="profile.confirm" class="form-control" placeholder="change password" required />
+                            </div>
+                        </div>
+                        <div class="form-group text-right">
+                            <button type="submit" class="btn btn-success"><i class="fa fa-save">&nbsp;</i>Save</button>
+                        </div>
                     </div>
                 </div>
-                <div class="col-xs-6">
-                    <label for="firstName" class="control-label">Last Name:</label>
-                    <input type="text" id="lastName" ng-model="profile.name.last" class="form-control" placeholder="last name" required />
-                </div>
-            </div>
-            <div class="col-xs-12 form-group">
-                <label for="email" class="control-label">Email Address</label>
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                    <input id="email" type="email" ng-model="profile.email" class="form-control" placeholder="email address" required />
-                </div>
-            </div>
-            <div class="col-xs-12 form-group">
-                <label for="password" class="control-label">Change Password</label>
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="fa fa-lock"></i></span>
-                    <input id="password" type="password" ng-model="profile.password" class="form-control" placeholder="change password" required />
-                </div>
-            </div>
-            <div class="col-xs-12 form-group">
-                <label for="confirm" class="control-label">Confirm Password</label>
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="fa fa-lock"></i></span>
-                    <input id="confirm" type="password" ng-model="profile.confirm" class="form-control" placeholder="change password" required />
-                </div>
-            </div>
-            <div class="col-xs-12 form-group text-right">
-                <button type="submit" class="btn btn-success"><i class="fa fa-save">&nbsp;</i>Save</button>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 </div>
