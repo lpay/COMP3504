@@ -16,19 +16,37 @@ var groupSchema = new mongoose.Schema({
     postalCode: { type: String, required: true },
     phone: { type: String },
     email: { type: String },
-    admins: [{
-        type: ObjectId,
-        ref: 'users'
-    }],
-    users: [{
-        type: ObjectId,
-        ref: 'users'
-    }],
-    pending: [{
-        type: ObjectId,
-        ref: 'users'
-    }]
+    professionals: {
+        require_approval: { type: Boolean, default: true },
+        admins: [{
+            type: ObjectId,
+            ref: 'users'
+        }],
+        users: [{
+            type: ObjectId,
+            ref: 'users'
+        }],
+        pending: [{
+            type: ObjectId,
+            ref: 'users'
+        }]
+    },
+    clients: {
+        require_approval: { type: Boolean, default: false },
+        users: [{
+            type: ObjectId,
+            ref: 'users'
+        }],
+        pending: [{
+            type: ObjectId,
+            ref: 'users'
+        }]
+    }
 });
+
+groupSchema.methods.join = function(user, group) {
+
+};
 
 var Group = mongoose.model('Group', groupSchema);
 

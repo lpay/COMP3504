@@ -9,8 +9,8 @@
  * POST     /auth/google    validate google access token and generate json web token
  */
 
-var express = require('express');
-var request = require('request');
+var router = require('express').Router();
+var http = require('request-promise');
 var jwt = require('jsonwebtoken');
 var config = require('../config');
 var User = require('../models/user');
@@ -18,86 +18,34 @@ var User = require('../models/user');
 //
 // Routes
 //
-var router = express.Router();
 
-router.post('/auth/signup', function(req, res, next) {
+router.post('/auth/signup', function (req, res) {
 
-    console.log(req.body);
+    if (!req.body.email) return res.status(400).send({ message: 'email address is required' });
+    if (!req.body.password) return res.status(400).send({ message: 'password is required' });
+    if (!req.body.name) return res.status(400).send({ message: 'name is required' });
 
-    if (!req.body.email)
-        return res.status(400).send({ error: "UserBadRequest", message: "email address is required" });
-
-    // validate email format
-    var regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-    if (!regex.test(req.body.email))
-        return res.status(400).send({ error: "UserInvalidEmail", message: "invalid email address" });
-
-    // validate email uniqueness
-    User.findOne({ email: req.body.email }, 'email', function(err, existingUser) {
-
-        if (err)
-            return next(err);
-
-        if (existingUser)
-            return res.status(400).send({ error: "UserEmailExists", message: "email address exists" });
-
-        // if password is set, create the account, otherwise just perform email validation
-
-        if (!req.body.password)
-            return res.send({ message: "valid email" });
-
-        // create user
-        User.create({
-            email: req.body.email,
-            password: req.body.password
-        }, function(err, user) {
-
-            if (err)
-                return next(err);
-
-            user.generateToken(function(token) {
-                res.send({ token: token });
-            });
-        });
-    });
+    User.Create(req.body.email, req.body.password, req.body.name)
+        .then(user => user.generateToken())
+        .spread((user, token) => res.status(201).location('/users/' + user._id).send({ token: token }))
+        .catch(User.InvalidEmailError, (e) => res.status(401).send({ message: e.message }));
 });
 
-router.post('/auth/login', function(req, res, next) {
+router.post('/auth/login', function (req, res) {
 
-    if (!req.body.email)
-        return res.status(400).send({ message: 'email is required' });
+    if (!req.body.email) return res.status(400).send({message: 'email is required'});
+    if (!req.body.password) return res.status(400).send({message: 'password is required'});
 
-    if (!req.body.password)
-        return res.status(400).send({ message: 'password is required'});
-
-    User.findOne({ email: req.body.email }, '+password', function(err, user) {
-
-        if (err)
-            return next(err);
-
-        if (!user)
-            return res.status(401).send({ message: 'invalid email' });
-
-        user.validatePassword(req.body.password, function(err, isMatch) {
-
-            if (err)
-                return next(err);
-
-            if (!isMatch)
-                return res.status(401).send({ message: 'invalid password' });
-
-            user.generateToken(function(token) {
-                return res.send({ token: token });
-            });
-        });
-    });
-
+    User.Authenticate(req.body.email, req.body.password)
+        .then(user => user.generateToken())
+        .spread((user, token) => res.status(200).location('/profile').send({ token: token }))
+        .catch(User.AuthenticationError, (e) => res.status(401).send({ message: e.message }));
 });
 
-router.post('/auth/google', function(req, res, next) {
+router.post('/auth/google', function (req, res) {
     var accessTokenUrl = 'https://accounts.google.com/o/oauth2/token';
     var peopleApiUrl = 'https://www.googleapis.com/plus/v1/people/me/openIdConnect';
+
     var params = {
         code: req.body.code,
         client_id: req.body.clientId,
@@ -106,70 +54,29 @@ router.post('/auth/google', function(req, res, next) {
         grant_type: 'authorization_code'
     };
 
-    request.post(accessTokenUrl, { json: true, form: params }, function(err, response, token) {
-        var accessToken = token.access_token;
-        var headers = { Authorization: 'Bearer ' + accessToken };
-
-        request.get({ url: peopleApiUrl, headers: headers, json: true }, function(err, response, profile) {
+    http.post(accessTokenUrl, {json: true, form: params})
+        .then(token => http.get(peopleApiUrl, {headers: {Authorization: token.token_type + ' ' + token.access_token}, json: true}))
+        .then(profile => {
             if (profile.error)
-                return res.status(500).send({ message: profile.error.message });
+                throw profile.error;
 
-            if (req.headers.authorization) {
-                User.findOne({ google: profile.sub }, function(err, existingUser) {
-
-                    if (existingUser)
-                        return res.status(409).send({ message: 'google account exists' });
-
-                    var token = req.headers.authorization.split(' ')[1];
-                    var payload = jwt.decode(token, config.AUTH_SECRET);
-
-                    User.findById(payload.sub, function(err, user) {
-
-                        if (err)
-                            return next(err);
-
-                        if (!user)
-                            return res.status(400).send({ message: 'user not found' });
-
-                        user.google = profile.sub;
-                        user.name = user.name || profile.name;
-
-                        user.save(function(err) {
-
-                            if (err)
-                                return next(err);
-
-                            user.generateToken(function(token) {
-                                res.send({ token: token });
-                            });
-                        });
-                    });
-                });
-
-            } else {
-                User.findOne({ google: profile.sub }, function(err, existingUser) {
-
-                    if (existingUser) {
-                        existingUser.generateToken(function(token) {
-                            res.send({ token: token });
-                        });
-                    } else {
-                        User.create({
-                            email: profile.email,
-                            google: profile.sub
-                        }, function (err, user) {
-                            if (err)
-                                return next(err);
-
-                            user.generateToken(function (token) {
-                                res.send({token: token});
-                            });
-                        })
-                    }
-                });
-            }
+            return User.findOneAndUpdate(
+                {
+                    $or: [
+                        {email: profile.email},
+                        {google: profile.sub}
+                    ]
+                },
+                {
+                    email: profile.email,
+                    name: {first: profile.given_name, last: profile.family_name},
+                    google: profile.sub
+                },
+                {upsert: true}
+            );
         })
-    });
+        .then(user => user.generateToken())
+        .spread((user, token) => res.status(201).location('/users/' + user._id).send({token: token}));
 });
 
 module.exports = router;

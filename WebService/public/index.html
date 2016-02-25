@@ -7,19 +7,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Bootstrap -->
-    <link rel="stylesheet" href="libs/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
 
     <!-- Bootstrap Social -->
-    <link rel="stylesheet" href="libs/bootstrap-social/bootstrap-social.css" />
+    <link rel="stylesheet" href="bower_components/bootstrap-social/bootstrap-social.css" />
 
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="libs/font-awesome/css/font-awesome.css"/>
+    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css"/>
 
     <!-- Selectize -->
-    <link rel="stylesheet" href="libs/selectize/dist/css/selectize.css"/>
+    <link rel="stylesheet" href="bower_components/selectize/dist/css/selectize.css"/>
 
     <!-- FullCalendar -->
-    <link rel="stylesheet" href="libs/fullcalendar/dist/fullcalendar.css"/>
+    <link rel="stylesheet" href="bower_components/fullcalendar/dist/fullcalendar.css"/>
 
     <!-- Stylesheet -->
     <link rel="stylesheet" href="assets/css/style.css"/>
@@ -32,26 +32,28 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Base64/0.3.0/base64.min.js"></script>
     <![endif]-->
 
-    <script src="libs/jquery/dist/jquery.js"></script>
-    <script src="libs/jquery-ui/jquery-ui.js"></script>
-    <script src="libs/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="libs/angular/angular.js"></script>
-    <script src="libs/angular-messages/angular-messages.js"></script>
-    <script src="libs/angular-ui-router/release/angular-ui-router.js"></script>
-    <script src="libs/satellizer/satellizer.js"></script>
-    <script src="libs/selectize/dist/js/standalone/selectize.js"></script>
-    <script src="libs/angular-selectize2/dist/angular-selectize.js"></script>
-
-    <script src="libs/moment/moment.js"></script>
-    <script src="libs/fullcalendar/dist/fullcalendar.js"></script>
-    <script src="libs/angular-ui-calendar-kruczjak/src/calendar.js"></script>
-
-    <script src="app/app.js"></script>
-    <script src="app/auth/auth.js"></script>
-    <script src="app/auth/join.js"></script>
-    <script src="app/dashboard/dashboard.js"></script>
-
 </head>
-<body ui-view>
+<body>
+    <div ui-view></div>
+
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/jquery-ui/jquery-ui.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+    <script src="bower_components/satellizer/satellizer.js"></script>
+    <script src="bower_components/selectize/dist/js/standalone/selectize.js"></script>
+    <script src="bower_components/angular-selectize2/dist/angular-selectize.js"></script>
+    <script src="bower_components/moment/moment.js"></script>
+    <script src="bower_components/fullcalendar/dist/fullcalendar.js"></script>
+    <script src="bower_components/angular-ui-calendar-kruczjak/src/calendar.js"></script>
+
+    <script src="app.js"></script>
+    <script src="services/service.js"></script>
+    <script src="controllers/auth.js"></script>
+    <script src="controllers/join.js"></script>
+    <script src="controllers/dashboard.js"></script>
+    <script src="controllers/profile.js"></script>
+    <script src="controllers/schedule.js"></script>
 </body>
 </html>

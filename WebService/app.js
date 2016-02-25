@@ -13,14 +13,16 @@ var morgan = require('morgan');
 var favicon = require('serve-favicon');
 var bodyParser = require('body-parser');
 var crypto = require('crypto');
+var cors = require('cors');
 
 //var cookieParser = require('cookie-parser');
 
 //
-// Connect to MongoDB
+// MongoDB
 //
 
 mongoose.connect('mongodb://localhost/comp3504');
+mongoose.Promise = require('bluebird');
 
 //
 // Express
@@ -40,20 +42,14 @@ app.use(bodyParser.json());
 // accept application/x-www-form-urlencoded in requests
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// enable cors
+app.use(cors());
+
 //
-// API Stubs
+// Load API
 //
 
-app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-    next();
-});
-
-// TODO: perhaps there is a more modular way to do this (load the entire api with one call?)
-app.use('/', require('./api/auth'));
-app.use('/', require('./api/group'));
-app.use('/', require('./api/user'));
+app.use('/', require('./api'));
 
 //
 // Angular Application
@@ -63,36 +59,8 @@ app.use('/', require('./api/user'));
 app.use(express.static('public'));
 
 // default route handler (angular application)
-app.get('/', function(request, response) {
-    response.sendFile('./public/index.html');
+app.get('/', function(req, res) {
+    res.sendFile('./public/index.html');
 });
-
-//
-// Error Handlers
-//
-
-// catch 404 and forward to error handler
-/*
-app.use(function(request, response, next) {
-  var err = new Error('not found');
-  err.status = 404;
-  next(err);
-});
-
-
-// development error handler
-if (app.get('env') === 'development') {
-  app.use(function(err, req, res) {
-      res.status(err.status || 500).json({ error: err, message: err.message });
-  });
-}
-
-// production error handler
-app.use(function(err, req, res) {
-  res.status(err.status || 500).json({ error: {}, message: err.message });
-});
-
-*/
-
 
 module.exports = app;
