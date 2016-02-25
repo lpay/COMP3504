@@ -3,7 +3,68 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-var app = angular.module('Client', ['ionic'])
+var app = angular.module('Client', ['ionic', 'satellizer'])
+
+  .config(function ($stateProvider, $urlRouterProvider) {
+
+    $urlRouterProvider.otherwise('/');
+
+    $stateProvider
+
+      .state('login', {
+        url: '/login',
+        templateUrl: 'Signup.html',
+        controller: 'LoginController'
+      })
+
+      .state('home', {
+        url: '/',
+        templateUrl: 'Home.html',
+        controller: 'HomeController',
+        resolve: {
+          loginRequired: loginRequired
+        }
+      });
+
+
+    function loginRequired($q, $location, $auth) {
+      var deferred = $q.defer();
+
+      if ($auth.isAuthenticated()) {
+        deferred.resolve();
+      } else {
+        $stateProvider.go('login');
+      }
+
+      return deferred.promise;
+    }
+
+  })
+  .config(function($authProvider) {
+    var commonConfig = {
+      popupOptions: {
+        location: 'no',
+        toolbar: 'yes',
+        width: window.screen.width,
+        height: window.screen.height
+      }
+    };
+
+    if (ionic.Platform.isIOS() || ionic.Platform.isAndroid()) {
+      commonConfig.redirectUri = 'http://localhost:3504/';
+    }
+
+    $authProvider.loginUrl = 'http://localhost:3504/auth/login';
+
+    //$authProvider.locan(angular.extend({}, commonConfig, {
+    //  url: 'http://localhost:3504/auth/login'
+    //}));
+
+    $authProvider.google(angular.extend({}, commonConfig, {
+      clientId: '603122136500203',
+      url: 'http://localhost:3504/auth/google'
+    }));
+  })
 
 .run(function($ionicPlatform) {
 
