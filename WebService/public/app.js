@@ -37,12 +37,26 @@ var app = angular.module('COMP3504', [ 'ui.router', 'satellizer', 'selectize', '
             .state('app', {
                 abstract: true,
                 templateUrl: 'views/app.html',
-                controller: function($scope) {
+                controller: function($scope, $http) {
                     $scope.nav = [
                         { sref: 'dashboard', label: 'Dashboard' },
                         { sref: 'profile',label: 'Profile' },
                         { sref: 'logout', label: 'Logout' }
                     ];
+
+                    $http.get('/groups').success(function(groups){
+                        $scope.groups = groups;
+                    });
+
+                    $scope.changeGroup = function(id){
+                        console.log($(this).data('id'));
+
+                        $http.get('/groups/' + encodeURIComponent(id))
+                            .success(function(group) {
+                            //    loop through admins and users here
+                            //    then add to panel after
+                            });
+                    }
                 }
             })
 

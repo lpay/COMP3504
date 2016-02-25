@@ -30,6 +30,11 @@ router.get('/groups', ensureAuthenticated, function(req, res) {
         .then(groups => res.send(groups));
 });
 
+router.get('/groups/:id', ensureAuthenticated, function(req, res){
+    Group.findById(req.params.id)
+        .then(group => res.send(group));
+});
+
 router.post('/groups', ensureAuthenticated, function (req, res, next) {
 
     // validate request
