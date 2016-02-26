@@ -2,19 +2,19 @@
   <ion-header-bar class="bar-stable">
     <h1 class="title">Schedule-Up</h1>
   </ion-header-bar>
-  <ion-content>
+  <ion-content ng-controller="HomeController">
     <br/>
-    <form name="search" >
+    <form >
     <!--search bar-->
-      <input type="text" placeholder="Search" ng-model="$parent.search"/>
-      <button type="submit">Search</button><br/>
+      <input type="text" placeholder="Search" ng-model="$parent.user.searchBar"/>
+      <button type="submit" ng-click="searchBar()">Search</button><br/>
 
       <!--search by *** buttons-->
       <button type="submit">Search by Chiropractor</button><br/>
       <button type="submit">Search by Clinic</button><br/>
       <button type="submit">Search by Location</button><br/>
 
-
+      <button type="submit" ng-click="logout()">Logout</button><br/>
     </form>
   </ion-content>
 </ion-pane>
