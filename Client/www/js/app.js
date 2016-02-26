@@ -7,23 +7,27 @@ var app = angular.module('Client', ['ionic', 'satellizer'])
 
   .config(function ($stateProvider, $urlRouterProvider) {
 
-    $urlRouterProvider.otherwise('/');
-
     $stateProvider
 
       .state('login', {
         url: '/login',
-        templateUrl: 'Signup.html',
+        templateUrl: 'Login.html',
         controller: 'LoginController'
       })
 
+      .state('signup', {
+        url: '/signup',
+        templateUrl: 'Signup.html',
+        controller: 'SignupController'
+      })
+
       .state('home', {
-        url: '/',
-        templateUrl: 'Home.html',
-        controller: 'HomeController',
-        resolve: {
-          loginRequired: loginRequired
-        }
+          url: '/',
+          templateUrl: 'Home.html',
+          controller: 'HomeController',
+          resolve: {
+            loginRequired: loginRequired
+          }
       });
 
 
@@ -33,13 +37,18 @@ var app = angular.module('Client', ['ionic', 'satellizer'])
       if ($auth.isAuthenticated()) {
         deferred.resolve();
       } else {
-        $stateProvider.go('login');
+        $location.path('/login');
+        //$stateProvider.go('login');
       }
 
       return deferred.promise;
     }
 
+    $urlRouterProvider.otherwise('/');
+
   })
+
+
   .config(function($authProvider) {
     var commonConfig = {
       popupOptions: {
@@ -84,4 +93,4 @@ var app = angular.module('Client', ['ionic', 'satellizer'])
       StatusBar.styleDefault();
     }
   });
-})
+});
