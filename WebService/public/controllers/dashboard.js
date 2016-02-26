@@ -3,6 +3,7 @@
  *
  */
 
-app.controller('DashboardController', function($scope) {
+app.controller('DashboardController', function($scope, $stateParams) {
 
+    $scope.group = $stateParams.group;
 });

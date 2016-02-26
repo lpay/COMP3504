@@ -17,17 +17,13 @@
                 <div class="col-md-8">
                     <div id="menu" class="collapse navbar-collapse navbar-right">
                         <ul class="nav navbar-nav">
-                            <!--dropdown list for groups in navbar
-                            possible bootstrap dropdown buttons that will be better-->
                             <li role="presentation" class="dropdown">
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                                    Groups <span class="caret"></span>
-                                </a>
+                                <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dashboard <span class="caret"></span></a>
                                 <ul ng-repeat="group in groups" class="dropdown-menu">
-                                    <li data-id="{{group.id}}" ng-click="changeGroup()"><a href="#">{{group.name}}</a></li>
+                                    <li><a ui-sref=".dashboard.group({group: group})">{{group.name}}</a></li>
                                 </ul>
                             </li>
-                            <li ng-repeat="n in nav" ng-class="{ active: $state.includes('{{n.sref}}') }">
+                            <li role="presentation" ng-repeat="n in nav" ng-class="{ active: $state.includes('{{n.sref}}') }">
                                 <a ui-sref="{{n.sref}}">{{n.label}}</a>
                             </li>
                         </ul>
@@ -36,7 +32,6 @@
             </div>
         </div>
     </nav>
-
 </header>
 
 <main ui-view>
