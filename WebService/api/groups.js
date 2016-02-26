@@ -16,7 +16,9 @@
  *
  */
 var router = require('express').Router();
-var Group = require('../models/group.js');
+var User = require('../models/user');
+var Group = require('../models/group');
+
 var ensureAuthenticated = require('../middleware/ensureAuthenticated');
 
 router.get('/groups', ensureAuthenticated, function(req, res) {
@@ -26,7 +28,7 @@ router.get('/groups', ensureAuthenticated, function(req, res) {
                 { 'professionals.admins': req.user },
                 { 'professionals.users': req.user }
             ]
-        })
+        }).populate('professionals.admins')
         .then(groups => res.send(groups));
 });
 
@@ -61,11 +63,12 @@ router.get('/groups/:id', ensureAuthenticated, function (req, res) {
 
     if (!req.params.id) return res.status(400).send({message: 'group id required'});
 
-    Group.findById(req.params.id)
+    Group.findById(req.params.id).populate('professionals.admins')
         .then(group => {
             if (!group)
                 throw new Error('group not found');
 
+            console.log(group);
             res.send(group);
         })
         .catch(Error, e => res.status(404).send({message: e.message}));

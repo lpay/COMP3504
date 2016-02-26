@@ -20,26 +20,26 @@ var groupSchema = new mongoose.Schema({
         require_approval: { type: Boolean, default: false },
         admins: [{
             type: ObjectId,
-            ref: 'users'
+            ref: 'User'
         }],
         users: [{
             type: ObjectId,
-            ref: 'users'
+            ref: 'User'
         }],
         pending: [{
             type: ObjectId,
-            ref: 'users'
+            ref: 'User'
         }]
     },
     clients: {
         require_approval: { type: Boolean, default: false },
         users: [{
             type: ObjectId,
-            ref: 'users'
+            ref: 'User'
         }],
         pending: [{
             type: ObjectId,
-            ref: 'users'
+            ref: 'User'
         }]
     }
 });
