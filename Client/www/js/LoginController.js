@@ -31,4 +31,9 @@ app.controller('LoginController', function($scope, $http, $auth, $location) {
       });
   };
 
+  $scope.goToSignup = function(){
+    $location.path("/signup");
+    console.log("Redirect Success!");
+  }
+
 });

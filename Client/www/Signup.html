@@ -5,11 +5,11 @@
   <ion-content ng-controller="SignupController">
     <br/>
     <form>
-      <input type="text" placeholder="First Name" ng-model="$parent.user.firstName" />
-      <input type="text" placeholder="Last Name" ng-model="$parent.user.lastName" />
-      <input type="text" placeholder="Email" ng-model="$parent.user.email"/><br/>
-      <input type="password" placeholder="Password" ng-model="$parent.user.password"/>
-      <input type="password" placeholder="Confirm Password" ng-model="$parent.user.password2"/>
+      <input type="text" placeholder="First Name" ng-model="$parent.register.name.first" />
+      <input type="text" placeholder="Last Name" ng-model="$parent.register.name.last" />
+      <input type="email" placeholder="Email" ng-model="$parent.register.email"/>
+      <input type="password" placeholder="Password" ng-model="$parent.register.password"/>
+      <input type="password" placeholder="Confirm Password" ng-model="$parent.register.confirm"/>
       <button type="submit" ng-click="signup()">Register</button><br/>
     </form>
   </ion-content>

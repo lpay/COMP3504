@@ -64,6 +64,7 @@ var app = angular.module('Client', ['ionic', 'satellizer'])
     }
 
     $authProvider.loginUrl = 'http://localhost:3504/auth/login';
+    $authProvider.signupUrl = 'http://localhost:3504/auth/signup';
 
     //$authProvider.locan(angular.extend({}, commonConfig, {
     //  url: 'http://localhost:3504/auth/login'
