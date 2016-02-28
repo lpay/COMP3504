@@ -37,35 +37,52 @@ var app = angular.module('COMP3504', [ 'ui.router', 'satellizer', 'selectize', '
             .state('app', {
                 abstract: true,
                 templateUrl: 'views/app.html',
-                controller: function($scope) {
+                controller: function($scope, $http) {
                     $scope.nav = [
-                        { sref: 'dashboard', label: 'Dashboard' },
-                        { sref: 'profile',label: 'Profile' },
+                        { sref: 'app.profile',label: 'Profile' },
                         { sref: 'logout', label: 'Logout' }
                     ];
+
+                    $http.get('/groups')
+                        .success(function(groups){
+                            $scope.groups = groups;
+                        });
+
+                    $scope.changeGroup = function(group){
+                        $scope.group = group;
+
+                        $scope.$apply();
+                    }
                 }
             })
 
             .state('app.dashboard', {
-                parent: 'app',
+                abstract: true,
                 url: '/dashboard',
                 templateUrl: 'views/dashboard.html',
                 controller: 'DashboardController',
+                params: { group: {} },
                 resolve: {
                     loginRequired: loginRequired,
                     groupRequired: groupRequired
                 }
             })
 
-            .state('app.dashboard.schedule', {
-                parent: 'app.dashboard',
+            .state('app.dashboard.group', {
                 url: '',
+                templateUrl: 'views/group.html',
+                controller: function($scope) {
+
+                }
+            })
+
+            .state('app.dashboard.schedule', {
+                url: '/schedule',
                 templateUrl: 'views/schedule.html',
                 controller: 'ScheduleController'
             })
 
             .state('app.profile', {
-                parent: 'app',
                 url: '/profile',
                 templateUrl: 'views/profile.html',
                 controller: 'ProfileController'

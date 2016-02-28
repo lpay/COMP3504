@@ -2,15 +2,15 @@
   <ion-header-bar class="bar-stable">
     <h1 class="title">Schedule-Up</h1>
   </ion-header-bar>
-  <ion-content>
+  <ion-content ng-controller="SignupController">
     <br/>
-    <form ng-submit="login()">
-      <input type="text" placeholder="Email" ng-model="$parent.user.email"/>
-      <input type="password" placeholder="Password" ng-model="$parent.user.password"/>
-      <button type="submit">Login</button><br/>
-      <!--<a href="Home.html" class="button button-full button-calm" type="submit">Login</a><br/>-->
+    <form>
+      <input type="text" placeholder="First Name" ng-model="$parent.register.name.first" />
+      <input type="text" placeholder="Last Name" ng-model="$parent.register.name.last" />
+      <input type="email" placeholder="Email" ng-model="$parent.register.email"/>
+      <input type="password" placeholder="Password" ng-model="$parent.register.password"/>
+      <input type="password" placeholder="Confirm Password" ng-model="$parent.register.confirm"/>
+      <button type="submit" ng-click="signup()">Register</button><br/>
     </form>
-    or<br/>
-    <a href="Signup.html">Create an Account</a>
   </ion-content>
 </ion-pane>

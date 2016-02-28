@@ -2,7 +2,8 @@
  * Created by Liddy on 10-Feb-2016.
  */
 
-app.controller('LoginController', function($scope, $http, $auth) {
+
+app.controller('LoginController', function($scope, $http, $auth, $location) {
 /*
   $scope.signin = function() {
 
@@ -21,11 +22,18 @@ app.controller('LoginController', function($scope, $http, $auth) {
   $scope.login = function() {
     $auth.login($scope.user)
       .then(function () {
-        $location.path('/dashboard');
+         $location.path("/dashboard");
+        console.log("Login Success!");
       })
       .catch(function (res) {
-        $("#login").effect('shake');
+        //PROBLEM HERE IS THE $
+        //$("#login").effect('shake');
       });
   };
+
+  $scope.goToSignup = function(){
+    $location.path("/signup");
+    console.log("Redirect Success!");
+  }
 
 });

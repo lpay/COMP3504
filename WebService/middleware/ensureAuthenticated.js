@@ -29,7 +29,7 @@ module.exports = function(req, res, next) {
     User.findById(payload.sub, 'email')
         .then(user => {
             if (!user)
-                res.status(401).send({ message: 'user not found' });
+                return res.status(401).send({ message: 'user not found' });
 
             req.user = user;
 

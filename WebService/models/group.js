@@ -17,29 +17,29 @@ var groupSchema = new mongoose.Schema({
     phone: { type: String },
     email: { type: String },
     professionals: {
-        require_approval: { type: Boolean, default: true },
+        require_approval: { type: Boolean, default: false },
         admins: [{
             type: ObjectId,
-            ref: 'users'
+            ref: 'User'
         }],
         users: [{
             type: ObjectId,
-            ref: 'users'
+            ref: 'User'
         }],
         pending: [{
             type: ObjectId,
-            ref: 'users'
+            ref: 'User'
         }]
     },
     clients: {
         require_approval: { type: Boolean, default: false },
         users: [{
             type: ObjectId,
-            ref: 'users'
+            ref: 'User'
         }],
         pending: [{
             type: ObjectId,
-            ref: 'users'
+            ref: 'User'
         }]
     }
 });
