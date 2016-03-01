@@ -7,16 +7,16 @@
  * GET      /groups                     get a list of groups the authenticated user belongs to
  * POST     /groups                     create a new group
  *
- * GET      /groups/:id                 get a group
- * PUT      /groups/:id                 update a group
- * DELETE   /groups/:id                 delete a group
+ * GET      /groups/:slug               get a group
+ * PUT      /groups/:slug               update a group
+ * DELETE   /groups/:slug               delete a group
  *
  * POST     /groups/join                joins the authenticated user to a group
  * GET      /groups/search/:search      retrieve a list of groups matching :search
  *
  */
 var router = require('express').Router();
-var User = require('../models/user');
+var slugify = require('slug');
 var Group = require('../models/group');
 
 var ensureAuthenticated = require('../middleware/ensureAuthenticated');
@@ -28,11 +28,14 @@ router.get('/groups', ensureAuthenticated, function(req, res) {
                 { 'professionals.admins': req.user },
                 { 'professionals.users': req.user }
             ]
-        }).populate('professionals.admins')
+        })
+        .populate('professionals.admins')
+        .populate('professionals.users')
+        .populate('professionals.pending')
         .then(groups => res.send(groups));
 });
 
-router.post('/groups', ensureAuthenticated, function (req, res, next) {
+router.post('/groups', ensureAuthenticated, function (req, res) {
 
     // validate request
     if (!req.body.name) return res.status(400).send({message: "name is required"});
@@ -41,12 +44,21 @@ router.post('/groups', ensureAuthenticated, function (req, res, next) {
     if (!req.body.province) return res.status(400).send({message: "province is required"});
     if (!req.body.postalCode) return res.status(400).send({message: "postalCode is required"});
 
-    Group.findOne({name: {$regex: new RegExp(req.body.name, "i")}})
+    var slug = slugify(req.body.name, { lower: true });
+
+    Group.findOne(
+        {
+            $or: [
+                {name: {$regex: new RegExp(req.body.name, "i")}},
+                {slug: slug}
+            ]
+        })
         .then(existingGroup => {
             if (existingGroup)
                 throw new Error("group exists");
 
             return Group.create({
+                slug: slug,
                 name: req.body.name,
                 address: req.body.address,
                 city: req.body.city,
@@ -55,15 +67,16 @@ router.post('/groups', ensureAuthenticated, function (req, res, next) {
                 professionals: {admins: [req.user]}
             });
         })
-        .then(group => res.status(201).location('/groups/' + group._id).send())
+        .then(group => res.status(201).location('/groups/' + group.slug).send())
         .catch(Error, e => res.status(400).send({message: e.message}));
 });
 
-router.get('/groups/:id', ensureAuthenticated, function (req, res) {
+router.get('/groups/:slug', ensureAuthenticated, function (req, res) {
 
-    if (!req.params.id) return res.status(400).send({message: 'group id required'});
+    if (!req.params.slug) return res.status(400).send({message: 'group slug required'});
 
-    Group.findById(req.params.id).populate('professionals.admins')
+    Group.findOne({ slug: req.params.slug })
+        .populate('professionals.admins')
         .then(group => {
             if (!group)
                 throw new Error('group not found');
@@ -74,12 +87,12 @@ router.get('/groups/:id', ensureAuthenticated, function (req, res) {
         .catch(Error, e => res.status(404).send({message: e.message}));
 });
 
-router.put('/groups/:id', ensureAuthenticated, function(req, res) {
+router.put('/groups/:slug', ensureAuthenticated, function(req, res) {
     // not implemented
     res.status(501);
 });
 
-router.delete('/groups/:id', ensureAuthenticated, function(req, res) {
+router.delete('/groups/:slug', ensureAuthenticated, function(req, res) {
     // not implemented
     res.status(501);
 });

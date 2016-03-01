@@ -2,14 +2,13 @@
  * Created by mark on 2/19/16.
  */
 
-app.controller('ScheduleController', function($scope, $compile) {
+app.controller('CalendarController', function($scope, $compile) {
+
 
     var date = new Date();
     var d = date.getDate();
     var m = date.getMonth();
     var y = date.getFullYear();
-
-    $scope.changeTo = 'Hungarian';
 
     /* event source that pulls from google.com */
     $scope.eventSource = {
@@ -126,20 +125,28 @@ app.controller('ScheduleController', function($scope, $compile) {
             eventRender: $scope.eventRender
         }
     };
+    /* event sources array*/
+    //$scope.eventSources = [$scope.events, $scope.eventsF];
+    //$scope.eventSources2 = [$scope.calEventsExt, $scope.eventsF, $scope.events];
 
-    $scope.changeLang = function() {
-        if($scope.changeTo === 'Hungarian'){
-            $scope.uiConfig.calendar.dayNames = ["Vasárnap", "Hétfő", "Kedd", "Szerda", "Csütörtök", "Péntek", "Szombat"];
-            $scope.uiConfig.calendar.dayNamesShort = ["Vas", "Hét", "Kedd", "Sze", "Csüt", "Pén", "Szo"];
-            $scope.changeTo= 'English';
-        } else {
-            $scope.uiConfig.calendar.dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-            $scope.uiConfig.calendar.dayNamesShort = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-            $scope.changeTo = 'Hungarian';
-        }
+
+
+    //$scope.group = {};
+    //$scope.user = {};
+    $scope.events = [$scope.events, $scope.eventsF];
+
+    $scope.select = function(start, end) {
+        console.log($scope.group, $scope.user, start, end);
     };
 
-    /* event sources array*/
-    $scope.eventSources = [$scope.events, $scope.eventsF];
-    //$scope.eventSources2 = [$scope.calEventsExt, $scope.eventsF, $scope.events];
+    $scope.calendar =  {
+        editable: true,
+        header: {
+            left: 'month agendaWeek agendaDay',
+            center: 'title',
+            right: 'today prev,next'
+        },
+        selectable: true,
+        select: $scope.select
+    };
 });

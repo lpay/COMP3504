@@ -4,6 +4,6 @@
  */
 
 app.controller('DashboardController', function($scope, $stateParams) {
-
+    $scope.user = {'name': 'test'};
     $scope.group = $stateParams.group;
 });

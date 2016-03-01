@@ -72,7 +72,7 @@ router.post('/auth/google', function (req, res) {
                     name: {first: profile.given_name, last: profile.family_name},
                     google: profile.sub
                 },
-                {upsert: true}
+                {upsert: true, new: true}
             );
         })
         .then(user => user.generateToken())

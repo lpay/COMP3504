@@ -16,6 +16,7 @@ var userSchema =  new mongoose.Schema({
     password: { type: String, select: false },
     name: {
         type: {
+            title: String,
             first: String,
             last: String
         },

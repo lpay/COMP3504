@@ -28,61 +28,58 @@ var app = angular.module('COMP3504', [ 'ui.router', 'satellizer', 'selectize', '
             .state('join', {
                 url: '/join',
                 templateUrl: 'views/join.html',
-                controller: 'GroupController',
+                controller: 'JoinController',
                 resolve: {
                     loginRequired: loginRequired
                 }
             })
 
-            .state('app', {
-                abstract: true,
-                templateUrl: 'views/app.html',
-                controller: function($scope, $http) {
-                    $scope.nav = [
-                        { sref: 'app.profile',label: 'Profile' },
-                        { sref: 'logout', label: 'Logout' }
-                    ];
-
-                    $http.get('/groups')
-                        .success(function(groups){
-                            $scope.groups = groups;
-                        });
-
-                    $scope.changeGroup = function(group){
-                        $scope.group = group;
-
-                        $scope.$apply();
-                    }
-                }
-            })
-
-            .state('app.dashboard', {
-                abstract: true,
+            .state('dashboard', {
                 url: '/dashboard',
                 templateUrl: 'views/dashboard.html',
-                controller: 'DashboardController',
-                params: { group: {} },
                 resolve: {
                     loginRequired: loginRequired,
-                    groupRequired: groupRequired
+                    groups: function($state, $http, $q) {
+                        var deferred = $q.defer();
+
+                        $http.get('/groups')
+                            .success(function(groups) {
+                                if (groups.length)
+                                    deferred.resolve(groups);
+                                else
+                                    $state.go('join');
+                            })
+                            .error(function() {
+                                deferred.reject();
+                            });
+
+                        return deferred.promise;
+                    }
+                },
+                params: { group: undefined },
+                controller: function($state, $stateParams, $scope, groups) {
+                    $scope.groups = groups;
+                    $scope.group = $stateParams.group || groups[0];
+
+                    $state.go('dashboard.scheduler');
                 }
             })
 
-            .state('app.dashboard.group', {
-                url: '',
-                templateUrl: 'views/group.html',
+            .state('dashboard.scheduler', {
+                url: '/scheduler',
+                templateUrl: 'views/scheduler.html',
+                controller: 'SchedulerController'
+            })
+
+            .state('dashboard.settings', {
+                url: '/settings',
+                templateUrl: 'views/settings.html',
                 controller: function($scope) {
 
                 }
             })
 
-            .state('app.dashboard.schedule', {
-                url: '/schedule',
-                templateUrl: 'views/schedule.html',
-                controller: 'ScheduleController'
-            })
-
-            .state('app.profile', {
+            .state('dashboard.profile', {
                 url: '/profile',
                 templateUrl: 'views/profile.html',
                 controller: 'ProfileController'
@@ -112,24 +109,6 @@ var app = angular.module('COMP3504', [ 'ui.router', 'satellizer', 'selectize', '
             } else {
                 $location.path('/login');
             }
-
-            return deferred.promise;
-        }
-
-        function groupRequired($q, $http, $location) {
-            var deferred = $q.defer();
-
-            $http.get('/groups')
-                .success(function(groups) {
-                    if (groups.length) {
-                        deferred.resolve();
-                    } else {
-                        $location.path('/join');
-                    }
-                })
-                .error(function() {
-                    deferred.reject();
-                });
 
             return deferred.promise;
         }
