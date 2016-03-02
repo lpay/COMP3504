@@ -10,7 +10,7 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-                        <a class="navbar-brand" ui-sref="dashboard({group: group})" ui-sref-opts="{reload: true}">Schedule-Up</a>
+                        <a class="navbar-brand" ui-sref="dashboard.scheduler({group: group})" ui-sref-opts="{reload: true}">Schedule-Up</a>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -18,7 +18,7 @@
                         <li role="presentation" class="dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{group.name}} <span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li ng-repeat="g in groups"><a ui-sref="dashboard({group: g})" ui-sref-opts="{reload: true}">{{g.name}}</a></li>
+                                <li ng-repeat="g in groups"><a ui-sref="dashboard.scheduler({group: g})" ui-sref-opts="{reload: true}">{{g.name}}</a></li>
                                 <li role="separator" class="divider"></li>
                                 <li role="presentation"><a ui-sref="join">Join Group!</a></li>
                             </ul>

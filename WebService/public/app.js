@@ -2,11 +2,11 @@
  * Created by mark on 1/14/16.
  */
 
-var app = angular.module('COMP3504', [ 'ui.router', 'satellizer', 'selectize', 'ui.calendar' ])
+var app = angular.module('COMP3504', [ 'ui.router', 'satellizer', 'selectize', 'ui.bootstrap', 'ui.calendar' ])
 
     .config(function($authProvider, $stateProvider, $urlRouterProvider) {
 
-        $urlRouterProvider.otherwise('/dashboard');
+        $urlRouterProvider.otherwise('/dashboard/scheduler');
 
         $stateProvider
 
@@ -35,6 +35,7 @@ var app = angular.module('COMP3504', [ 'ui.router', 'satellizer', 'selectize', '
             })
 
             .state('dashboard', {
+                abstract: true,
                 url: '/dashboard',
                 templateUrl: 'views/dashboard.html',
                 resolve: {
@@ -61,7 +62,7 @@ var app = angular.module('COMP3504', [ 'ui.router', 'satellizer', 'selectize', '
                     $scope.groups = groups;
                     $scope.group = $stateParams.group || groups[0];
 
-                    $state.go('dashboard.scheduler');
+                    //$state.go('dashboard.scheduler');
                 }
             })
 

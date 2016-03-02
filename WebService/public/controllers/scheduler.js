@@ -5,28 +5,11 @@
 app
 
     .controller('SchedulerController', function($scope) {
+        $scope.index = 0;
 
-        $scope.uiConfig = {
-            calendar: {
-                editable: true,
-                header: {
-                    left: 'month agendaWeek agendaDay',
-                    center: 'title',
-                    right: 'today prev,next'
-                },
-                selectable: true,
-                select: function(start, end) {
-
-                }
-            }
-        };
-
-        $scope.eventSources = [];
-
-        $scope.initialize = function() {
-        };
-
-
+        $scope.$on('OnCalendarChanged', function(event, index) {
+            //console.log(index);
+        });
     })
 
     .directive('coverflow', function($timeout) {
@@ -34,12 +17,17 @@ app
             restrict: 'A',
             link: function(scope, element) {
                 $timeout(function() {
+
                     element.coverflow({
                         easing: 'swing',
                         duration: 'slow',
                         visible: 'density',
+                        index: scope.index || 0,
                         selectedCss: {opacity: 1},
-                        outerCss: {opacity: 0.1},
+                        outerCss: {opacity: 0.33},
+                        select: function(event, element, index) {
+                            scope.$emit('OnCalendarChanged', index);
+                        }
                     });
                 }, 0, false);
             }
