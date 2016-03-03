@@ -75,8 +75,40 @@ var app = angular.module('COMP3504', [ 'ui.router', 'satellizer', 'selectize', '
             .state('dashboard.settings', {
                 url: '/settings',
                 templateUrl: 'views/settings.html',
-                controller: function($scope) {
+                controller: function($scope, $http) {
 
+                    $scope.Sunday = false;
+                    $scope.Monday = true;
+                    $scope.Tuesday = true;
+                    $scope.Wednesday = true;
+                    $scope.Thursday = true;
+                    $scope.Friday = true;
+                    $scope.Saturday = false;
+
+                    $scope.save = function(){
+                        $scope.daysInAWeek = [];
+
+                        if ($scope.Sunday)
+                            $scope.daysInAWeek.push( { day: "Sunday" } );
+                        if ($scope.Monday)
+                            $scope.daysInAWeek.push( { day: "Monday" } );
+                        if ($scope.Tuesday)
+                            $scope.daysInAWeek.push( { day: "Tuesday" } );
+                        if ($scope.Wednesday)
+                            $scope.daysInAWeek.push( { day: "Wednesday" } );
+                        if ($scope.Thursday)
+                            $scope.daysInAWeek.push( { day: "Thursday" } );
+                        if ($scope.Friday)
+                            $scope.daysInAWeek.push( { day: "Friday" } );
+                        if ($scope.Saturday)
+                            $scope.daysInAWeek.push( { day: "Saturday" } );
+
+                        //[$scope.Sunday,$scope.Monday,$scope.Tuesday,$scope.Wednesday,
+                          //                    $scope.Thursday,$scope.Friday,$scope.Saturday];
+
+                        $http.put('/groups/' + encodeURIComponent($scope.group.slug), {hoursOfOperation: $scope.daysInAWeek} );
+                        console.log($scope.daysInAWeek);
+                    };
                 }
             })
 

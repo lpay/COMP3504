@@ -17,6 +17,11 @@ var groupSchema = new mongoose.Schema({
     postalCode: { type: String, required: true },
     phone: { type: String },
     email: { type: String },
+    hoursOfOperation: [{
+        day: { type: String, enum: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'] },
+        startTime: Date,
+        endTime: Date
+    }],
     professionals: {
         require_approval: { type: Boolean, default: false },
         admins: [{

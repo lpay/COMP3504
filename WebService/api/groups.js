@@ -88,8 +88,16 @@ router.get('/groups/:slug', ensureAuthenticated, function (req, res) {
 });
 
 router.put('/groups/:slug', ensureAuthenticated, function(req, res) {
-    // not implemented
-    res.status(501);
+
+    Group.findOneAndUpdate( { slug: req.params.slug }, {
+        hoursOfOperation: req.body.hoursOfOperation
+    })
+        .then(function(){
+            res.send();
+        })
+        .catch(function(){
+            res.status(500).send();
+        });
 });
 
 router.delete('/groups/:slug', ensureAuthenticated, function(req, res) {
