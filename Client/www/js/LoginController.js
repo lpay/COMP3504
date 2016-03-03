@@ -2,7 +2,6 @@
  * Created by Liddy on 10-Feb-2016.
  */
 
-
 app.controller('LoginController', function($scope, $http, $auth, $location) {
 /*
   $scope.signin = function() {
