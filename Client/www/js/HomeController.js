@@ -1,12 +1,21 @@
 /**
- * Created by Liddy on 19-Feb-2016.
+ * Created by Johnny Admin on 2/29/2016.
  */
 
 app.controller('HomeController', function($scope, $http, $location, $auth) {
 
-  $scope.searchBar = function() {
+  $scope.names = [];
 
+  $scope.doSearch = function() {
+    console.log('search');
+    $http.get('http://localhost:3504/events/' + encodeURIComponent($scope.search))
+      .success(function (data) {
+        console.log(data);
+        $scope.names = data;
+      })
+      .error(function (err) {
 
+      });
   };
 
   $scope.logout =function (){
@@ -16,6 +25,4 @@ app.controller('HomeController', function($scope, $http, $location, $auth) {
         console.log("Logout Success!");
       });
   };
-
-
 });

@@ -21,11 +21,7 @@ var app = angular.module('Client', ['ionic', 'satellizer'])
         controller: 'SignupController'
       })
 
-      .state('search', {
-        url: '/search',
-        templateUrl: 'Search.html',
-        controller: 'SearchController'
-      })
+
 
       .state('home', {
         url: '/',
@@ -50,7 +46,7 @@ var app = angular.module('Client', ['ionic', 'satellizer'])
       return deferred.promise;
     }
 
-    $urlRouterProvider.otherwise('/search');
+    $urlRouterProvider.otherwise('/');
 
   })
 

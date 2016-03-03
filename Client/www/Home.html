@@ -1,20 +1,29 @@
-<ion-pane>
-  <ion-header-bar class="bar-stable">
-    <h1 class="title">Schedule-Up</h1>
-  </ion-header-bar>
-  <ion-content ng-controller="HomeController">
-    <br/>
-    <form >
-    <!--search bar-->
-      <input type="text" placeholder="Search" ng-model="$parent.user.searchBar"/>
-      <button type="submit" ng-click="searchBar()">Search</button><br/>
+  <ion-pane ng-controller="HomeController" >
+        <ion-header-bar class="bar-positive">
+          <div class="bar bar-header item-input-inset">
+            <label class="item-input-wrapper">
+              <i class="icon ion-ios-search placeholder-icon"></i>
+              <input type="search" placeholder="Search" ng-model="$parent.search" ng-change="doSearch()">
+            </label>
+          </div>
+        </ion-header-bar>
+        <ion-content>
+          <br/>
+            <div class="item item-text-wrap" >
+               <ul>
+                  <li ng-repeat="i in names" class="card">
+                    {{i.firstName + ',' + i.lastName}}
+                  </li>
+               </ul>
 
-      <!--search by *** buttons-->
-      <button type="submit">Search by Chiropractor</button><br/>
-      <button type="submit">Search by Clinic</button><br/>
-      <button type="submit">Search by Location</button><br/>
 
-      <button type="submit" ng-click="logout()">Logout</button><br/>
-    </form>
-  </ion-content>
-</ion-pane>
+          </div>
+
+          <!--search by *** buttons-->
+          <button type="submit">Search by Chiropractor</button><br/>
+          <button type="submit">Search by Clinic</button><br/>
+          <button type="submit">Search by Location</button><br/>
+
+          <button type="submit" ng-click="logout()">Logout</button><br/>
+        </ion-content>
+      </ion-pane>
