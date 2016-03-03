@@ -32,14 +32,11 @@ app.controller('CalendarController', function($scope, $compile, $uibModal, $http
             })
             .result.then(function(event) {
 
-
-                $http
-                    .post('/events', {
-                        title: event.title,
-                        start: new Date(event.startDate + ' ' + event.startTime),
-                        end: new Date(event.endDate + ' ' + event.endTime)
-                    })
-                $scope.events.push();
+                $scope.events.push( {
+                    title: event.title,
+                    start: new Date(event.startDate + ' ' + event.startTime),
+                    end: new Date(event.endDate + ' ' + event.endTime)
+                });
         });
 
 

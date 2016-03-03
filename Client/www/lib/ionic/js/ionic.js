@@ -243,7 +243,7 @@ window.ionic.version = '1.2.4';
         do {
           curtop += el.offsetTop;
           el = el.offsetParent;
-        } while (el)
+        } while (el);
         return curtop;
       }
     },
