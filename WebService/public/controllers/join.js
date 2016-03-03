@@ -3,7 +3,7 @@
  *
  */
 
-app.controller('GroupController', function($scope, $location, $http) {
+app.controller('JoinController', function($scope, $location, $http) {
 
     $scope.selectedGroup = null;
     $scope.showCreate = false;

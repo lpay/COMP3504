@@ -9,6 +9,7 @@ var mongoose = require('mongoose');
 var ObjectId = mongoose.Schema.ObjectId;
 
 var groupSchema = new mongoose.Schema({
+    slug: { type: String, required: true, unique: true },
     name: { type: String, required: true, unique: true },
     address: { type: String, required: true },
     city: { type: String, required: true },

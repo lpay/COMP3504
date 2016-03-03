@@ -11,11 +11,14 @@ var moment = require('moment');
 var util = require('util');
 var config = require('../config');
 
+var ObjectId = mongoose.Schema.ObjectId;
+
 var userSchema =  new mongoose.Schema({
     email: { type: String, required: true, unique: true, lowercase: true },
     password: { type: String, select: false },
     name: {
         type: {
+            title: String,
             first: String,
             last: String
         },
@@ -26,7 +29,18 @@ var userSchema =  new mongoose.Schema({
     last_login: Date,
     google: String,
     facebook: String,
-    twitter: String
+    twitter: String,
+    events: {
+        group: { type: ObjectId, ref: 'Group' },
+        title: String,
+        notes: String,
+        start: Date,
+        end: Date,
+        availability: { type: String, enum: ['available', 'unavailable'], default: 'available' },
+        invited: [{ type: ObjectId, ref: 'User'}],
+        attending: [{ type: ObjectId, ref: 'User'}],
+        recurring: {}
+    }
 });
 
 userSchema.pre('save', function(next) {

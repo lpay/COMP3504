@@ -11,6 +11,9 @@
     "satellizer": "^0.13.4",
     "selectize": "^0.12.1",
     "angular-selectize2": "^3.0.1",
-    "angular-ui-calendar-kruczjak": "^1.0.3"
+    "angular-ui-calendar-kruczjak": "^1.0.3",
+    "coverflow": "^1.3.0",
+    "jquery": "^2.2.1",
+    "angular-bootstrap": "^1.2.1"
   }
 }

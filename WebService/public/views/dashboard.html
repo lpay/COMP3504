@@ -1,25 +1,52 @@
-
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-xs-2">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    Schedules
+<header>
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="menu" aria-expanded="false">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" ui-sref="dashboard.scheduler({group: group})" ui-sref-opts="{reload: true}">Schedule-Up</a>
+                    </div>
                 </div>
-                <div class="panel-body">
-                    <ul class="nav nav-pills nav-stacked">
-                        <li ng-repeat="admin in group.professionals.admins">
-                            <a href="#">{{admin.name.first}} {{admin.name.last}}</a>
+                <div class="col-md-4">
+                    <ul class="nav navbar-nav">
+                        <li role="presentation" class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{group.name}} <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li ng-repeat="g in groups"><a ui-sref="dashboard.scheduler({group: g})" ui-sref-opts="{reload: true}">{{g.name}}</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li role="presentation"><a ui-sref="join">Join Group!</a></li>
+                            </ul>
                         </li>
                     </ul>
                 </div>
-                <div class="panel-footer">
-
+                <div class="col-md-4">
+                    <div id="menu" class="collapse navbar-collapse navbar-right">
+                        <ul class="nav navbar-nav">
+                            <li role="presentation" ng-class="{ active: $state.includes('dashboard.settings')}">
+                                <a ui-sref=".settings">Settings</a>
+                            </li>
+                            <li role="presentation" ng-class="{ active: $state.includes('dashboard.profile') }">
+                                <a ui-sref=".profile">Profile</a>
+                            </li>
+                            <li role="presentation">
+                                <a ui-sref="logout">Logout</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-xs-8" ui-view>
+    </nav>
+</header>
 
-        </div>
-    </div>
-</div>
+<main ui-view></main>
+
+<footer class="text-center">
+    <p>Copyright &copy; ScheduleUP</p>
+</footer>
