@@ -11,15 +11,15 @@
                 <div class="col-xs-12">
                     <div class="form-group">
                         <label for="groupName" class="control-label">Name:</label>
-                        <input type="text" id="groupName" ng-model="group.name" class="form-control" disabled />
+                        <input type="text" id="groupName" ng-model="group.name" class="form-control" />
                     </div>
                     <div class="form-group">
                         <label for="groupAddress" class="control-label">Address:</label>
-                        <input type="text" id="groupAddress" ng-model="group.address" class="form-control" disabled />
+                        <input type="text" id="groupAddress" ng-model="group.address" class="form-control" />
                     </div>
                     <div class="form-group">
                         <label for="groupCity" class="control-label">Address:</label>
-                        <input type="text" id="groupCity" ng-model="group.city" class="form-control" disabled />
+                        <input type="text" id="groupCity" ng-model="group.city" class="form-control" />
                     </div>
                 </div>
             </div>
@@ -27,13 +27,13 @@
                 <div class="col-xs-7">
                     <div class="form-group">
                         <label for="groupProvince" class="control-label">Province:</label>
-                        <input type="text" id="groupProvince" ng-model="group.province" class="form-control" disabled />
+                        <input type="text" id="groupProvince" ng-model="group.province" class="form-control" />
                     </div>
                 </div>
                 <div class="col-xs-5">
                     <div class="form-group">
                         <label for="groupPostalCode" class="control-label">Postal Code:</label>
-                        <input type="text" id="groupPostalCode" ng-model="group.postalCode" class="form-control" disabled />
+                        <input type="text" id="groupPostalCode" ng-model="group.postalCode" class="form-control" />
                     </div>
                 </div>
             </div>
@@ -43,7 +43,7 @@
     <div class="row">
         <div class="col-xs-12">
             <hr/>
-            <h4>Group Hours of Operations</h4>
+            <h4>Business Hours</h4>
             <hr/>
         </div>
     </div>
@@ -57,7 +57,7 @@
                 <div class="checkbox"><label><input type="checkbox" ng-model="Thursday">Thursday</label></div>
                 <div class="checkbox"><label><input type="checkbox" ng-model="Friday">Friday</label></div>
                 <div class="checkbox"><label><input type="checkbox" ng-model="Saturday">Saturday</label></div>
-                <button ng-click="save()">Save</button>
+                <button class="btn btn-success" ng-click="save()"><i class="fa fa-save">&nbsp;</i>Save</button>
             </form>
         </div>
     </div>

@@ -17,12 +17,8 @@
 <div class="container-fluid">
     <div class="row">
         <div id="calendars" class="col-md-10 col-md-offset-1" coverflow>
-            <div ng-controller="CalendarController" class="calendar" ng-repeat="user in group.professionals.admins">
-                <h4><i class="fa fa-lock"></i>{{user.name.title}} {{user.name.first}} {{user.name.last}}</h4>
-                <div ui-calendar="calendar" ng-model="eventSources"></div>
-            </div>
-            <div ng-controller="CalendarController" class="calendar" ng-repeat="user in group.professionals.users">
-                <h4><i class="fa fa-user"></i>{{user.name.title}} {{user.name.first}} {{user.name.last}}</h4>
+            <div ng-controller="CalendarController" class="calendar" ng-repeat="member in group.members">
+                <h4><i class="fa fa-user"></i>{{member.user.name.title}} {{member.user.name.first}} {{member.user.name.last}}</h4>
                 <div ui-calendar="calendar" ng-model="eventSources"></div>
             </div>
         </div>

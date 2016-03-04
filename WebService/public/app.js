@@ -106,8 +106,14 @@ var app = angular.module('COMP3504', [ 'ui.router', 'satellizer', 'selectize', '
                         //[$scope.Sunday,$scope.Monday,$scope.Tuesday,$scope.Wednesday,
                           //                    $scope.Thursday,$scope.Friday,$scope.Saturday];
 
-                        $http.put('/groups/' + encodeURIComponent($scope.group.slug), {hoursOfOperation: $scope.daysInAWeek} );
-                        console.log($scope.daysInAWeek);
+                        $http.put('/groups/' + encodeURIComponent($scope.group.slug), $scope.group)
+                            .success(function() {
+
+                            })
+                            .error(function() {
+
+                            });
+
                     };
                 }
             })

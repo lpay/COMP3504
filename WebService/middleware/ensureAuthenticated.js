@@ -26,7 +26,7 @@ module.exports = function(req, res, next) {
     if (payload.exp < moment().unix())
         return res.status(401).send({ message: 'token expired' });
 
-    User.findById(payload.sub, 'email')
+    User.findById(payload.sub)
         .then(user => {
             if (!user)
                 return res.status(401).send({ message: 'user not found' });

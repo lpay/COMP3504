@@ -44,7 +44,7 @@ router.route('/users/:email')
     /**
      * Get user details.
      */
-    .get(function (req, res) {
+    .get(function(req, res) {
         // not implemented
         res.status(501);
     })

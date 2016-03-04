@@ -22,16 +22,9 @@ var Group = require('../models/group');
 var ensureAuthenticated = require('../middleware/ensureAuthenticated');
 
 router.get('/groups', ensureAuthenticated, function(req, res) {
-    Group.find(
-        {
-            $or: [
-                { 'professionals.admins': req.user },
-                { 'professionals.users': req.user }
-            ]
-        })
-        .populate('professionals.admins')
-        .populate('professionals.users')
-        .populate('professionals.pending')
+    Group.find({'members.user': req.user})
+        .populate('members.user')
+        .populate('members.events.client')
         .then(groups => res.send(groups));
 });
 
@@ -64,7 +57,10 @@ router.post('/groups', ensureAuthenticated, function (req, res) {
                 city: req.body.city,
                 province: req.body.province,
                 postalCode: req.body.postalCode,
-                professionals: {admins: [req.user]}
+                contact: req.user.name,
+                phone: req.user.phone,
+                email: req.user.email,
+                members: [{user: req.user, role: 'admin'}]
             });
         })
         .then(group => res.status(201).location('/groups/' + group.slug).send())
@@ -76,12 +72,10 @@ router.get('/groups/:slug', ensureAuthenticated, function (req, res) {
     if (!req.params.slug) return res.status(400).send({message: 'group slug required'});
 
     Group.findOne({ slug: req.params.slug })
-        .populate('professionals.admins')
         .then(group => {
             if (!group)
                 throw new Error('group not found');
 
-            console.log(group);
             res.send(group);
         })
         .catch(Error, e => res.status(404).send({message: e.message}));
@@ -89,15 +83,30 @@ router.get('/groups/:slug', ensureAuthenticated, function (req, res) {
 
 router.put('/groups/:slug', ensureAuthenticated, function(req, res) {
 
-    Group.findOneAndUpdate( { slug: req.params.slug }, {
-        hoursOfOperation: req.body.hoursOfOperation
-    })
-        .then(function(){
-            res.send();
+    Group.findOne({ slug: req.params.slug })
+        .then(group => {
+            if (!group)
+                throw new Error('group not found');
+
+            return group.isAdmin(req.user);
         })
-        .catch(function(){
-            res.status(500).send();
-        });
+        .then(admin => {
+            if (!admin)
+                throw new Error('not authorized');
+
+            return Group.findOneAndUpdate({ slug: req.params.slug }, {
+                name: req.body.name,
+                address: req.body.address,
+                city: req.body.city,
+                province: req.body.province,
+                postalCode: req.body.postalCode,
+                contact: req.body.name,
+                phone: req.body.phone,
+                email: req.body.email
+                //defaultAvailability: req.body.hoursOfOperation
+            });
+        })
+        .then( () => res.send() );
 });
 
 router.delete('/groups/:slug', ensureAuthenticated, function(req, res) {
