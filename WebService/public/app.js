@@ -75,8 +75,11 @@ var app = angular.module('COMP3504', [ 'ui.router', 'satellizer', 'selectize', '
             .state('dashboard.settings', {
                 url: '/settings',
                 templateUrl: 'views/settings.html',
-                controller: function($scope, $http) {
+                controller: function($scope, $http, $uibModal) {
 
+
+
+                    /*
                     $scope.Sunday = false;
                     $scope.Monday = true;
                     $scope.Tuesday = true;
@@ -115,6 +118,7 @@ var app = angular.module('COMP3504', [ 'ui.router', 'satellizer', 'selectize', '
                             });
 
                     };
+                    */
                 }
             })
 

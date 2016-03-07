@@ -7,12 +7,12 @@
 var mongoose = require('mongoose');
 var moment = require('moment');
 
+var weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 var defaultStart = moment.duration("09:00", "hh:mm:ss").asSeconds();
 var defaultEnd = moment.duration("17:00", "hh:mm:ss").asSeconds();
 
 var ObjectId = mongoose.Schema.ObjectId;
 
-var weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 var availabilitySchema = new mongoose.Schema({
     day: { type: String, enum: weekdays },
@@ -37,16 +37,22 @@ var groupSchema = new mongoose.Schema({
     phone: { type: String },
     email: { type: String },
 
+    tags: [],
+
     defaultAvailability: {
         type: [availabilitySchema],
         default: [
+            {day: 'Sunday', hours: []},
             {day: 'Monday', hours: [{start: defaultStart, end: defaultEnd }] },
             {day: 'Tuesday', hours: [{start: defaultStart, end: defaultEnd }] },
             {day: 'Wednesday', hours: [{start: defaultStart, end: defaultEnd }] },
             {day: 'Thursday', hours: [{start: defaultStart, end: defaultEnd }] },
-            {day: 'Friday', hours: [{start: defaultStart, end: defaultEnd }] }
+            {day: 'Friday', hours: [{start: defaultStart, end: defaultEnd }] },
+            {day: 'Saturday', hours: []}
         ]
     },
+
+    defaultInterval: { type: Number, required: true, default: 15 },
 
     members: [{
         user: { type: ObjectId, ref: 'User' },
@@ -55,76 +61,130 @@ var groupSchema = new mongoose.Schema({
         events: {
             type: [{
                 client: { type: ObjectId, ref: 'User' },
+                available: { type: Boolean, default: false },
                 type: String,
-                start: Number,
-                end: Number
+                start: Date,
+                end: Date
             }], select: false
         }
     }]
 });
-/*
-groupSchema.methods.getTimeslots = function(startDate, endDate) {
+
+groupSchema.methods.generateTimeslots = function(startDate, endDate) {
     var group = this;
 
     return Group.findById(group, '+members.events')
         .then(group => {
+
+            var minTime = 45;
+            var interval = group.defaultInterval || 15;
+
+            // round seconds up
+            startDate.add(1, 'minutes').seconds(0).milliseconds(0);
+
+            // round up to the nearest interval
+            startDate.add(interval - (startDate.minute() % interval), 'minutes');
+
             var timeslots = [];
 
-            // TODO: lots of looping here, possible future performance issue?
+            var groupAvailability = {
+                'Sunday': [],
+                'Monday': [],
+                'Tuesday': [],
+                'Wednesday': [],
+                'Thursday': [],
+                'Friday': [],
+                'Saturday': []
+            };
+
+            // group availability
+            group.defaultAvailability.forEach(function(entry) {
+                entry.hours.forEach(function(hours) {
+                    groupAvailability[entry.day].push({ start: hours.start, end: hours.end, available: hours.available, rank: 0});
+                })
+            });
+
             group.members.forEach(function(member) {
-
-                var dayOfWeek = startDate.day();
-
-                for (var i = 0; i < endDate.diff(startDate, 'days') + 1; i++) {
-                    group.defaultAvailability.some(function(entry) {
-                        if (entry.day === weekdays[dayOfWeek]) {
-                            var hours = entry.hours || [];
-
-                            if (member.availability.length) {
-                                member.availability.some(function(entry) {
-                                    if (entry.day === weekdays[dayOfWeek] && entry.hours.length) {
-                                        hours = hours.concat(entry.hours);
-                                        return true;
-                                    }
-                                });
-                            }
-
-                            // sort in reverse (we will also loop in reverse)
-                            hours.sort(function(a, b) { return b.start - a.start });
-
-                            var slot = {};
-
-                            while (hours.length) {
-                                var range = hours.pop();
-
-                                if (slot.start) {
-
-                                } else if (range.available) {
-                                    slot.start = range.start;
-                                }
+                var availability = JSON.parse(JSON.stringify(groupAvailability));
 
 
-                            }
+                // member availability
+                member.availability.forEach(function(entry) {
+                    entry.hours.forEach(function(hours) {
+                        availability[entry.day].push({ start: hours.start, end: hours.end, available: hours.available, rank: 1});
+                    });
+                });
 
+                // sort by: rank (desc), timespan, start, end
+                Object.keys(availability).forEach(function(day) {
+                    availability[day].sort(function(a, b) {
+                        if (a.rank != b.rank)
+                            return b.rank - a.rank;
+
+                        if (a.end - a.start != b.end - b.start)
+                            return ((a.end - a.start) - (b.end - b.start));
+
+                        if (a.start != b.start)
+                            return a.start - b.start;
+
+                        if (a.end != b.end)
+                            return a.end - b.end;
+
+                        return 0;
+                    });
+                });
+
+                for (var date = startDate; date < endDate; date.add(interval, 'minutes')) {
+
+                    // calculate timeslot start & end in seconds
+                    var start = (date.hour() * 60 + date.minute()) * 60;
+                    var end = start + (minTime * 60);
+                    var available = false;
+
+                    // check for conflicting events
+                    if (member.events.some(event => {
+                            return !event.available && (
+                                    date.diff(event.start) >= 0 &&
+                                    date.diff(event.end) <= 0
+                                ) || (
+                                    moment(date).add(end, 'seconds').diff(event.start) >= 0 &&
+                                    moment(date).add(end, 'seconds').diff(event.end) <= 0
+                            );
+                        })) continue;
+
+                    // check availability
+                    var hours = availability[weekdays[startDate.day()]];
+
+                    hours.some(hours => {
+                        var hasStart = (start >= hours.start && start <= hours.end);
+                        var hasEnd = (end >= hours.start && end <= hours.end);
+
+                        if (start < hours.start && end > hours.end && !hours.available)
+                            return true;
+
+                        if ((hasStart || hasEnd) && !hours.available)
+                            return true;
+
+                        if (hasStart && hasEnd) {
+                            available = hours.available;
                             return true;
                         }
                     });
 
-                    dayOfWeek = dayOfWeek == 6 ? 0 : dayOfWeek + 1;
+                    if (available) {
+                        timeslots.push({
+                            group: group._id,
+                            member: member._id,
+                            start: moment(date).toDate()
+                        });
+                    }
                 }
-
-                availability.forEach(function(slot) {
-                    timeslots.push({
-                        member: member.user,
-                        slot: slot
-                    })
-                })
             });
 
             return timeslots;
         });
 };
-*/
+
 groupSchema.methods.join = function(user, group) {
 
 };

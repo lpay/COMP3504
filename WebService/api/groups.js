@@ -102,11 +102,11 @@ router.put('/groups/:slug', ensureAuthenticated, function(req, res) {
                 postalCode: req.body.postalCode,
                 contact: req.body.name,
                 phone: req.body.phone,
-                email: req.body.email
-                //defaultAvailability: req.body.hoursOfOperation
+                email: req.body.email,
+                defaultAvailability: req.body.defaultAvailability
             });
         })
-        .then( () => res.send() );
+        .then( group => res.send(group) );
 });
 
 router.delete('/groups/:slug', ensureAuthenticated, function(req, res) {

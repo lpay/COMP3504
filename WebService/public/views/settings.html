@@ -1,14 +1,14 @@
 <div class="container">
     <div class="row">
-        <div class="col-xs-12">
+        <div class="col-md-12">
             <h4>{{::group.name}}</h4>
             <hr/>
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-4">
+        <div class="col-md-4">
             <div class="row">
-                <div class="col-xs-12">
+                <div class="col-md-12">
                     <div class="form-group">
                         <label for="groupName" class="control-label">Name:</label>
                         <input type="text" id="groupName" ng-model="group.name" class="form-control" />
@@ -24,42 +24,43 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-xs-7">
+                <div class="col-md-7">
                     <div class="form-group">
                         <label for="groupProvince" class="control-label">Province:</label>
                         <input type="text" id="groupProvince" ng-model="group.province" class="form-control" />
                     </div>
                 </div>
-                <div class="col-xs-5">
+                <div class="col-md-5">
                     <div class="form-group">
                         <label for="groupPostalCode" class="control-label">Postal Code:</label>
                         <input type="text" id="groupPostalCode" ng-model="group.postalCode" class="form-control" />
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <div class="form-group">
+                        <button class="btn btn-success" ng-click="save()"><i class="fa fa-save">&nbsp;</i>Save</button>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-
-    <div class="row">
-        <div class="col-xs-12">
-            <hr/>
-            <h4>Business Hours</h4>
-            <hr/>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12">
-            <form>
-                <div class="checkbox"><label><input type="checkbox" ng-model="Sunday">Sunday</label></div>
-                <div class="checkbox"><label><input type="checkbox" ng-model="Monday">Monday</label></div>
-                <div class="checkbox"><label><input type="checkbox" ng-model="Tuesday">Tuesday</label></div>
-                <div class="checkbox"><label><input type="checkbox" ng-model="Wednesday">Wednesday</label></div>
-                <div class="checkbox"><label><input type="checkbox" ng-model="Thursday">Thursday</label></div>
-                <div class="checkbox"><label><input type="checkbox" ng-model="Friday">Friday</label></div>
-                <div class="checkbox"><label><input type="checkbox" ng-model="Saturday">Saturday</label></div>
-                <button class="btn btn-success" ng-click="save()"><i class="fa fa-save">&nbsp;</i>Save</button>
-            </form>
+        <div class="col-md-2 col-md-offset-6">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <h4>Business Hours</h4>
+                    <hr/>
+                </div>
+            </div>
+            <div class="row" ng-repeat="entry in group.defaultAvailability">
+                <div class="col-md-12 text-center">
+                    <div class="form-group">
+                    <availability-editor availability="entry" group="group"></availability-editor>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
 </div>
+
