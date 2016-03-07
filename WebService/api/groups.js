@@ -121,11 +121,10 @@ router.post('/groups/join', ensureAuthenticated, function (req, res) {
             if (!group)
                 throw new Error('group not found');
 
-            if (group.professionals.require_approval) {
-                group.professionals.pending.push(req.user);
-            } else {
-                group.professionals.users.push(req.user);
-            }
+            group.members.push({
+                user: req.user,
+                role: 'professional'
+            });
 
             return group.save();
         })
