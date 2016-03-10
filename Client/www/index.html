@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-
     <title></title>
-
     <link href="lib/ionic/css/ionic.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
     <script src="lib/ionic/js/ionic.bundle.js"></script>
@@ -21,13 +19,40 @@
     <script src="js/LoginController.js"></script>
     <script src="js/HomeController.js"></script>
     <script src="js/SignupController.js"></script>
-    <script src="js/HomeController.js"></script>
+    <script src="js/GroupSearchController.js"></script>
+    <script src="js/ProfessionalSearchController.js"></script>
+  </head>
 
+  <body ng-app="Client">
+  <ion-header-bar class="bar-positive" align-title="center" >
+      <div class="buttons">
+        <!--<button class="button"><i class="icon ion-navicon-round"></i></button>-->
+        <button class="button" ng-click="$ionicGoBack()"><i class="ion-arrow-left-c"></i> Back</button>
+      </div>
+      <h1 class="title">Schedule-Up</h1>
+    <!--<div class="buttons">
+      <button class="button"><i class="icon ion-ios-search"></i></button>
+    </div>-->
+  </ion-header-bar>
 
-</head>
-
-<body ng-app="Client">
-    <ion-nav-view>
-    </ion-nav-view>
+  <ion-nav-view>  </ion-nav-view>
+  <ion-footer-bar>
+    <div class="tabs-striped tabs-color-positive">
+      <div class="tabs">
+        <div class="tab-item active">
+          <i class="icon ion-home" ></i>
+          Test
+        </div>
+        <div class="tab-item">
+          <i class="icon ion-arrow-left-a" ng-click="$ionicGoBack()"></i>
+          Favorites
+        </div>
+        <div class="tab-item">
+          <i class="icon ion-gear-a"></i>
+          Settings
+        </div>
+      </div>
+    </div>
+  </ion-footer-bar>
 </body>
 </html>
