@@ -3,26 +3,67 @@ app.directive('availabilityEditor', function($http, $uibModal) {
     return {
         retrict: 'E',
 
-        scope: { group: '=', member: '=' ,availability: '=' },
+        scope: {availability: '=', 'group': '='},
 
         templateUrl: 'views/directives/availabilityEditor.html',
 
         link: function(scope) {
 
-            scope.descriptions = ['9AM-5PM'];
+            var updateDescriptions = function() {
+                scope.descriptions = [];
 
+                scope.availability.hours.forEach(function(entry) {
+                    if (entry.available) {
 
-            scope.edit = function(availability) {
+                        var description = '';
+
+                        var start = moment().startOf('day').add(moment.duration(entry.start, 'seconds'));
+                        var end = moment().startOf('day').add(moment.duration(entry.end, 'seconds'));
+
+                        if (start.minutes() > 0)
+                            description = start.format('h:mmA');
+                        else
+                            description = start.format('hA');
+
+                        description += '-';
+
+                        if (end.minutes() > 0)
+                            description += end.format('h:mmA');
+                        else
+                            description += end.format('hA');
+
+                        scope.descriptions.push(description);
+                    }
+                });
+
+                if (scope.descriptions.length == 0)
+                    scope.descriptions.push('Closed');
+            };
+
+            updateDescriptions();
+
+            scope.edit = function() {
+
+                var hours = [];
+
+                scope.availability.hours.forEach(function(entry) {
+                    hours.push({
+                        start: moment().startOf('day').add(moment.duration(entry.start, 'seconds')),
+                        end: moment().startOf('day').add(moment.duration(entry.end, 'seconds')),
+                        available: entry.available
+                    });
+                });
 
                 $uibModal
                     .open({
                         templateUrl: 'views/modals/availabilityModal.html',
                         controller: function($scope, $uibModalInstance) {
-                            $scope.new = {};
-                            $scope.availability = availability;
+
+                            $scope.new = { available: true };
+                            $scope.hours = hours;
 
                             $scope.save = function() {
-                                $uibModalInstance.close($scope.availability);
+                                $uibModalInstance.close($scope.hours);
                             };
 
                             $scope.close = function() {
@@ -30,54 +71,62 @@ app.directive('availabilityEditor', function($http, $uibModal) {
                             };
 
                             $scope.add = function() {
-                                $scope.availability.hours.push({
+                                $scope.hours.push({
                                     start: $scope.new.start,
                                     end: $scope.new.end,
                                     available: $scope.new.available
                                 });
 
-                                $scope.new = {};
-
+                                $scope.new = { available: true };
                             };
 
                             $scope.remove = function(index) {
-                                $scope.availability.hours.splice(index, 1);
+                                $scope.hours.splice(index, 1);
                             };
 
                             $scope.up = function(index) {
-                                if (index <= 0 || availability.hours.length < 2)
+                                if (index <= 0 || $scope.hours.length < 2)
                                     return;
 
-                                var hours = $scope.availability.hours[index];
+                                var hours = $scope.hours[index];
 
-                                $scope.availability.hours[index] = $scope.availability.hours[index-1];
-                                $scope.availability.hours[index-1] = hours;
+                                $scope.hours[index] = $scope.hours[index-1];
+                                $scope.hours[index-1] = hours;
                             };
 
                             $scope.down = function(index) {
-                                if (index >= $scope.availability.hours.length || $scope.availability.hours.length < 2)
+                                if (index >= $scope.hours.length || $scope.hours.length < 2)
                                     return;
 
-                                var hours = $scope.availability.hours[index];
+                                var hours = $scope.hours[index];
 
-                                $scope.availability.hours[index] = $scope.availability.hours[index+1];
-                                $scope.availability.hours[index+1] = hours;
+                                $scope.hours[index] = $scope.hours[index+1];
+                                $scope.hours[index+1] = hours;
                             };
                         }
                     }).result
-                    .then(function(newAvailability) {
+                    .then(function(hours) {
+
+                        scope.availability.hours = [];
+
+                        hours.forEach(function(entry) {
+                            scope.availability.hours.push({
+                                start: moment.duration(moment(entry.start) - moment(entry.start).startOf('day')).asSeconds(),
+                                end: moment.duration(moment(entry.end) - moment(entry.end).startOf('day')).asSeconds(),
+                                available: entry.available
+                            });
+                        });
+
                         $http.put('/groups/' + encodeURIComponent(scope.group.slug), scope.group)
                             .success(function(s) {
-                                console.log(s)
+                                updateDescriptions();
                             })
                             .error(function(e) {
-                                console.log(e);
                             });
                     })
                     .catch(function(reason) {
 
                     })
-
             };
         }
     }

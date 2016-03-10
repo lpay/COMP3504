@@ -4,9 +4,18 @@
 
 app.controller('ProfileController', function($scope, $location, $http) {
 
+
     $http.get('/profile')
         .success(function(profile) {
-            $scope.profile = profile;
+
+            $scope.group.members.some(function(member) {
+                if (member.user._id === profile._id) {
+                    $scope.profile = member;
+                    return true;
+                }
+            });
         });
+
+
 
 });

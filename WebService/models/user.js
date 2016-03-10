@@ -11,6 +11,8 @@ var moment = require('moment');
 var util = require('util');
 var config = require('../config');
 
+var APIError = require('../errors/APIError');
+
 var userSchema =  new mongoose.Schema({
 
     // Login Information
@@ -81,14 +83,14 @@ userSchema.statics.validateEmail = function(email) {
         var regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
         if (!regex.test(email))
-            throw new InvalidEmailError('invalid email address');
+            throw new APIError(400, 'invalid email address');
 
         return email;
     })
     .then(email => [ model.findOne({ email: email}, 'email'), email ])
     .spread((existingUser, email) => {
         if (existingUser)
-            throw new InvalidEmailError('email exists');
+            throw new APIError(401, 'email exists');
 
         return email;
     });
@@ -100,7 +102,7 @@ userSchema.methods.validatePassword = function(password) {
     return bcrypt.compareAsync(password, user.password)
         .then(match => {
             if (!match)
-                throw new AuthenticationError('invalid password');
+                throw new APIError(403, 'invalid password');
 
             return user;
         });
@@ -127,28 +129,10 @@ userSchema.statics.Authenticate = function(email, password) {
     return this.model('User').findOne({ email: email }, '+password')
         .then(user => {
             if (!user)
-                throw new AuthenticationError('user not found');
+                throw new APIError(404, 'user not found');
 
             return user.validatePassword(password);
         });
 };
-
-
-var AuthenticationError = function(message) {
-    Error.captureStackTrace(this, this.constructor);
-    this.name = this.constructor.name;
-    this.message = message;
-};
-util.inherits(AuthenticationError, Error);
-
-var InvalidEmailError = function(message) {
-    Error.captureStackTrace(this, this.constructor);
-    this.name = this.constructor.name;
-    this.message = message;
-};
-util.inherits(InvalidEmailError, Error);
-
-userSchema.statics.AuthenticationError = AuthenticationError;
-userSchema.statics.InvalidEmailError = InvalidEmailError;
 
 module.exports = mongoose.model('User', userSchema);

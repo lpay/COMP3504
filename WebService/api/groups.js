@@ -18,17 +18,19 @@
 var router = require('express').Router();
 var slugify = require('slug');
 var Group = require('../models/group');
+var APIError = require('../errors/APIError');
 
 var ensureAuthenticated = require('../middleware/ensureAuthenticated');
 
-router.get('/groups', ensureAuthenticated, function(req, res) {
+router.get('/groups', ensureAuthenticated, function(req, res, next) {
     Group.find({'members.user': req.user})
         .populate('members.user')
         .populate('members.events.client')
-        .then(groups => res.send(groups));
+        .then(groups => res.send(groups))
+        .catch(next);
 });
 
-router.post('/groups', ensureAuthenticated, function (req, res) {
+router.post('/groups', ensureAuthenticated, function (req, res, next) {
 
     // validate request
     if (!req.body.name) return res.status(400).send({message: "name is required"});
@@ -48,7 +50,7 @@ router.post('/groups', ensureAuthenticated, function (req, res) {
         })
         .then(existingGroup => {
             if (existingGroup)
-                throw new Error("group exists");
+                throw new APIError(400, 'group exists');
 
             return Group.create({
                 slug: slug,
@@ -64,35 +66,35 @@ router.post('/groups', ensureAuthenticated, function (req, res) {
             });
         })
         .then(group => res.status(201).location('/groups/' + group.slug).send())
-        .catch(Error, e => res.status(400).send({message: e.message}));
+        .catch(next);
 });
 
-router.get('/groups/:slug', ensureAuthenticated, function (req, res) {
+router.get('/groups/:slug', ensureAuthenticated, function (req, res, next) {
 
     if (!req.params.slug) return res.status(400).send({message: 'group slug required'});
 
     Group.findOne({ slug: req.params.slug })
         .then(group => {
             if (!group)
-                throw new Error('group not found');
+                throw new APIError(404, 'group not found');
 
             res.send(group);
         })
-        .catch(Error, e => res.status(404).send({message: e.message}));
+        .catch(next);
 });
 
-router.put('/groups/:slug', ensureAuthenticated, function(req, res) {
+router.put('/groups/:slug', ensureAuthenticated, function(req, res, next) {
 
     Group.findOne({ slug: req.params.slug })
         .then(group => {
             if (!group)
-                throw new Error('group not found');
+                throw new APIError(404, 'group not found');
 
             return group.isAdmin(req.user);
         })
         .then(admin => {
             if (!admin)
-                throw new Error('not authorized');
+                throw new API(401, 'not authorized');
 
             return Group.findOneAndUpdate({ slug: req.params.slug }, {
                 name: req.body.name,
@@ -106,20 +108,20 @@ router.put('/groups/:slug', ensureAuthenticated, function(req, res) {
                 defaultAvailability: req.body.defaultAvailability
             });
         })
-        .then( group => res.send(group) );
+        .then(group => res.send(group))
+        .catch(next);
 });
 
-router.delete('/groups/:slug', ensureAuthenticated, function(req, res) {
+router.delete('/groups/:slug', ensureAuthenticated, function(req, res, next) {
     // not implemented
     res.status(501);
 });
 
-
-router.post('/groups/join', ensureAuthenticated, function (req, res) {
+router.post('/groups/join', ensureAuthenticated, function (req, res, next) {
     Group.findById(req.body.group)
         .then(group => {
             if (!group)
-                throw new Error('group not found');
+                throw new APIError(404, 'group not found');
 
             group.members.push({
                 user: req.user,
@@ -128,10 +130,11 @@ router.post('/groups/join', ensureAuthenticated, function (req, res) {
 
             return group.save();
         })
-        .then(group => res.status(200).send());
+        .then(group => res.status(200).send())
+        .catch(next);
 });
 
-router.get('/groups/search/:search', function (req, res) {
+router.get('/groups/search/:search', function (req, res, next) {
     var search = {};
 
     if (req.params.search) {
@@ -139,7 +142,8 @@ router.get('/groups/search/:search', function (req, res) {
     }
 
     Group.find(search, 'name address city province postalCode')
-        .then(groups => res.send(groups));
+        .then(groups => res.send(groups))
+        .catch(next);
 });
 
 module.exports = router;

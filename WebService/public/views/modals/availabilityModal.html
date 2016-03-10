@@ -1,6 +1,6 @@
 <div class="modal-header">
     <button type="button" class="close" ng-click="close()">&times;</button>
-    <h4 class="modal-title">{{availability.day}}:</h4>
+    <h4 class="modal-title">{{day}}:</h4>
 </div>
 <div class="modal-body">
     <table class="table table-striped table-bordered">
@@ -13,13 +13,13 @@
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="hours in availability.hours">
-                <td><input type="text" class="form-control input-sm" ng-model="hours.start"></td>
-                <td><input type="text" class="form-control input-sm" ng-model="hours.end"></td>
+            <tr ng-repeat="entry in hours">
+                <td><uib-timepicker show-spinners="false" ng-model="entry.start"></uib-timepicker></td>
+                <td><uib-timepicker show-spinners="false" ng-model="entry.end"></uib-timepicker></td>
                 <td class="text-center">
-                    <a href ng-click="hours.availability = !hours.availability">
-                        <i class="fa fa-check" style="color: green" ng-show="!hours.availability"></i>
-                        <i class="fa fa-remove" style="color: red" ng-show="hours.availability"></i>
+                    <a href ng-click="entry.available = !entry.available">
+                        <i class="fa fa-check" style="color: green" ng-show="entry.available"></i>
+                        <i class="fa fa-remove" style="color: red" ng-show="!entry.available"></i>
                     </a>
                 </td>
                 <td class="text-center">
@@ -29,12 +29,12 @@
                 </td>
             </tr>
             <tr>
-                <td><input type="text" class="form-control input-sm" ng-model="new.start"></td>
-                <td><input type="text" class="form-control input-sm" ng-model="new.end"></td>
+                <td><uib-timepicker show-spinners="false" ng-model="new.start"></uib-timepicker></td>
+                <td><uib-timepicker show-spinners="false" ng-model="new.end"></uib-timepicker></td>
                 <td class="text-center">
-                    <a href ng-click="new.availability = !new.availability">
-                        <i class="fa fa-check" style="color: green" ng-show="!new.availability"></i>
-                        <i class="fa fa-remove" style="color: red" ng-show="new.availability"></i>
+                    <a href ng-click="new.available = !new.available">
+                        <i class="fa fa-check" style="color: green" ng-show="new.available"></i>
+                        <i class="fa fa-remove" style="color: red" ng-show="!new.available"></i>
                     </a>
                 </td>
                 <td class="text-center">

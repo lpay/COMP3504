@@ -18,7 +18,7 @@ var User = require('../models/user');
 // Routes
 //
 
-router.post('/auth/signup', function (req, res) {
+router.post('/auth/signup', function (req, res, next) {
 
     if (!req.body.email) return res.status(400).send({ message: 'email address is required' });
     if (!req.body.password) return res.status(400).send({ message: 'password is required' });
@@ -27,10 +27,10 @@ router.post('/auth/signup', function (req, res) {
     User.Create(req.body.email, req.body.password, req.body.name)
         .then(user => user.generateToken())
         .spread((user, token) => res.status(201).location('/users/' + user._id).send({ token: token }))
-        .catch(User.InvalidEmailError, (e) => res.status(401).send({ message: e.message }));
+        .catch(next);
 });
 
-router.post('/auth/login', function (req, res) {
+router.post('/auth/login', function (req, res, next) {
 
     if (!req.body.email) return res.status(400).send({message: 'email is required'});
     if (!req.body.password) return res.status(400).send({message: 'password is required'});
@@ -38,10 +38,10 @@ router.post('/auth/login', function (req, res) {
     User.Authenticate(req.body.email, req.body.password)
         .then(user => user.generateToken())
         .spread((user, token) => res.status(200).location('/profile').send({ token: token }))
-        .catch(User.AuthenticationError, (e) => res.status(401).send({ message: e.message }));
+        .catch(next);
 });
 
-router.post('/auth/google', function (req, res) {
+router.post('/auth/google', function (req, res, next) {
     var accessTokenUrl = 'https://accounts.google.com/o/oauth2/token';
     var peopleApiUrl = 'https://www.googleapis.com/plus/v1/people/me/openIdConnect';
 
@@ -57,7 +57,7 @@ router.post('/auth/google', function (req, res) {
         .then(token => http.get(peopleApiUrl, {headers: {Authorization: token.token_type + ' ' + token.access_token}, json: true}))
         .then(profile => {
             if (profile.error)
-                throw profile.error;
+                throw new APIError(500, profile.error);
 
             return User.findOneAndUpdate(
                 {
@@ -75,7 +75,8 @@ router.post('/auth/google', function (req, res) {
             );
         })
         .then(user => user.generateToken())
-        .spread((user, token) => res.status(201).location('/users/' + user._id).send({token: token}));
+        .spread((user, token) => res.status(201).location('/users/' + user._id).send({token: token}))
+        .catch(next);
 });
 
 module.exports = router;

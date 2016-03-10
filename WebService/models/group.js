@@ -8,8 +8,8 @@ var mongoose = require('mongoose');
 var moment = require('moment');
 
 var weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-var defaultStart = moment.duration("09:00", "hh:mm:ss").asSeconds();
-var defaultEnd = moment.duration("17:00", "hh:mm:ss").asSeconds();
+var defaultStart = moment.duration("09:00", "hh:mm").asSeconds();
+var defaultEnd = moment.duration("17:00", "hh:mm").asSeconds();
 
 var ObjectId = mongoose.Schema.ObjectId;
 
@@ -55,9 +55,20 @@ var groupSchema = new mongoose.Schema({
     defaultInterval: { type: Number, required: true, default: 15 },
 
     members: [{
-        user: { type: ObjectId, ref: 'User' },
+        user: { type: ObjectId, ref: 'User', unique: true },
         role: { type: String, default: 'professional', enum: ['admin', 'professional'] },
-        availability: [availabilitySchema],
+        availability: {
+            type: [availabilitySchema],
+            default: [
+                {day: 'Sunday', hours: []},
+                {day: 'Monday', hours: []},
+                {day: 'Tuesday', hours: []},
+                {day: 'Wednesday', hours: []},
+                {day: 'Thursday', hours: []},
+                {day: 'Friday', hours: []},
+                {day: 'Saturday', hours: []}
+            ]
+        },
         events: {
             type: [{
                 client: { type: ObjectId, ref: 'User' },
@@ -70,17 +81,14 @@ var groupSchema = new mongoose.Schema({
     }]
 });
 
-groupSchema.methods.generateTimeslots = function(startDate, endDate) {
+groupSchema.methods.generateTimeslots = function(startDate, endDate, interval) {
     var group = this;
 
     return Group.findById(group, '+members.events')
         .then(group => {
 
             var minTime = 45;
-            var interval = group.defaultInterval || 15;
-
-            // round seconds up
-            startDate.add(1, 'minutes').seconds(0).milliseconds(0);
+            interval = interval || group.defaultInterval || 15;
 
             // round up to the nearest interval
             startDate.add(interval - (startDate.minute() % interval), 'minutes');

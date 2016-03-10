@@ -1,5 +1,5 @@
-<a href ng-click="edit(availability)">{{availability.day}}</a>
+<a href ng-click="edit()">{{availability.day}}</a>
 <br/>
-<span ng-repeat="text in descriptions">
-    {{text}}{{$last ? '' : ', '}}
+<span ng-repeat="description in descriptions">
+    {{description}}{{$last ? '' : ', '}}
 </span>

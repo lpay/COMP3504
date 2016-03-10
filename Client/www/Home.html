@@ -1,29 +1,29 @@
-  <ion-pane ng-controller="HomeController" >
-        <ion-header-bar class="bar-positive">
-          <div class="bar bar-header item-input-inset">
+<ion-pane ng-controller="HomeController" >
+    <ion-header-bar class="bar-positive">
+        <div class="bar bar-header item-input-inset">
             <label class="item-input-wrapper">
-              <i class="icon ion-ios-search placeholder-icon"></i>
-              <input type="search" placeholder="Search" ng-model="$parent.search" ng-change="doSearch()">
+                <i class="icon ion-ios-search placeholder-icon"></i>
+                <input type="search" placeholder="Search" ng-model="$parent.search" ng-change="doSearch()">
             </label>
-          </div>
-        </ion-header-bar>
-        <ion-content>
-          <br/>
-            <div class="item item-text-wrap" >
-               <ul>
-                  <li ng-repeat="i in names" class="card">
+        </div>
+    </ion-header-bar>
+    <ion-content>
+        <br/>
+        <div class="item item-text-wrap" >
+            <ul>
+                <li ng-repeat="i in names" class="card">
                     {{i.firstName + ',' + i.lastName}}
-                  </li>
-               </ul>
+                </li>
+            </ul>
 
 
-          </div>
+        </div>
 
-          <!--search by *** buttons-->
-          <button type="submit">Search by Chiropractor</button><br/>
-          <button type="submit">Search by Clinic</button><br/>
-          <button type="submit">Search by Location</button><br/>
+        <!--search by *** buttons-->
+        <button type="submit">Search by Chiropractor</button><br/>
+        <button type="submit">Search by Clinic</button><br/>
+        <button type="submit">Search by Location</button><br/>
 
-          <button type="submit" ng-click="logout()">Logout</button><br/>
-        </ion-content>
-      </ion-pane>
+        <button type="submit" ng-click="logout()">Logout</button><br/>
+    </ion-content>
+</ion-pane>

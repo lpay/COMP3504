@@ -17,26 +17,29 @@
 var router = require('express').Router();
 var ensureAuthenticated = require('../middleware/ensureAuthenticated');
 var User = require('../models/user');
+var APIError = require('../errors/APIError');
 
 /**
  * Get profile of authenticated user.
  */
-router.get('/profile', ensureAuthenticated, function(req, res) {
+router.get('/profile', ensureAuthenticated, function(req, res, next) {
     User.findById(req.user)
-        .then(user => res.send(user));
+        .then(user => res.send(user))
+        .catch(next);
 });
 
 /**
  * Get a list of users.
  */
-router.get('/users', function (req, res) {
+router.get('/users', function (req, res, next) {
     User.find({}, 'email created_at updated_at last_login')
         .then(users => {
-            if (users.length)
-                return res.send(users);
+            if (!users.length)
+                throw new APIError(404, 'no users found');
 
-            return res.status(404).send({ message: 'no users found' })
-        });
+            return res.send(users);
+        })
+        .catch(next);
 });
 
 router.route('/users/:email')

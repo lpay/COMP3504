@@ -15,6 +15,8 @@ var bodyParser = require('body-parser');
 var crypto = require('crypto');
 var cors = require('cors');
 
+var APIError = require('./errors/APIError');
+
 //var cookieParser = require('cookie-parser');
 
 //
@@ -61,6 +63,18 @@ app.use(express.static('public'));
 // default route handler (angular application)
 app.get('/', function(req, res) {
     res.sendFile('./public/index.html');
+});
+
+app.use(function(err, req, res, next) {
+
+    console.log(err);
+
+    if (err instanceof APIError) {
+        res.status(err.code).send(err.message);
+    } else {
+        res.status(500).send({message: 'internal server error'});
+    }
+
 });
 
 module.exports = app;
