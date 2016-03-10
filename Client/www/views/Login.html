@@ -1,32 +1,31 @@
 <ion-view view-title="Login">
     <ion-pane class="padding">
         <div class="row">
-            <div class="col">
-                <h2 class="text-center">ScheduleUP</h2>
+            <div class="col text-center">
+                <h2>ScheduleUP</h2>
             </div>
         </div>
         <div class="row">
             <div class="col">
-                <div class="list list-inset">
-                    <label class="item item-input">
-                        <input type="text" placeholder="Email" ng-model="auth.email">
-                    </label>
-                    <label class="item item-input">
-                        <input type="password" placeholder="Password" ng-model="auth.password">
-                    </label>
-                </div>
+                <form ng-submit="login()">
+                    <div class="list list-inset">
+                        <label class="item item-input">
+                            <input type="text" placeholder="Email" ng-model="auth.email">
+                        </label>
+                        <label class="item item-input">
+                            <input type="password" placeholder="Password" ng-model="auth.password">
+                        </label>
+                    </div>
+
+                    <button class="button button-block button-calm" ng-click="login()">Login</button>
+                </form>
             </div>
         </div>
         <div class="row">
-            <div class="col">
-                <button class="button button-block button-calm" ng-click="login()">Login</button>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
+            <div class="col-40">
                 <a href>Forgot Password?</a>
             </div>
-            <div class="col text-right">
+            <div class="col-60 text-right">
                 Don't have an account?
                 <br>
                 <a href>Sign up!</a>
