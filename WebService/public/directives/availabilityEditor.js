@@ -1,7 +1,7 @@
 
 app.directive('availabilityEditor', function($http, $uibModal) {
     return {
-        retrict: 'E',
+        restrict: 'E',
 
         scope: {availability: '=', 'group': '='},
 

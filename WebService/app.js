@@ -65,7 +65,7 @@ app.get('/', function(req, res) {
     res.sendFile('./public/index.html');
 });
 
-app.use(function(err, req, res, next) {
+app.use(function(err, req, res) {
 
     console.log(err);
 
@@ -74,7 +74,6 @@ app.use(function(err, req, res, next) {
     } else {
         res.status(500).send({message: 'internal server error'});
     }
-
 });
 
 module.exports = app;

@@ -13,7 +13,6 @@ var defaultEnd = moment.duration("17:00", "hh:mm").asSeconds();
 
 var ObjectId = mongoose.Schema.ObjectId;
 
-
 var availabilitySchema = new mongoose.Schema({
     day: { type: String, enum: weekdays },
     hours: [{
@@ -69,6 +68,12 @@ var groupSchema = new mongoose.Schema({
                 {day: 'Saturday', hours: []}
             ]
         },
+        appointmentTypes: [
+            {
+                name: String,
+                length: Number
+            }
+        ],
         events: {
             type: [{
                 client: { type: ObjectId, ref: 'User' },
@@ -87,13 +92,13 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, interval) {
     return Group.findById(group, '+members.events')
         .then(group => {
 
+            var members = [];
+
             var minTime = 45;
             interval = interval || group.defaultInterval || 15;
 
             // round up to the nearest interval
             startDate.add(interval - (startDate.minute() % interval), 'minutes');
-
-            var timeslots = [];
 
             var groupAvailability = {
                 'Sunday': [],
@@ -113,8 +118,10 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, interval) {
             });
 
             group.members.forEach(function(member) {
-                var availability = JSON.parse(JSON.stringify(groupAvailability));
 
+                var pushme = false;
+
+                var availability = JSON.parse(JSON.stringify(groupAvailability));
 
                 // member availability
                 member.availability.forEach(function(entry) {
@@ -180,16 +187,24 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, interval) {
                     });
 
                     if (available) {
-                        timeslots.push({
-                            group: group._id,
-                            member: member._id,
+                        if (!member.timeslots)
+                            member.timeslots = [];
+
+                        member.timeslots.push({
+                            //group: group._id,
+                            //member: member._id,
                             start: moment(date).toDate()
                         });
+
+                        pushme = true;
                     }
                 }
+
+                if (pushme)
+                    members.push(member);
             });
 
-            return timeslots;
+            return members;
         });
 };
 

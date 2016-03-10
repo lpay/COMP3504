@@ -1,114 +1,122 @@
-// Ionic Starter App
+/**
+ *
+ */
 
-// angular.module is a global place for creating, registering and retrieving Angular modules
-// 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
-// the 2nd parameter is an array of 'requires'
-var app = angular.module('Client', ['ionic', 'satellizer'])
+var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router'])
 
-  .config(function ($stateProvider, $urlRouterProvider) {
+    .config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 
-    $stateProvider
+        $urlRouterProvider.otherwise('/dashboard');
 
-      .state('login', {
-        url: '/login',
-        templateUrl: 'Login.html',
-        controller: 'LoginController'
-      })
+        $stateProvider
 
-      .state('signup', {
-        url: '/signup',
-        templateUrl: 'Signup.html',
-        controller: 'SignupController'
-      })
+            .state('login', {
+                url: '/login',
+                templateUrl: 'views/Login.html',
+                controller: 'LoginController'
+            })
 
-      .state('home', {
-        url: '/',
-        templateUrl: 'Home.html',
-        controller: 'HomeController',
-        resolve: {
-          loginRequired: loginRequired
-        }
-      })
+            .state('logout', {
+                url: '/logout',
+                controller: 'LogoutController'
+            })
 
-      .state('group', {
-        url: '/groups',
-        templateUrl: 'GroupSearch.html',
-        controller: 'GroupSearchController',
-        resolve: {
-          loginRequired: loginRequired
-        }
-        })
+            .state('signup', {
+                url: '/signup',
+                templateUrl: 'views/Signup.html',
+                controller: 'SignupController'
+            })
 
-          .state('users', {
-            url: '/users',
-            templateUrl: 'ProfessionalSearch.html',
-            controller: 'ProfessionalSearchController',
-            resolve: {
-              loginRequired: loginRequired
+            .state('dashboard', {
+                url: '/dashboard',
+                abstract: true,
+                templateUrl: 'views/Dashboard.html',
+                resolve: {
+                    loginRequired: loginRequired
+                }
+            })
+
+            .state('dashboard.home', {
+                url: '',
+                views: {
+                    home: {
+                        template: 'home!'
+                    }
+                }
+            })
+
+            .state('dashboard.search', {
+                url: '/search',
+                views: {
+                    search: {
+                        templateUrl: 'views/Search.html',
+                        controller: 'SearchController'
+                    }
+                }
+            })
+
+            .state('dashboard.help', {
+                url: '/help',
+                views: {
+                    help: {
+                        template: 'help!'
+                    }
+                }
+            });
+
+        function loginRequired($auth, $location, $q) {
+            var deferred = $q.defer();
+
+            if ($auth.isAuthenticated()) {
+                deferred.resolve();
+            } else {
+                //$state.go('login');
+                $location.path('/login');
             }
 
-      });
+            return deferred.promise;
+        }
 
-    function loginRequired($q, $location, $auth) {
-      var deferred = $q.defer();
+        $ionicConfigProvider.tabs.position('bottom');
+    })
 
-      if ($auth.isAuthenticated()) {
-        deferred.resolve();
-      } else {
-        $location.path('/login');
-        //$stateProvider.go('login');
-      }
+    .config(function($authProvider) {
+        var commonConfig = {
+            popupOptions: {
+                location: 'no',
+                toolbar: 'yes',
+                width: window.screen.width,
+                height: window.screen.height
+            }
+        };
 
-      return deferred.promise;
-    }
+        if (ionic.Platform.isIOS() || ionic.Platform.isAndroid()) {
+            commonConfig.redirectUri = 'http://localhost:8100';
+        }
 
-    $urlRouterProvider.otherwise('/');
+        $authProvider.loginUrl = 'http://localhost:3504/auth/login';
+        $authProvider.signupUrl = 'http://localhost:3504/auth/signup';
 
-  })
+        $authProvider.google(angular.extend({}, commonConfig, {
+            clientId: '870728536471-ilmvcb2obgo6ioucqokrgvcj211nj7t3.apps.googleusercontent.com',
+            url: 'http://localhost:3504/auth/google'
+        }));
+    })
 
-  .config(function($authProvider) {
-    var commonConfig = {
-      popupOptions: {
-        location: 'no',
-        toolbar: 'yes',
-        width: window.screen.width,
-        height: window.screen.height
-      }
-    };
+    .run(function($ionicPlatform) {
+        $ionicPlatform.ready(function() {
+            if(window.cordova && window.cordova.plugins.Keyboard) {
+                // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
+                // for form inputs)
+                cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
 
-    if (ionic.Platform.isIOS() || ionic.Platform.isAndroid()) {
-      commonConfig.redirectUri = 'http://localhost:3504/';
-    }
-
-    $authProvider.loginUrl = 'http://localhost:3504/auth/login';
-    $authProvider.signupUrl = 'http://localhost:3504/auth/signup';
-
-    //$authProvider.locan(angular.extend({}, commonConfig, {
-    //  url: 'http://localhost:3504/auth/login'
-    //}));
-
-    $authProvider.google(angular.extend({}, commonConfig, {
-      clientId: '603122136500203',
-      url: 'http://localhost:3504/auth/google'
-    }));
-  })
-
-  .run(function($ionicPlatform) {
-
-
-    $ionicPlatform.ready(function() {
-      if(window.cordova && window.cordova.plugins.Keyboard) {
-        // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-        // for form inputs)
-        cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-
-        // Don't remove this line unless you know what you are doing. It stops the viewport
-        // from snapping when text inputs are focused. Ionic handles this internally for
-        // a much nicer keyboard experience.
-        cordova.plugins.Keyboard.disableScroll(true);
-      }
-      if(window.StatusBar) {
-        StatusBar.styleDefault();
-      }
+                // Don't remove this line unless you know what you are doing. It stops the viewport
+                // from snapping when text inputs are focused. Ionic handles this internally for
+                // a much nicer keyboard experience.
+                cordova.plugins.Keyboard.disableScroll(true);
+            }
+            if(window.StatusBar) {
+                StatusBar.styleDefault();
+            }
+        });
     });
-  });

@@ -2,7 +2,7 @@
  * Created by Johnny Admin on 2/29/2016.
  */
 
-app.controller('HomeController', function($scope, $http, $location, $auth, $ionicSideMenuDelegate, $ionicLoading) {
+app.controller('SearchController', function($scope, $http, $location, $auth, $ionicSideMenuDelegate, $ionicLoading) {
 
   $scope.names = [];
 
