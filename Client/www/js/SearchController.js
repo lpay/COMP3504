@@ -2,19 +2,18 @@
  * Created by Johnny Admin on 2/29/2016.
  */
 
-app.controller('SearchController', function($scope, $http, $location, $auth, $ionicSideMenuDelegate, $ionicLoading) {
+app.controller('SearchController', function($scope, $http, $location, $auth, $ionicSideMenuDelegate, $ionicLoading, $state) {
 
-    $scope.names = [];
+    $scope.groups = [];
 
 
     $scope.doSearch = function() {
         $scope.show($ionicLoading);
-        console.log('search');
 
         $http.get('http://localhost:3504/appointments/search', { search: $scope.search })
-            .success(function (data) {
-                console.log(data);
-                $scope.names = data;
+            .success(function(groups) {
+                console.log(groups);
+                $scope.groups = groups;
             })
             .error(function (err) {
 
@@ -43,7 +42,7 @@ app.controller('SearchController', function($scope, $http, $location, $auth, $io
 
     $scope.show = function() {
         $ionicLoading.show({
-            template: '<p>Loading...</p><ion-spinner></ion-spinner>'
+            template: '<p>Searching</p><ion-spinner></ion-spinner>'
         });
     };
 
@@ -56,9 +55,9 @@ app.controller('SearchController', function($scope, $http, $location, $auth, $io
     };
 
     $scope.clearSearch = function() {
-        $scope.$parent.search = '';
-        $scope.names=[];
-        console.log("Clear Search");
+        $scope.search = "";
+        $scope.groups = [];
+
     };
 
     $scope.toggleRight = function() {

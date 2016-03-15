@@ -16,15 +16,16 @@ var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router'])
                 controller: 'LoginController'
             })
 
-            .state('logout', {
-                url: '/logout',
-                controller: 'LogoutController'
-            })
-
             .state('signup', {
                 url: '/signup',
                 templateUrl: 'views/Signup.html',
                 controller: 'SignupController'
+            })
+
+
+            .state('logout', {
+                url: '/logout',
+                controller: 'LogoutController'
             })
 
             .state('dashboard', {
@@ -39,8 +40,8 @@ var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router'])
             .state('dashboard.home', {
                 url: '',
                 views: {
-                    home: {
-                        template: 'home!'
+                    'home-tab': {
+                        template: '<ion-view title="Home"></ion-view>'
                     }
                 }
             })
@@ -48,9 +49,20 @@ var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router'])
             .state('dashboard.search', {
                 url: '/search',
                 views: {
-                    search: {
+                    'search-tab': {
                         templateUrl: 'views/Search.html',
                         controller: 'SearchController'
+                    }
+                }
+            })
+
+            .state('dashboard.group', {
+                url: '/group',
+                params: { group: undefined },
+                views: {
+                    'search-tab': {
+                        templateUrl: 'views/Group.html',
+                        controller: 'GroupController'
                     }
                 }
             })
@@ -58,8 +70,8 @@ var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router'])
             .state('dashboard.help', {
                 url: '/help',
                 views: {
-                    help: {
-                        template: 'help!'
+                    'help-tab': {
+                        template: '<ion-view title="Help"></ion-view>'
                     }
                 }
             });
@@ -103,7 +115,7 @@ var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router'])
         }));
     })
 
-    .run(function($ionicPlatform) {
+    .run(function($ionicPlatform, $stateParams) {
         $ionicPlatform.ready(function() {
             if(window.cordova && window.cordova.plugins.Keyboard) {
                 // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard

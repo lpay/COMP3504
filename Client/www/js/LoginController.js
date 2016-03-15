@@ -12,7 +12,7 @@ app
                     $state.go('dashboard.home');
                 })
                 .catch(function (res) {
-
+                    console.log(res);
                 });
         };
 
@@ -22,14 +22,9 @@ app
                     $state.go('dashboard.home');
                 })
                 .catch(function(res) {
-
+                    console.log(res);
                 });
         };
-
-        $scope.goToSignup = function(){
-            $state.go('signup');
-        }
-
     })
 
     .controller('LogoutController', function($auth, $state) {

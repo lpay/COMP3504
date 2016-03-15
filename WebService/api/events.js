@@ -15,6 +15,7 @@
 
 var router = require('express').Router();
 var moment = require('moment');
+var Promise = require('bluebird');
 var Group = require('../models/group');
 
 var APIError = require('../errors/APIError');
@@ -67,57 +68,58 @@ router.post('/appointments', ensureAuthenticated, function(req, res) {
         .catch(e => res.status(409).send({ message: e }));
 });
 
-router.get('/appointments/search', function(req, res) {
+router.get('/appointments/search', function(req, res, next) {
     var search = {};
 
     if (req.body.group) search.name = {$regex: new RegExp(req.body.group, "i")};
     if (req.body.slug) search.slug = req.body.slug;
 
     Group.find(search)
+        .populate('members.user')
         .then(groups => {
+
+            var timeslots = [];
             var start = req.body.start || moment();
             var end = req.body.end || moment(start).add(1, 'days');
 
             // round up to next whole minute
             start.add(1, 'minutes').seconds(0).milliseconds(0);
 
-            groups.forEach(function(group) {
-                group.generateTimeslots(start, end)
-                    .then(timeslots => res.send(timeslots));
+            // generate timeslots
+            groups.forEach(group => {
+
+                var result = group.generateTimeslots(start.clone(), end.clone());
+
+                if (result.totalTimeslots > 0) {
+                    timeslots.push({
+                        // only expose certain information about the group
+                        _id: group._id,
+
+                        slug: group.slug,
+                        name: group.name,
+
+                        address: group.address,
+                        city: group.city,
+                        province: group.province,
+                        postalCode: group.postalCode,
+
+                        contact: group.contact,
+                        phone: group.phone,
+                        email: group.email,
+
+                        startDate: result.startDate,
+                        endDate: result.endDate,
+                        totalTimeslots: result.totalTimeslots,
+
+                        members: result.members
+                    });
+                }
             });
-        });
+
+
+            res.send(timeslots);
+        })
+        .catch(next);
 });
-
-
-
-router.get('/events/:search', function(req, res) {
-    console.log(req.params.search);
-
-    res.send([
-        {firstName: 'Alex', lastName: 'Adams'},
-        {firstName: 'Bobby', lastName: 'Brown'},
-        {firstName: 'Candice', lastName: 'Candy'},
-        {firstName: 'Dominique', lastName: 'Donald'},
-        {firstName: 'Erin', lastName: 'Early'},
-        {firstName: 'Frank', lastName: 'Folly'},
-        {firstName: 'Heather', lastName: 'Holly'},
-        {firstName: 'Igor', lastName: 'Ionoff'},
-        {firstName: 'Johnny', lastName: 'Johnson'},
-        {firstName: 'Katie', lastName: 'Knight'},
-        {firstName: 'Leena', lastName: 'Little'},
-        {firstName: 'Mary', lastName: 'Mary'},
-        {firstName: 'Rosie', lastName: 'Remaglia'},
-        {firstName: 'Sammy', lastName: 'Sosa'},
-        {firstName: 'Tiger', lastName: 'Tanner'},
-        {firstName: 'Unser', lastName: 'Unow'},
-        {firstName: 'Victoria', lastName: 'Vee'},
-        {firstName: 'Ura', lastName: 'Fuquad'}
-    ]);
-});
-
-router.post('/events', ensureAuthenticated, function(req, res) {
-    console.log(req.body.title);
-});
-
 
 module.exports = router;

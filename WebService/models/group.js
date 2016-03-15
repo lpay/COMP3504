@@ -3,7 +3,6 @@
  *
  */
 
-
 var mongoose = require('mongoose');
 var moment = require('moment');
 
@@ -54,7 +53,7 @@ var groupSchema = new mongoose.Schema({
     defaultInterval: { type: Number, required: true, default: 15 },
 
     members: [{
-        user: { type: ObjectId, ref: 'User', unique: true },
+        user: { type: ObjectId, ref: 'User' },
         role: { type: String, default: 'professional', enum: ['admin', 'professional'] },
         availability: {
             type: [availabilitySchema],
@@ -68,12 +67,10 @@ var groupSchema = new mongoose.Schema({
                 {day: 'Saturday', hours: []}
             ]
         },
-        appointmentTypes: [
-            {
+        appointmentTypes: [{
                 name: String,
                 length: Number
-            }
-        ],
+            }],
         events: {
             type: [{
                 client: { type: ObjectId, ref: 'User' },
@@ -81,131 +78,168 @@ var groupSchema = new mongoose.Schema({
                 type: String,
                 start: Date,
                 end: Date
-            }], select: false
+            }]
         }
     }]
 });
 
-groupSchema.methods.generateTimeslots = function(startDate, endDate, interval) {
+/**
+ * Generates available timeslots for the group between a given start and end date.
+ *
+ * This function will take into account the groups defaultAvailability array, as well as each
+ * member's availability and events arrays. Results are returned as an array of members, with each
+ * element containing that members id and name, as well as an array of timeslots available for that
+ * member.
+ *
+ * TODO: benchmark... lots of nested looping here.
+ *
+ * @param startDate     timeslots will not begin before this date
+ * @param endDate       timeslots will not end after this date
+ * @param interval      (optional) minimum spacing between timeslots in minutes
+ * @param time          (optional) minimum length of each timeslot in minutes
+ * @returns {Array}     an array of generated timeslots
+ */
+groupSchema.methods.generateTimeslots = function(startDate, endDate, interval, time) {
     var group = this;
 
-    return Group.findById(group, '+members.events')
-        .then(group => {
+    interval = interval || group.defaultInterval || 15;
+    time = time || 45;
 
-            var members = [];
+    // round up to the nearest interval
+    startDate.add(interval - (startDate.minute() % interval), 'minutes');
 
-            var minTime = 45;
-            interval = interval || group.defaultInterval || 15;
+    var groupAvailability = {
+        'Sunday': [],
+        'Monday': [],
+        'Tuesday': [],
+        'Wednesday': [],
+        'Thursday': [],
+        'Friday': [],
+        'Saturday': []
+    };
 
-            // round up to the nearest interval
-            startDate.add(interval - (startDate.minute() % interval), 'minutes');
+    // group availability
+    group.defaultAvailability.forEach(function(entry) {
+        entry.hours.forEach(function(hours) {
+            groupAvailability[entry.day].push({ start: hours.start, end: hours.end, available: hours.available, rank: 0});
+        })
+    });
 
-            var groupAvailability = {
-                'Sunday': [],
-                'Monday': [],
-                'Tuesday': [],
-                'Wednesday': [],
-                'Thursday': [],
-                'Friday': [],
-                'Saturday': []
-            };
+    // organize available timeslots by each member
+    var members = [];
+    var totalTimeslots = 0;
 
-            // group availability
-            group.defaultAvailability.forEach(function(entry) {
-                entry.hours.forEach(function(hours) {
-                    groupAvailability[entry.day].push({ start: hours.start, end: hours.end, available: hours.available, rank: 0});
-                })
+    group.members.forEach(function(member) {
+
+        // deep copy
+        // TODO: better way?
+        var availability = JSON.parse(JSON.stringify(groupAvailability));
+
+        // member availability
+        member.availability.forEach(function (day) {
+            day.hours.forEach(function (hours) {
+                availability[entry.day].push({start: hours.start, end: hours.end, available: hours.available, rank: 1});
             });
-
-            group.members.forEach(function(member) {
-
-                var pushme = false;
-
-                var availability = JSON.parse(JSON.stringify(groupAvailability));
-
-                // member availability
-                member.availability.forEach(function(entry) {
-                    entry.hours.forEach(function(hours) {
-                        availability[entry.day].push({ start: hours.start, end: hours.end, available: hours.available, rank: 1});
-                    });
-                });
-
-                // sort by: rank (desc), timespan, start, end
-                Object.keys(availability).forEach(function(day) {
-                    availability[day].sort(function(a, b) {
-                        if (a.rank != b.rank)
-                            return b.rank - a.rank;
-
-                        if (a.end - a.start != b.end - b.start)
-                            return ((a.end - a.start) - (b.end - b.start));
-
-                        if (a.start != b.start)
-                            return a.start - b.start;
-
-                        if (a.end != b.end)
-                            return a.end - b.end;
-
-                        return 0;
-                    });
-                });
-
-                for (var date = startDate; date < endDate; date.add(interval, 'minutes')) {
-
-                    // calculate timeslot start & end in seconds
-                    var start = (date.hour() * 60 + date.minute()) * 60;
-                    var end = start + (minTime * 60);
-                    var available = false;
-
-                    // check for conflicting events
-                    if (member.events.some(event => {
-                            return !event.available && (
-                                    date.diff(event.start) >= 0 &&
-                                    date.diff(event.end) <= 0
-                                ) || (
-                                    moment(date).add(end, 'seconds').diff(event.start) >= 0 &&
-                                    moment(date).add(end, 'seconds').diff(event.end) <= 0
-                            );
-                        })) continue;
-
-                    // check availability
-                    var hours = availability[weekdays[startDate.day()]];
-
-                    hours.some(hours => {
-                        var hasStart = (start >= hours.start && start <= hours.end);
-                        var hasEnd = (end >= hours.start && end <= hours.end);
-
-                        if (start < hours.start && end > hours.end && !hours.available)
-                            return true;
-
-                        if ((hasStart || hasEnd) && !hours.available)
-                            return true;
-
-                        if (hasStart && hasEnd) {
-                            available = hours.available;
-                            return true;
-                        }
-                    });
-
-                    if (available) {
-                        if (!member.timeslots)
-                            member.timeslots = [];
-
-                        member.timeslots.push({
-                            //group: group._id,
-                            //member: member._id,
-                            start: moment(date).toDate()
-                        });
-
-                        pushme = true;
-                    }
-                }
-
-                if (pushme)
-                    members.push(member);
-            });
-
-            return members;
         });
+
+        // sort hours
+        Object.keys(availability).forEach(function (day) {
+            availability[day].sort(function (a, b) {
+                // sort by rank (desc)
+                if (a.rank != b.rank)
+                    return b.rank - a.rank;
+
+                // sort by timespan
+                if (a.end - a.start != b.end - b.start)
+                    return ((a.end - a.start) - (b.end - b.start));
+
+                // sort by start
+                if (a.start != b.start)
+                    return a.start - b.start;
+
+                // sort by end
+                if (a.end != b.end)
+                    return a.end - b.end;
+
+                return 0;
+            });
+        });
+
+        // group hours
+
+        var timeslots = [];
+
+        for (var date = startDate; date < endDate; date.add(interval, 'minutes')) {
+
+            // calculate timeslot start & end in seconds
+            var start = (date.hour() * 60 + date.minute()) * 60;
+
+            // min time
+            var minTime = start + (time * 60);
+
+            // max time
+            var maxTime = 0;
+
+            // check for conflicting events
+            if (member.events.some(event => {
+                    return !event.available && (
+                            date.diff(event.start) >= 0 &&
+                            date.diff(event.end) <= 0
+                        ) || (
+                            moment(date).add(end, 'seconds').diff(event.start) >= 0 &&
+                            moment(date).add(end, 'seconds').diff(event.end) <= 0
+                        );
+                })) continue;
+
+            // check availability
+            var hours = availability[weekdays[startDate.day()]];
+
+            hours.some(hours => {
+                var hasStart = (start >= hours.start && start <= hours.end);
+                var hasEnd = (minTime >= hours.start && minTime <= hours.end);
+
+                // mininum timeslot would completely overlap an unavailable time
+                if (start <= hours.start && minTime >= hours.end && !hours.available)
+                    return true;
+
+                // timeslot would start or end in an unavailable time
+                if ((hasStart || hasEnd) && !hours.available)
+                    return true;
+
+                if (hasStart && hasEnd) {
+                    if (hours.available)
+                        maxTime = hours.end;
+
+                    return true;
+                }
+            });
+
+            if (maxTime > 0) {
+                timeslots.push({
+                    start: moment(date),
+                    end: moment(date).add(maxTime, 'seconds')
+                });
+            }
+        }
+
+        if (timeslots.length > 0) {
+            members.push({
+                // expose minimal member information
+                _id: member._id,
+                name: member.name,
+                timeslots: timeslots
+            });
+
+            totalTimeslots += timeslots.length;
+        }
+    });
+
+    return {
+        startDate: startDate,
+        endDate: endDate,
+        members: members,
+        totalTimeslots: totalTimeslots
+    }
 };
 
 groupSchema.methods.join = function(user, group) {

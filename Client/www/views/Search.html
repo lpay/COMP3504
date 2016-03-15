@@ -1,5 +1,29 @@
 <ion-view title="Search">
-    <ion-pane>
+    <ion-content>
+
+        <div class="bar bar-header item-input-inset">
+            <label class="item-input-wrapper">
+                <i class="icon ion-ios-search placeholder-icon"></i>
+                <input type="search" placeholder="Search" ng-model="search" ng-change="doSearch()">
+            </label>
+            <button class="button" type="submit" ng-click="clearSearch()">Cancel</button>
+        </div>
+
+        <ion-list>
+            <ion-item ng-repeat="group in groups" ui-sref="dashboard.group({group: group})">
+                <div class="row">
+                    <div class="col">{{group.name}}</div>
+                    <div class="col">{{group.totalTimeslots}} times available!</div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        {{group.address}}
+                    </div>
+                </div>
+            </ion-item>
+        </ion-list>
+
+        <!--
         <ion-side-menus>
             <ion-side-menu-content>
                 <ion-nav-bar class="bar-stable nav-title-slide-ios7">
@@ -33,27 +57,7 @@
                 </ion-content>
             </ion-side-menu>
         </ion-side-menus>
+        -->
 
-        <!--Main Content-->
-        <div class="bar bar-header item-input-inset">
-            <label class="item-input-wrapper">
-                <i class="icon ion-ios-search placeholder-icon"></i>
-                <input type="search" placeholder="Search" ng-model="$parent.search" ng-change="doSearch()">
-            </label>
-            <button class="button" type="submit" ng-click="clearSearch()">Cancel</button>
-        </div>
-
-        <ion-list>
-            <ion-item ng-repeat="i in names track by $index">
-                {{i}}
-            </ion-item>
-        </ion-list>
-
-        <!--search by *** buttons
-        <button class="button button-positive button-small" type="submit" ng-click="goToProfessionalSearch()">Search by Chiropractor</button><br/>
-        <button class="button button-positive button-small" type="submit" ng-click="goToGroupSearch()">Search by Clinic</button><br/>
-        <button class="button button-positive button-small" type="submit">Search by Location</button><br/>
-
-        <button class="button button-positive button-small" type="submit" ng-click="logout()">Logout</button><br/>-->
-    </ion-pane>
+    </ion-content>
 </ion-view>
