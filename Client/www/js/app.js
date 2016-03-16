@@ -2,7 +2,7 @@
  *
  */
 
-var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router'])
+var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router', 'ion-datetime-picker'])
 
     .config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 

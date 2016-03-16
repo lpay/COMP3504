@@ -5,7 +5,8 @@
 app.controller('SearchController', function($scope, $http, $location, $auth, $ionicSideMenuDelegate, $ionicLoading, $state) {
 
     $scope.groups = [];
-
+    $scope.desiredTime = new Date();
+    $scope.timepickerTitle = "Select desired appointment time:"
 
     $scope.doSearch = function() {
         $scope.show($ionicLoading);

@@ -225,8 +225,8 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, interval, t
         if (timeslots.length > 0) {
             members.push({
                 // expose minimal member information
-                _id: member._id,
-                name: member.name,
+                _id: member.user._id,
+                name: member.user.name,
                 timeslots: timeslots
             });
 

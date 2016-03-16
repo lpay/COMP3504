@@ -7,6 +7,14 @@
                 <input type="search" placeholder="Search" ng-model="search" ng-change="doSearch()">
             </label>
             <button class="button" type="submit" ng-click="clearSearch()">Cancel</button>
+
+            <br/>
+
+            <ion-datetime-picker title="timepickerTitle" ng-model="desiredTime">
+                <button class="button button-block button-positive">{{desiredTime| date: "yyyy-mm-dd H:mm"}}</button>
+            </ion-datetime-picker>
+
+
         </div>
 
         <ion-list>
