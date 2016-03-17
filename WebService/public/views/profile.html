@@ -1,12 +1,12 @@
 <div class="container">
     <div class="row">
-        <div class="col-xs-12">
+        <div class="col-md-12">
             <h4>Edit Profile</h4>
             <hr/>
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-4">
+        <div class="col-md-4">
             <form submit="save()">
                 <div class="row">
                     <div class="col-xs-12">
@@ -47,7 +47,25 @@
                 </div>
             </form>
         </div>
-        <div class="col-md-2 col-md-offset-6">
+
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <h4>Appointment Times</h4>
+                    <hr/>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <appointment-time-setter profile="profile">
+
+                    </appointment-time-setter>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-2">
             <div class="row">
                 <div class="col-md-12 text-center">
                     <h4>Availability</h4>
