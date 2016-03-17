@@ -71,7 +71,7 @@ router.post('/appointments', ensureAuthenticated, function(req, res) {
 router.get('/appointments/search', function(req, res, next) {
     var search = {};
 
-    if (req.body.group) search.name = {$regex: new RegExp(req.body.group, "i")};
+    if (req.body.group) search.name = {$regex: new RegExp(req.body.search, "i")};
     if (req.body.slug) search.slug = req.body.slug;
 
     Group.find(search)

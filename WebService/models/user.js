@@ -16,7 +16,12 @@ var APIError = require('../errors/APIError');
 var userSchema =  new mongoose.Schema({
 
     // Login Information
-    email: { type: String, required: true, unique: true, lowercase: true },
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+        lowercase: true
+    },
     password: { type: String, select: false },
     google: String,
     facebook: String,

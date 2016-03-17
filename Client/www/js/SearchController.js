@@ -11,7 +11,7 @@ app.controller('SearchController', function($scope, $http, $location, $auth, $io
     $scope.doSearch = function() {
         $scope.show($ionicLoading);
 
-        $http.get('http://localhost:3504/appointments/search', { search: $scope.search })
+        $http.get('http://localhost:3504/appointments/search', { search: $scope.search, start:$scope.desiredTime})
             .success(function(groups) {
                 console.log(groups);
                 $scope.groups = groups;
