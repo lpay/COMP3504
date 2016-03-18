@@ -67,6 +67,17 @@ var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router', 'ion
                 }
             })
 
+            .state('dashboard.timeslots', {
+              url: '/timeslots',
+              params: { group: undefined },
+              views: {
+                'search-tab': {
+                  templateUrl: 'views/Timeslots.html',
+                  controller: 'TimeslotsController'
+                }
+              }
+            })
+
             .state('dashboard.help', {
                 url: '/help',
                 views: {

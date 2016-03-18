@@ -25,7 +25,7 @@ app.controller('SearchController', function($scope, $http, $location, $auth, $io
             });
     };
 
-    $scope.goToGroupSearch = function(){
+    /*$scope.goToGroupSearch = function(){
         $location.path("/groups");
         console.log("Redirect Success!");
     };
@@ -39,7 +39,7 @@ app.controller('SearchController', function($scope, $http, $location, $auth, $io
     $scope.goToHome = function(){
         $location.path("/");
         console.log("Redirect Success!");
-    };
+    };*/
 
     $scope.show = function() {
         $ionicLoading.show({
@@ -51,9 +51,9 @@ app.controller('SearchController', function($scope, $http, $location, $auth, $io
         $ionicLoading.hide();
     };
 
-    $scope.toggleLeft  = function() {
+    /*$scope.toggleLeft  = function() {
         $ionicSideMenuDelegate.toggleLeft();
-    };
+    };*/
 
     $scope.clearSearch = function() {
         $scope.search = "";
@@ -61,7 +61,7 @@ app.controller('SearchController', function($scope, $http, $location, $auth, $io
 
     };
 
-    $scope.toggleRight = function() {
+    /*$scope.toggleRight = function() {
         $ionicSideMenuDelegate.toggleRight();
     };
 
@@ -71,7 +71,7 @@ app.controller('SearchController', function($scope, $http, $location, $auth, $io
                 $location.path('/login');
                 console.log("Logout Success!");
             });
-    };
+    };*/
 
 });
 

@@ -3,14 +3,9 @@
         {{group.name}}
 
         <ion-list>
-            <ion-item ng-repeat="member in group.members">
+            <ion-item ng-repeat="member in group.members" ui-sref="dashboard.timeslots({timeslots: timeslots})">
                 {{member.name.first}} - {{member.timeslots.length}}
 
-              <ion-list>
-                <ion-item ng-repeat="timeslot in member.timeslots">
-                  {{timeslot.start}}
-                </ion-item>
-              </ion-list>
             </ion-item>
         </ion-list>
     </ion-content>

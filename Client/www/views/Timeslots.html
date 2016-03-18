@@ -1,0 +1,12 @@
+<ion-view title="Timeslots">
+  <ion-content>
+    {{timeslots.start}}
+
+        <ion-list>
+          <ion-item ng-repeat="timeslot in member.timeslots">
+            {{timeslot.start}}
+          </ion-item>
+        </ion-list>
+
+  </ion-content>
+</ion-view>
