@@ -6,15 +6,17 @@ app.controller('SearchController', function($scope, $http, $location, $auth, $io
 
     $scope.groups = [];
     $scope.desiredTime = new Date();
-    $scope.timepickerTitle = "Select desired appointment time:"
+    $scope.timepickerTitle = "Select desired appointment time:";
 
     $scope.doSearch = function() {
         $scope.show($ionicLoading);
 
-        $http.get('http://localhost:3504/appointments/search', { search: $scope.search, start:$scope.desiredTime})
-            .success(function(groups) {
+        $http.get('http://localhost:3504/appointments/search', { search: $scope.search, start: $scope.desiredTime })
+            .success(function(groups, desiredTime) {
                 console.log(groups);
+                console.log(desiredTime);
                 $scope.groups = groups;
+                $scope.start = desiredTime;
             })
             .error(function (err) {
 
@@ -24,22 +26,6 @@ app.controller('SearchController', function($scope, $http, $location, $auth, $io
                 $scope.hide($ionicLoading);
             });
     };
-
-    /*$scope.goToGroupSearch = function(){
-        $location.path("/groups");
-        console.log("Redirect Success!");
-    };
-
-    $scope.goToProfessionalSearch = function(){
-        $location.path("/users");
-        console.log("Redirect Success!");
-    };
-
-
-    $scope.goToHome = function(){
-        $location.path("/");
-        console.log("Redirect Success!");
-    };*/
 
     $scope.show = function() {
         $ionicLoading.show({
@@ -51,27 +37,11 @@ app.controller('SearchController', function($scope, $http, $location, $auth, $io
         $ionicLoading.hide();
     };
 
-    /*$scope.toggleLeft  = function() {
-        $ionicSideMenuDelegate.toggleLeft();
-    };*/
-
     $scope.clearSearch = function() {
         $scope.search = "";
         $scope.groups = [];
 
     };
-
-    /*$scope.toggleRight = function() {
-        $ionicSideMenuDelegate.toggleRight();
-    };
-
-    $scope.logout = function (){
-        $auth.logout()
-            .then(function () {
-                $location.path('/login');
-                console.log("Logout Success!");
-            });
-    };*/
 
 });
 

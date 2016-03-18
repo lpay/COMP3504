@@ -9,19 +9,18 @@
             <button class="button" type="submit" ng-click="clearSearch()">Cancel</button>
 
             <br/>
-
-            <ion-datetime-picker title="timepickerTitle" ng-model="desiredTime">
-                <button class="button button-block button-positive">{{desiredTime| date: "yyyy-MM-dd H:mm"}}</button>
-            </ion-datetime-picker>
-
-
+        </div>
+        <div>
+          <ion-datetime-picker title="timepickerTitle" ng-model="desiredTime">
+            <button class="button button-block button-positive" > {{desiredTime| date: "yyyy-MM-dd H:mm"}} </button>
+          </ion-datetime-picker>
         </div>
 
         <ion-list>
             <ion-item ng-repeat="group in groups" ui-sref="dashboard.group({group: group})">
                 <div class="row">
                     <div class="col">{{group.name}}</div>
-                    <div class="col">{{group.totalTimeslots}} times available!</div>
+                    <div class="col">{{group.totalTimeslots}} time(s) available!</div>
                 </div>
                 <div class="row">
                     <div class="col">

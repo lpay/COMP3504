@@ -3,7 +3,8 @@
  */
 
 app.controller('TimeslotsController', function($scope, $stateParams) {
-  $scope.timeslots = $stateParams.timeslots;
 
-  console.log($scope.timeslots);
+  $scope.member = $stateParams.member;
+
+  console.log($scope.member);
 });

@@ -3,8 +3,8 @@
         {{group.name}}
 
         <ion-list>
-            <ion-item ng-repeat="member in group.members" ui-sref="dashboard.timeslots({timeslots: timeslots})">
-                {{member.name.first}} - {{member.timeslots.length}}
+            <ion-item ng-repeat="member in group.members" ui-sref="dashboard.timeslots({member: member})">
+                {{member.name.first}} {{member.name.last}} - {{member.timeslots.length}}
 
             </ion-item>
         </ion-list>
