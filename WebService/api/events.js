@@ -68,18 +68,20 @@ router.post('/appointments', ensureAuthenticated, function(req, res) {
         .catch(e => res.status(409).send({ message: e }));
 });
 
-router.get('/appointments/search', function(req, res, next) {
+router.post('/appointments/search', function(req, res, next) {
     var search = {};
 
-    if (req.body.group) search.name = {$regex: new RegExp(req.body.search, "i")};
-    if (req.body.slug) search.slug = req.body.slug;
+    if (req.body.search) {
+        search.name = {$regex: new RegExp(req.body.search, "i")};
+    }
 
     Group.find(search)
         .populate('members.user')
         .then(groups => {
 
             var timeslots = [];
-            var start = req.body.start || moment();
+
+            var start = req.body.start ? moment(req.body.start) : moment();
             var end = req.body.end || moment(start).add(1, 'days');
 
             // round up to next whole minute

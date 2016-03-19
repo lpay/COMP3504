@@ -4,15 +4,15 @@
         <div class="bar bar-header item-input-inset">
             <label class="item-input-wrapper">
                 <i class="icon ion-ios-search placeholder-icon"></i>
-                <input type="search" placeholder="Search" ng-model="search" ng-change="doSearch()">
+                <input type="search" placeholder="Search" ng-model="search.search" ng-change="doSearch()">
             </label>
             <button class="button" type="submit" ng-click="clearSearch()">Cancel</button>
 
             <br/>
         </div>
         <div>
-          <ion-datetime-picker title="timepickerTitle" ng-model="desiredTime">
-            <button class="button button-block button-positive" > {{desiredTime| date: "yyyy-MM-dd H:mm"}} </button>
+          <ion-datetime-picker title="timepickerTitle" ng-model="search.start">
+            <button class="button button-block button-positive" > {{search.start| date: "yyyy-MM-dd H:mm"}} </button>
           </ion-datetime-picker>
         </div>
 

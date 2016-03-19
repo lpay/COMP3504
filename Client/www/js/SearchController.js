@@ -5,18 +5,20 @@
 app.controller('SearchController', function($scope, $http, $location, $auth, $ionicSideMenuDelegate, $ionicLoading, $state) {
 
     $scope.groups = [];
-    $scope.desiredTime = new Date();
+
+    $scope.search = {
+        search: "",
+        start: new Date()
+    };
+
     $scope.timepickerTitle = "Select desired appointment time:";
 
     $scope.doSearch = function() {
         $scope.show($ionicLoading);
 
-        $http.get('http://localhost:3504/appointments/search', { search: $scope.search, start: $scope.desiredTime })
-            .success(function(groups, desiredTime) {
-                console.log(groups);
-                console.log(desiredTime);
+        $http.post('http://localhost:3504/appointments/search', $scope.search)
+            .success(function(groups) {
                 $scope.groups = groups;
-                $scope.start = desiredTime;
             })
             .error(function (err) {
 
