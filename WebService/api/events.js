@@ -16,6 +16,7 @@
 var router = require('express').Router();
 var moment = require('moment');
 var Promise = require('bluebird');
+var User = require('../models/user');
 var Group = require('../models/group');
 
 var APIError = require('../errors/APIError');
@@ -69,16 +70,29 @@ router.post('/appointments', ensureAuthenticated, function(req, res) {
 });
 
 router.post('/appointments/search', function(req, res, next) {
-    var search = {};
 
-    if (req.body.search) {
-        search.name = {$regex: new RegExp(req.body.search, "i")};
-    }
 
-    Group.find(search)
-        .populate('members.user')
+    if (!req.body.search) return res.status(400).send({message: 'search is required'});
+
+
+    var search = [];
+    search.push( { 'name': {$regex: new RegExp(req.body.search, "i")} });
+
+    User.find({'name.last': {$regex: new RegExp(req.body.search, "i")}})
+        .then(users => {
+            if (users.length) {
+                var members = [];
+
+                users.forEach(function(user) {
+                    members.push({'members.user': user});
+                });
+
+                search.push({ $or: members });
+            }
+
+            return Group.find( {$or: search }).populate('members.user');
+        })
         .then(groups => {
-
             var timeslots = [];
 
             var start = req.body.start ? moment(req.body.start) : moment();
@@ -122,6 +136,7 @@ router.post('/appointments/search', function(req, res, next) {
             res.send(timeslots);
         })
         .catch(next);
+
 });
 
 module.exports = router;
