@@ -4,7 +4,7 @@
 
         <ion-list>
           <ion-item ng-repeat="timeslot in member.timeslots">
-            {{timeslot.start}}
+            {{timeslot.start | date : "MMMM dd, yyyy - h:mm a" }}
           </ion-item>
         </ion-list>
 
