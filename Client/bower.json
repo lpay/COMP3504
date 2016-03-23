@@ -1,10 +1,13 @@
 {
-  "name": "HelloIonic",
+  "name": "ScheduleUP",
   "private": "true",
-  "devDependencies": {
-    "ionic": "driftyco/ionic-bower#1.2.4"
-  },
   "dependencies": {
-    "satellizer": "^0.14.0"
+    "satellizer": "^0.14.0",
+    "ionic": "^1.2.4",
+    "angular": "^1.4.3",
+    "angular-animate": "^1.4.3",
+    "angular-sanitize": "^1.4.3",
+    "angular-ui-router": "^0.2.13",
+    "ion-datetime-picker": "^0.1.2"
   }
 }

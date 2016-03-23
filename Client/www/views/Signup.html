@@ -1,0 +1,15 @@
+<ion-pane>
+    <ion-content>
+        <br/>
+        <form ng-submit="signup()">
+            <input type="text" placeholder="First Name" ng-model="register.name.first" />
+            <input type="text" placeholder="Last Name" ng-model="register.name.last" />
+            <input type="email" placeholder="Email" ng-model="register.email"/>
+            <input type="password" placeholder="Password" ng-model="register.password"/>
+            <input type="password" placeholder="Confirm Password" ng-model="register.confirm"/>
+            <button type="submit" class="button button-positive button-small">Register</button><br/>
+        </form>
+
+        Already have an account? <a ui-sref="login">Click here</a> to login.
+    </ion-content>
+</ion-pane>

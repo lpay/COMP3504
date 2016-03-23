@@ -1,0 +1,13 @@
+<ion-pane ng-controller="ProfessionalSearchController">
+  <ion-content >
+    <div class="item item-text-wrap">
+      <ul>
+        <li ng-repeat="i in professionals" class="card">
+          {{i.name.first + ',' + i.name.last + ',' + i.email}}
+        </li>
+      </ul>
+    </div>
+
+    <button class="button button-positive button-small" type="submit" ng-click="logout()">Logout</button><br/>
+  </ion-content>
+</ion-pane>

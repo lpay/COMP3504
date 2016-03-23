@@ -1,53 +1,107 @@
-// Ionic Starter App
+/**
+ *
+ */
 
-// angular.module is a global place for creating, registering and retrieving Angular modules
-// 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
-// the 2nd parameter is an array of 'requires'
-var app = angular.module('Client', ['ionic', 'satellizer'])
+var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router', 'ion-datetime-picker'])
 
-    .config(function ($stateProvider, $urlRouterProvider) {
+    .config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
+
+        $urlRouterProvider.otherwise('/dashboard');
 
         $stateProvider
 
             .state('login', {
                 url: '/login',
-                templateUrl: 'Login.html',
+                templateUrl: 'views/Login.html',
                 controller: 'LoginController'
             })
 
             .state('signup', {
                 url: '/signup',
-                templateUrl: 'Signup.html',
+                templateUrl: 'views/Signup.html',
                 controller: 'SignupController'
             })
 
-            .state('home', {
-                url: '/',
-                templateUrl: 'Home.html',
-                controller: 'HomeController',
+
+            .state('logout', {
+                url: '/logout',
+                controller: 'LogoutController'
+            })
+
+            .state('dashboard', {
+                url: '/dashboard',
+                abstract: true,
+                templateUrl: 'views/Dashboard.html',
                 resolve: {
                     loginRequired: loginRequired
                 }
+            })
+
+            .state('dashboard.home', {
+                url: '',
+                views: {
+                    'home-tab': {
+                        template: '<ion-view title="Home"></ion-view>'
+                    }
+                }
+            })
+
+            .state('dashboard.search', {
+                url: '/search',
+                views: {
+                    'search-tab': {
+                        templateUrl: 'views/Search.html',
+                        controller: 'SearchController'
+                    }
+                }
+            })
+
+            .state('dashboard.group', {
+                url: '/group',
+                params: { group: undefined },
+                views: {
+                    'search-tab': {
+                        templateUrl: 'views/Group.html',
+                        controller: 'GroupController'
+                    }
+                }
+            })
+
+            .state('dashboard.timeslots', {
+              url: '/timeslots',
+              params: { member: undefined },
+              views: {
+                'search-tab': {
+                  templateUrl: 'views/Timeslots.html',
+                  controller: 'TimeslotsController'
+                }
+              }
+            })
+
+            .state('dashboard.help', {
+                url: '/help',
+                views: {
+                    'help-tab': {
+                        template: '<ion-view title="Help"></ion-view>'
+                    }
+                }
             });
 
-
-        function loginRequired($q, $location, $auth) {
+        function loginRequired($auth, $location, $q) {
             var deferred = $q.defer();
 
             if ($auth.isAuthenticated()) {
                 deferred.resolve();
             } else {
+                //$state.go('login');
                 $location.path('/login');
-                //$stateProvider.go('login');
             }
 
             return deferred.promise;
         }
 
-        $urlRouterProvider.otherwise('/');
-
+        $ionicConfigProvider.tabs.position('bottom');
     })
-
 
     .config(function($authProvider) {
         var commonConfig = {
@@ -60,7 +114,7 @@ var app = angular.module('Client', ['ionic', 'satellizer'])
         };
 
         if (ionic.Platform.isIOS() || ionic.Platform.isAndroid()) {
-            commonConfig.redirectUri = 'http://localhost:3504/';
+            commonConfig.redirectUri = 'http://localhost:8100';
         }
 
         $authProvider.loginUrl = 'http://localhost:3504/auth/login';
@@ -72,8 +126,7 @@ var app = angular.module('Client', ['ionic', 'satellizer'])
         }));
     })
 
-    .run(function($ionicPlatform) {
-
+    .run(function($ionicPlatform, $stateParams) {
         $ionicPlatform.ready(function() {
             if(window.cordova && window.cordova.plugins.Keyboard) {
                 // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard

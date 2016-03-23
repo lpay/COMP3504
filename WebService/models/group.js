@@ -69,12 +69,6 @@ var groupSchema = new mongoose.Schema({
                 {day: 'Saturday', hours: []}
             ]
         },
-        appointmentTypes:[
-            {
-                name: String,
-                length: Number
-            }
-        ],
         events: {
             type: [{
                 client: { type: ObjectId, ref: 'User' },
