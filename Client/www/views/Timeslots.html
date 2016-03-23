@@ -5,11 +5,12 @@
     </div>
 
         <ion-list>
-          <ion-card ng-repeat="timeslot in member.timeslots">
+          <ion-item ng-repeat="timeslot in member.timeslots" ui-sref="dashboard.bookappointmenttime({timeslot: timeslot})">
            <div class="card">
              {{timeslot.start | date: "H:mm"}} - {{timeslot.end |date: "H:mm"}}
            </div>
-          </ion-card>
+          </ion-item>
+
         </ion-list>
 
   </ion-content>
