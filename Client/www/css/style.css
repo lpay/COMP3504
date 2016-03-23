@@ -1,1 +1,34 @@
 /* Empty. Add your own CSS if you like */
+
+.ion-nav-view {
+  background-color: black;
+}
+.card:active {
+
+  text-align: center;
+  font-family: Helvetica;
+  font-weight: bolder;
+  border-color: aqua;
+  box-shadow: inset 1px 1px 1px 1px aqua;
+
+}
+
+.card {
+
+  font-weight: bold;
+  text-align: center;
+  opacity: 0.8;
+
+  background-color: snow;
+  border-width: 5px;
+  padding: 10px;
+  border-color: blue;
+  border-radius: 10px;
+
+}
+
+.membername {
+  text-align: center;
+  font-weight: bold;
+  border-color: aqua;
+}

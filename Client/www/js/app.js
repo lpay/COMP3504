@@ -78,6 +78,18 @@ var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router', 'ion
               }
             })
 
+          .state('dashboard.bookappointmenttime', {
+            url: '/bookappointmenttime',
+            params: { timeslot: undefined,
+                      member: undefined },
+            views: {
+              'search-tab': {
+                templateUrl: 'views/BookAppointmentTime.html',
+                controller: 'BATController'
+              }
+            }
+          })
+
             .state('dashboard.help', {
                 url: '/help',
                 views: {
