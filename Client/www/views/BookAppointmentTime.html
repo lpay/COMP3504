@@ -1,10 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<ion-view title="Book Appointment">
+  <ion-content>
 
-</body>
-</html>
+    <ion-item>
+      {{member.name.first}} {{member.name.last}}<br/>
+      {{group.address}}<br/>
+      {{group.city}} {{group.province}}, {{group.postalCode}}
+    </ion-item>
+    <ion-item>
+      Start Time: {{timeslot.start | date: "MMMM dd, yyyy - H:mm"}}<br/>
+      End Time: {{timeslot.end | date: "MMMM dd, yyyy - H:mm"}}
+    </ion-item>
+
+    <button>Book Appointment</button><br/>
+    <button>Cancel</button>
+
+  </ion-content>
+</ion-view>

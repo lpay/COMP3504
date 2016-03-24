@@ -5,6 +5,8 @@
 app.controller('TimeslotsController', function($scope, $stateParams) {
 
   $scope.member = $stateParams.member;
+  $scope.group = $stateParams.group;
 
   console.log($scope.member);
+  console.log($scope.group);
 });
