@@ -36,11 +36,17 @@ var userSchema =  new mongoose.Schema({
     province: { type: String },
     postalCode: { type: String },
 
+    appointmentTypes:[
+        { name: String, length: String }
+    ],
+
     // Meta
     created_at: Date,
     updated_at: Date,
     last_login: Date
 });
+
+
 
 userSchema.pre('save', function(next) {
     var user = this;
