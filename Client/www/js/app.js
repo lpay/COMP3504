@@ -69,7 +69,8 @@ var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router', 'ion
 
             .state('dashboard.timeslots', {
               url: '/timeslots',
-              params: { member: undefined },
+              params: { member: undefined,
+                        group: undefined },
               views: {
                 'search-tab': {
                   templateUrl: 'views/Timeslots.html',
@@ -81,7 +82,8 @@ var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router', 'ion
           .state('dashboard.bookappointmenttime', {
             url: '/bookappointmenttime',
             params: { timeslot: undefined,
-                      member: undefined },
+                      member: undefined,
+                      group: undefined },
             views: {
               'search-tab': {
                 templateUrl: 'views/BookAppointmentTime.html',
