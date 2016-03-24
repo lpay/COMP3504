@@ -11,17 +11,20 @@ app.directive('appointmentTimeSetter', function($http, $uibModal) {
 
         link: function(scope) {
 
-            scope.add = function() {
-                scope.profile.appointmentTypes.push({
-                    name: scope.profile.name,
-                    length: scope.profile.length
-                });
 
+            scope.add = function() {
+
+                scope.profile.user.appointmentTypes.push({
+                    name: scope.new.name,
+                    length: scope.new.length
+                });
+                console.log(scope.new);
+                console.log(scope.profile.user);
                 scope.new = { };
             };
 
             scope.remove = function(index) {
-                scope.profile.appointmentTypes.splice(index, 1);
+                scope.profile.user.appointmentTypes.splice(index, 1);
             };
 
             scope.up = function(index) {
