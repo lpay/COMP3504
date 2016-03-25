@@ -14,25 +14,13 @@ app.directive('availabilityEditor', function($http, $uibModal) {
 
                 scope.availability.hours.forEach(function(entry) {
                     if (entry.available) {
-
-                        var description = '';
-
                         var start = moment().startOf('day').add(moment.duration(entry.start, 'seconds'));
                         var end = moment().startOf('day').add(moment.duration(entry.end, 'seconds'));
 
-                        if (start.minutes() > 0)
-                            description = start.format('h:mmA');
-                        else
-                            description = start.format('hA');
-
-                        description += '-';
-
-                        if (end.minutes() > 0)
-                            description += end.format('h:mmA');
-                        else
-                            description += end.format('hA');
-
-                        scope.descriptions.push(description);
+                        scope.descriptions.push(
+                            (start.minutes() > 0 ? start.format('h:mmA') : start.format('hA')) + '-' +
+                            (end.minutes() > 0 ? end.format('h:mmA') : end.format('hA'))
+                        );
                     }
                 });
 
@@ -125,7 +113,7 @@ app.directive('availabilityEditor', function($http, $uibModal) {
                             });
                     })
                     .catch(function(reason) {
-
+                        // modal was dismissed
                     })
             };
         }

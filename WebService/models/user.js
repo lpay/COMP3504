@@ -36,10 +36,6 @@ var userSchema =  new mongoose.Schema({
     province: { type: String },
     postalCode: { type: String },
 
-    appointmentTypes:[
-        { name: String, length: String }
-    ],
-
     // Meta
     created_at: Date,
     updated_at: Date,

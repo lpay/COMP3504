@@ -14,10 +14,9 @@ var favicon = require('serve-favicon');
 var bodyParser = require('body-parser');
 var crypto = require('crypto');
 var cors = require('cors');
-
 var APIError = require('./errors/APIError');
 
-//var cookieParser = require('cookie-parser');
+var slug = require('slug');
 
 //
 // MongoDB

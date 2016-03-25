@@ -25,6 +25,7 @@ var availabilitySchema = new mongoose.Schema({
 
 var groupSchema = new mongoose.Schema({
 
+    // Group Information
     slug: { type: String, required: true, unique: true },
     name: { type: String, required: true, unique: true },
 
@@ -37,7 +38,13 @@ var groupSchema = new mongoose.Schema({
     phone: { type: String },
     email: { type: String },
 
-    tags: [],
+    tags: [String],
+
+    // Member defaults
+    defaultAppointments: {
+        type: [{name: String, length: Number, interval: Number}],
+        default: [{name: 'Basic', length: 45, interval: 15}]
+    },
 
     defaultAvailability: {
         type: [availabilitySchema],
@@ -52,8 +59,7 @@ var groupSchema = new mongoose.Schema({
         ]
     },
 
-    defaultInterval: { type: Number, required: true, default: 15 },
-
+    // Group Members
     members: [{
         user: { type: ObjectId, ref: 'User', unique: true },
         role: { type: String, default: 'professional', enum: ['admin', 'professional'] },
@@ -81,19 +87,17 @@ var groupSchema = new mongoose.Schema({
     }]
 });
 
-groupSchema.methods.generateTimeslots = function(startDate, endDate, interval) {
+groupSchema.methods.generateTimeslots = function(startDate, endDate, interval, time) {
     var group = this;
 
     return Group.findById(group, '+members.events')
+        .populate('members.user')
         .then(group => {
-
-            var minTime = 45;
-            interval = interval || group.defaultInterval || 15;
+            interval = interval || 15;
+            time = time || 45;
 
             // round up to the nearest interval
             startDate.add(interval - (startDate.minute() % interval), 'minutes');
-
-            var timeslots = [];
 
             var groupAvailability = {
                 'Sunday': [],
@@ -112,29 +116,39 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, interval) {
                 })
             });
 
+            // organize available timeslots by each member
+            var members = [];
+            var totalTimeslots = 0;
+
             group.members.forEach(function(member) {
+
+                // deep copy
+                // TODO: better way?
                 var availability = JSON.parse(JSON.stringify(groupAvailability));
 
-
                 // member availability
-                member.availability.forEach(function(entry) {
-                    entry.hours.forEach(function(hours) {
-                        availability[entry.day].push({ start: hours.start, end: hours.end, available: hours.available, rank: 1});
+                member.availability.forEach(function (day) {
+                    day.hours.forEach(function (hours) {
+                        availability[entry.day].push({start: hours.start, end: hours.end, available: hours.available, rank: 1});
                     });
                 });
 
-                // sort by: rank (desc), timespan, start, end
-                Object.keys(availability).forEach(function(day) {
-                    availability[day].sort(function(a, b) {
+                // sort hours
+                Object.keys(availability).forEach(function (day) {
+                    availability[day].sort(function (a, b) {
+                        // sort by rank (desc)
                         if (a.rank != b.rank)
                             return b.rank - a.rank;
 
+                        // sort by timespan
                         if (a.end - a.start != b.end - b.start)
                             return ((a.end - a.start) - (b.end - b.start));
 
+                        // sort by start
                         if (a.start != b.start)
                             return a.start - b.start;
 
+                        // sort by end
                         if (a.end != b.end)
                             return a.end - b.end;
 
@@ -142,12 +156,20 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, interval) {
                     });
                 });
 
+                // group hours
+
+                var timeslots = [];
+
                 for (var date = startDate; date < endDate; date.add(interval, 'minutes')) {
 
                     // calculate timeslot start & end in seconds
                     var start = (date.hour() * 60 + date.minute()) * 60;
-                    var end = start + (minTime * 60);
-                    var available = false;
+
+                    // min time
+                    var minTime = start + (time * 60);
+
+                    // max time
+                    var maxTime = 0;
 
                     // check for conflicting events
                     if (member.events.some(event => {
@@ -157,7 +179,7 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, interval) {
                                 ) || (
                                     moment(date).add(end, 'seconds').diff(event.start) >= 0 &&
                                     moment(date).add(end, 'seconds').diff(event.end) <= 0
-                            );
+                                );
                         })) continue;
 
                     // check availability
@@ -165,31 +187,50 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, interval) {
 
                     hours.some(hours => {
                         var hasStart = (start >= hours.start && start <= hours.end);
-                        var hasEnd = (end >= hours.start && end <= hours.end);
+                        var hasEnd = (minTime >= hours.start && minTime <= hours.end);
 
-                        if (start < hours.start && end > hours.end && !hours.available)
+                        // mininum timeslot would completely overlap an unavailable time
+                        if (start <= hours.start && minTime >= hours.end && !hours.available)
                             return true;
 
+                        // timeslot would start or end in an unavailable time
                         if ((hasStart || hasEnd) && !hours.available)
                             return true;
 
                         if (hasStart && hasEnd) {
-                            available = hours.available;
+                            if (hours.available)
+                                maxTime = hours.end;
+
                             return true;
                         }
                     });
 
-                    if (available) {
+                    if (maxTime > 0) {
                         timeslots.push({
-                            group: group._id,
-                            member: member._id,
-                            start: moment(date).toDate()
+                            start: moment(date),
+                            end: moment(date).add(maxTime, 'seconds')
                         });
                     }
                 }
+
+                if (timeslots.length > 0) {
+                    members.push({
+                        // expose minimal member information
+                        _id: member.user._id,
+                        name: member.user.name,
+                        timeslots: timeslots
+                    });
+
+                    totalTimeslots += timeslots.length;
+                }
             });
 
-            return timeslots;
+            return {
+                startDate: startDate,
+                endDate: endDate,
+                members: members,
+                totalTimeslots: totalTimeslots
+            }
         });
 };
 
