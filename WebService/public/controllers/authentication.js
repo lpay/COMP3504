@@ -38,7 +38,7 @@
             $auth.signup($scope.register)
                 .then(function(token) {
                     $auth.setToken(token);
-                    $location.path('/join');
+                    $state.go('join');
                 })
                 .catch(function() {
                     $("#signup").effect('shake');

@@ -90,7 +90,7 @@ router.post('/appointments/search', function(req, res, next) {
                 search.push({ $or: members });
             }
 
-            return Group.find({$or: search });
+            return Group.find({$or: search }).populate('members.user');
         })
         .then(groups => {
             var timeslots = [];
@@ -103,9 +103,8 @@ router.post('/appointments/search', function(req, res, next) {
                 start.add(1, 'minutes').seconds(0).milliseconds(0);
 
             // generate timeslots
-
             groups.forEach(function(group) {
-                var result = group.generateTimeslots(start.clone(), end.clone());
+                var result = group.generateTimeslots(start, end);
 
                 if (result.totalTimeslots > 0) {
                     timeslots.push({

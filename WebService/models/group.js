@@ -117,6 +117,13 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, interval, t
         })
     });
 
+    // get min appointment time
+    var min = 2700; // 45 mins (default)
+    group.defaultAppointments.forEach(function(entry) {
+        if (entry.min < min)
+            min = entry.min;
+    });
+
     // organize available timeslots by member
     var members = [];
     var totalTimeslots = 0;
@@ -143,6 +150,7 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, interval, t
             stop = true;
 
             Object.keys(availability).forEach(function (day) {
+
                 // sort
                 availability[day].sort(function (a, b) {
                     // sort by rank (desc)
@@ -178,18 +186,19 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, interval, t
             });
         }
 
-        for (var date = startDate; date < endDate; date.add(interval, 'minutes')) {
+        for (var date = startDate.clone(); date < endDate; date.add(interval, 'minutes')) {
 
             // calculate timeslot start & end in seconds
             var start = (date.hour() * 60 + date.minute()) * 60;
 
             // min time
-            var minTime = start + (time * 60);
+            var minTime = start + min;
 
             // max time
             var maxTime = 0;
 
             // check for conflicting events
+            /*
             if (member.events.some(event => {
                     return !event.available && (
                             date.diff(event.start) >= 0 &&
@@ -199,6 +208,7 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, interval, t
                             moment(date).add(end, 'seconds').diff(event.end) <= 0
                         );
                 })) continue;
+            */
 
             // check availability
             var hours = availability[weekdays[startDate.day()]];
