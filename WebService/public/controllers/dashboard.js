@@ -3,7 +3,15 @@
  *
  */
 
-app.controller('DashboardController', function($scope, $stateParams) {
-    $scope.user = {'name': 'test'};
-    $scope.group = $stateParams.group;
-});
+(function() {
+    
+    angular
+        .module('app')
+        .controller('DashboardController', DashboardController);
+
+    function DashboardController($scope, $stateParams, groups) {
+        $scope.groups = groups;
+        $scope.currentGroup = $stateParams.group || groups[0];
+    }
+
+})();

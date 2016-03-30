@@ -1,106 +1,115 @@
 /**
  * Created by nwalker on 3/9/16.
+ * 
  */
-app.directive('appointmentTimeSetter', function($http, $uibModal) {
-    return {
-        restrict: 'E',
 
-        scope: {profile: '='},
-
-        templateUrl: 'views/directives/appointmentTimeSetter.html',
-
-        link: function(scope) {
+(function() {
+    angular
+        .module('app')
+        .directive('appointmentTimeSetter', AppointmentTimeSetter);
 
 
-            scope.add = function() {
+    function AppointmentTimeSetter($http, $uibModal) {
+        return {
+            restrict: 'E',
 
-                scope.profile.user.appointmentTypes.push({
-                    name: scope.new.name,
-                    length: scope.new.length
-                });
-                console.log(scope.new);
-                console.log(scope.profile.user);
-                scope.new = { };
-            };
+            scope: {profile: '='},
 
-            scope.remove = function(index) {
-                scope.profile.user.appointmentTypes.splice(index, 1);
-            };
+            templateUrl: 'views/directives/appointmentTimeSetter.html',
 
-            scope.up = function(index) {
-                if (index <= 0 || scope.profile.appointmentTypes.length < 2)
-                    return;
-
-                var type = scope.profile.appointmentTypes[index];
-
-                scope.profile.appointmentTypes[index] = scope.profile.appointmentTypes[index-1];
-                scope.profile.appointmentTypes[index-1] = type;
-            };
-
-            scope.down = function(index) {
-                if (index >= scope.profile.appointmentTypes.length || $scope.hours.length < 2)
-                    return;
-
-                var type = scope.profile.appointmentTypes[index];
-
-                scope.profile.appointmentTypes[index] = scope.profile.appointmentTypes[index+1];
-                scope.profile.appointmentTypes[index+1] = type;
-            };
-
-            scope.edit = function() {
-
-                var hours = [];
-
-                //scope.availability.hours.forEach(function(entry) {
-                //    hours.push({
-                //        start: moment().startOf('day').add(moment.duration(entry.start, 'seconds')),
-                //        end: moment().startOf('day').add(moment.duration(entry.end, 'seconds')),
-                //        available: entry.available
-                //    });
-                //});
-
-                $uibModal
-                    .open({
-                        templateUrl: 'views/modals/availabilityModal.html',
-                        controller: function($scope, $uibModalInstance) {
-
-                            $scope.new = { available: true };
-                            $scope.hours = hours;
-
-                            $scope.save = function() {
-                                $uibModalInstance.close($scope.hours);
-                            };
-
-                            $scope.close = function() {
-                                $uibModalInstance.dismiss('cancel');
-                            };
+            link: function (scope) {
 
 
-                        }
-                    }).result
-                    .then(function(hours) {
+                scope.add = function () {
 
-                        scope.availability.hours = [];
+                    scope.profile.user.appointmentTypes.push({
+                        name: scope.new.name,
+                        length: scope.new.length
+                    });
+                    console.log(scope.new);
+                    console.log(scope.profile.user);
+                    scope.new = {};
+                };
 
-                        hours.forEach(function(entry) {
-                            scope.availability.hours.push({
-                                start: moment.duration(moment(entry.start) - moment(entry.start).startOf('day')).asSeconds(),
-                                end: moment.duration(moment(entry.end) - moment(entry.end).startOf('day')).asSeconds(),
-                                available: entry.available
+                scope.remove = function (index) {
+                    scope.profile.user.appointmentTypes.splice(index, 1);
+                };
+
+                scope.up = function (index) {
+                    if (index <= 0 || scope.profile.appointmentTypes.length < 2)
+                        return;
+
+                    var type = scope.profile.appointmentTypes[index];
+
+                    scope.profile.appointmentTypes[index] = scope.profile.appointmentTypes[index - 1];
+                    scope.profile.appointmentTypes[index - 1] = type;
+                };
+
+                scope.down = function (index) {
+                    if (index >= scope.profile.appointmentTypes.length || $scope.hours.length < 2)
+                        return;
+
+                    var type = scope.profile.appointmentTypes[index];
+
+                    scope.profile.appointmentTypes[index] = scope.profile.appointmentTypes[index + 1];
+                    scope.profile.appointmentTypes[index + 1] = type;
+                };
+
+                scope.edit = function () {
+
+                    var hours = [];
+
+                    //scope.availability.hours.forEach(function(entry) {
+                    //    hours.push({
+                    //        start: moment().startOf('day').add(moment.duration(entry.start, 'seconds')),
+                    //        end: moment().startOf('day').add(moment.duration(entry.end, 'seconds')),
+                    //        available: entry.available
+                    //    });
+                    //});
+
+                    $uibModal
+                        .open({
+                            templateUrl: 'views/modals/availabilityModal.html',
+                            controller: function ($scope, $uibModalInstance) {
+
+                                $scope.new = {available: true};
+                                $scope.hours = hours;
+
+                                $scope.save = function () {
+                                    $uibModalInstance.close($scope.hours);
+                                };
+
+                                $scope.close = function () {
+                                    $uibModalInstance.dismiss('cancel');
+                                };
+
+
+                            }
+                        }).result
+                        .then(function (hours) {
+
+                            scope.availability.hours = [];
+
+                            hours.forEach(function (entry) {
+                                scope.availability.hours.push({
+                                    start: moment.duration(moment(entry.start) - moment(entry.start).startOf('day')).asSeconds(),
+                                    end: moment.duration(moment(entry.end) - moment(entry.end).startOf('day')).asSeconds(),
+                                    available: entry.available
+                                });
                             });
-                        });
 
-                        $http.put('/groups/' + encodeURIComponent(scope.group.slug), scope.group)
-                            .success(function(s) {
-                                updateDescriptions();
-                            })
-                            .error(function(e) {
-                            });
-                    })
-                    .catch(function(reason) {
+                            $http.put('/groups/' + encodeURIComponent(scope.group.slug), scope.group)
+                                .success(function (s) {
+                                    updateDescriptions();
+                                })
+                                .error(function (e) {
+                                });
+                        })
+                        .catch(function (reason) {
 
-                    })
-            };
+                        })
+                };
+            }
         }
     }
-});
+})();

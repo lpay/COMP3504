@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="COMP3504">
+<html lang="en" ng-app="app">
 <head>
     <base href="/">
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Bootstrap -->
@@ -32,6 +32,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Base64/0.3.0/base64.min.js"></script>
     <![endif]-->
 
+    <title>ScheduleUP</title>
+
 </head>
 <body>
     <div ui-view></div>
@@ -53,14 +55,14 @@
     <script src="bower_components/coverflow/jquery.coverflow.js"></script>
 
     <script src="app.js"></script>
-    <script src="services/service.js"></script>
-    <script src="controllers/auth.js"></script>
+    <script src="controllers/authentication.js"></script>
     <script src="controllers/join.js"></script>
     <script src="controllers/dashboard.js"></script>
+    <script src="controllers/settings.js"></script>
     <script src="controllers/profile.js"></script>
     <script src="controllers/scheduler.js"></script>
     <script src="controllers/calendar.js"></script>
-    <script src="directives/availabilityEditor.js"></script>
+    <script src="directives/hoursEditor.js"></script>
     <script src="directives/appointmentTimeSetter.js"></script>
 </body>
 </html>

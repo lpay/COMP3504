@@ -2,17 +2,21 @@
  * Created by mark on 2/29/16.
  */
 
-app
+(function() {
+    angular
+        .module('app')
+        .controller('SchedulerController', SchedulerController)
+        .directive('calendarFlow', CalendarFlow);
 
-    .controller('SchedulerController', function($scope) {
+    function SchedulerController($scope) {
         $scope.index = 0;
 
         $scope.$on('OnCalendarChanged', function(event, index) {
             //console.log(index);
         });
-    })
+    }
 
-    .directive('coverflow', function($timeout) {
+    function CalendarFlow() {
         return {
             restrict: 'A',
             link: function(scope, element) {
@@ -32,4 +36,6 @@ app
                 }, 0, false);
             }
         };
-    });
+    }
+
+})();

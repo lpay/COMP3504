@@ -74,7 +74,9 @@ router.post('/appointments/search', function(req, res, next) {
     if (!req.body.search) return res.status(400).send({message: 'search is required'});
 
     var search = [];
+
     search.push({'name': {$regex: new RegExp(req.body.search, "i")}});
+    //search.push({'tags': {$regex: new RegExp("/\\b(?:" + req.body.search + ")\b/", "i")}});
 
     User.find({'name.last': {$regex: new RegExp(req.body.search, "i")}})
         .then(users => {
@@ -101,37 +103,37 @@ router.post('/appointments/search', function(req, res, next) {
                 start.add(1, 'minutes').seconds(0).milliseconds(0);
 
             // generate timeslots
-            Promise.each(groups, function(group) {
-                return group.generateTimeslots(start.clone(), end.clone())
-                            .then(result => {
-                                if (result.totalTimeslots > 0) {
-                                    timeslots.push({
-                                        // only expose certain information about the group
-                                        _id: group._id,
 
-                                        slug: group.slug,
-                                        name: group.name,
+            groups.forEach(function(group) {
+                var result = group.generateTimeslots(start.clone(), end.clone());
 
-                                        address: group.address,
-                                        city: group.city,
-                                        province: group.province,
-                                        postalCode: group.postalCode,
+                if (result.totalTimeslots > 0) {
+                    timeslots.push({
+                        // only expose certain information about the group
+                        _id: group._id,
 
-                                        contact: group.contact,
-                                        phone: group.phone,
-                                        email: group.email,
+                        slug: group.slug,
+                        name: group.name,
 
-                                        startDate: result.startDate,
-                                        endDate: result.endDate,
-                                        totalTimeslots: result.totalTimeslots,
+                        address: group.address,
+                        city: group.city,
+                        province: group.province,
+                        postalCode: group.postalCode,
 
-                                        members: result.members
-                                    });
-                                }
-                            });
-            }).then(() => {
-                res.send(timeslots);
+                        contact: group.contact,
+                        phone: group.phone,
+                        email: group.email,
+
+                        startDate: result.startDate,
+                        endDate: result.endDate,
+                        totalTimeslots: result.totalTimeslots,
+
+                        members: result.members
+                    });
+                }
             });
+
+            res.send(timeslots);
         })
         .catch(next);
 

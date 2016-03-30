@@ -16,8 +16,6 @@ var crypto = require('crypto');
 var cors = require('cors');
 var APIError = require('./errors/APIError');
 
-var slug = require('slug');
-
 //
 // MongoDB
 //

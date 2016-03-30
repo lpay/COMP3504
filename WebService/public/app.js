@@ -2,11 +2,22 @@
  * Created by mark on 1/14/16.
  */
 
-var app = angular.module('COMP3504', [ 'ui.router', 'satellizer', 'selectize', 'ui.bootstrap', 'ui.calendar' ])
+(function() {
+    'use strict';
 
-    .config(function($authProvider, $stateProvider, $urlRouterProvider) {
+    angular
+        .module('app', ['ui.router', 'satellizer', 'selectize', 'ui.bootstrap', 'ui.calendar'])
+        .config(StateConfig)
+        .config(AuthConfig)
+        .run(Run);
 
-        $urlRouterProvider.otherwise('/dashboard/scheduler');
+    function AuthConfig($authProvider) {
+        $authProvider.google({clientId: '870728536471-ilmvcb2obgo6ioucqokrgvcj211nj7t3.apps.googleusercontent.com'});
+    }
+
+    function StateConfig($stateProvider, $urlRouterProvider) {
+
+        $urlRouterProvider.otherwise('/dashboard');
 
         $stateProvider
 
@@ -21,7 +32,6 @@ var app = angular.module('COMP3504', [ 'ui.router', 'satellizer', 'selectize', '
 
             .state('logout', {
                 url: '/logout',
-                template: null,
                 controller: 'LogoutController'
             })
 
@@ -35,48 +45,78 @@ var app = angular.module('COMP3504', [ 'ui.router', 'satellizer', 'selectize', '
             })
 
             .state('dashboard', {
-                abstract: true,
+                //abstract: true,
                 url: '/dashboard',
                 templateUrl: 'views/dashboard.html',
+                controller: 'DashboardController',
+                params: {group: undefined},
                 resolve: {
                     loginRequired: loginRequired,
-                    groups: function($state, $http, $q) {
+                    groups: function ($state, $http, $q) {
                         var deferred = $q.defer();
 
                         $http.get('/groups')
-                            .success(function(groups) {
-                                if (groups.length)
+                            .success(function (groups) {
+                                if (groups.length) {
                                     deferred.resolve(groups);
-                                else
+                                } else {
                                     $state.go('join');
+                                    deferred.reject();
+                                }
                             })
-                            .error(function() {
+                            .error(function () {
                                 deferred.reject();
                             });
 
                         return deferred.promise;
                     }
-                },
-                params: { group: undefined },
-                controller: function($state, $stateParams, $scope, groups) {
-                    $scope.groups = groups;
-                    $scope.group = $stateParams.group || groups[0];
-
-                    //$state.go('dashboard.scheduler');
                 }
             })
 
             .state('dashboard.scheduler', {
-                url: '/scheduler',
+                url: '',
                 templateUrl: 'views/scheduler.html',
                 controller: 'SchedulerController'
             })
 
             .state('dashboard.settings', {
+                abstract: true,
                 url: '/settings',
-                templateUrl: 'views/settings.html',
-                controller: function($scope, $http, $uibModal) {
-                }
+                templateUrl: 'views/settings/settings.html',
+                controller: 'GroupSettingsController'
+            })
+
+            .state('dashboard.settings.groupInformation', {
+                url: '/information',
+                templateUrl: 'views/settings/information.html',
+                controller: 'GroupInformationController'
+            })
+
+            .state('dashboard.settings.businessHours', {
+                url: '/hours',
+                templateUrl: 'views/settings/hours.html',
+                controller: 'GroupHoursController'
+            })
+
+            .state('dashboard.settings.holidays', {
+                url: '/holidays',
+                templateUrl: 'views/settings/holidays.html'
+            })
+
+            .state('dashboard.settings.appointmentSettings', {
+                url: '/appointments',
+                templateUrl: 'views/settings/appointments.html',
+                controller: 'GroupAppointmentSettingsController'
+            })
+
+            .state('dashboard.settings.members', {
+                url: '/members',
+                templateUrl: 'views/settings/members.html'
+            })
+
+            .state('dashboard.settings.billing', {
+                url: '/billing',
+                templateUrl: 'views/settings/billing.html'
             })
 
             .state('dashboard.profile', {
@@ -85,35 +125,38 @@ var app = angular.module('COMP3504', [ 'ui.router', 'satellizer', 'selectize', '
                 controller: 'ProfileController'
             });
 
-        $authProvider.google({
-            clientId: '870728536471-ilmvcb2obgo6ioucqokrgvcj211nj7t3.apps.googleusercontent.com'
-        });
 
-        function skipIfLoggedIn($q, $auth) {
-            var deferred = $q.defer();
 
-            if ($auth.isAuthenticated()) {
-                deferred.reject();
-            } else {
-                deferred.resolve();
-            }
 
-            return deferred.promise;
-        }
+    }
 
-        function loginRequired($q, $location, $auth) {
-            var deferred = $q.defer();
-
-            if ($auth.isAuthenticated()) {
-                deferred.resolve();
-            } else {
-                $location.path('/login');
-            }
-
-            return deferred.promise;
-        }
-    })
-
-    .run(function($rootScope, $state) {
+    function Run($rootScope, $state, $stateParams) {
         $rootScope.$state = $state;
-    });
+        $rootScope.$stateParams = $stateParams;
+    }
+
+    function skipIfLoggedIn($auth, $q) {
+        var deferred = $q.defer();
+
+        if ($auth.isAuthenticated()) {
+            deferred.reject();
+        } else {
+            deferred.resolve();
+        }
+
+        return deferred.promise;
+    }
+
+    function loginRequired($auth, $state, $q) {
+        var deferred = $q.defer();
+
+        if ($auth.isAuthenticated()) {
+            deferred.resolve();
+        } else {
+            $state.go('login');
+        }
+
+        return deferred.promise;
+    }
+
+})();

@@ -2,64 +2,73 @@
  * Created by mark on 2/19/16.
  */
 
-app.controller('CalendarController', function($scope, $compile, $uibModal, $http) {
+(function() {
 
-    $scope.events = [];
-    $scope.eventSources = [$scope.events];
+    angular
+        .module('app')
+        .controller('CalendarController', CalendarController);
 
-    $scope.select = function(start, end) {
+    function CalendarController($scope, $uibModal) {
 
-        $uibModal
-            .open({
-                templateUrl: 'createEvent.html',
-                controller: function($scope, $uibModalInstance) {
-                    $scope.event = {
-                        startDate: start.format('MM-DD-YYYY'),
-                        startTime: start.format('HH:mm'),
-                        endDate: end.format('MM-DD-YYYY'),
-                        endTime: end.format('HH:mm'),
-                        availability: 'available'
-                    };
+        $scope.events = [];
+        $scope.eventSources = [$scope.events];
 
-                    $scope.save = function() {
-                        $uibModalInstance.close($scope.event);
-                    };
+        $scope.select = function (start, end) {
 
-                    $scope.cancel = function() {
-                        $uibModalInstance.dismiss('cancel');
-                    };
-                }
-            })
-            .result.then(function(event) {
+            $uibModal
+                .open({
+                    templateUrl: 'createEvent.html',
+                    controller: function ($scope, $uibModalInstance) {
+                        $scope.event = {
+                            startDate: start.format('MM-DD-YYYY'),
+                            startTime: start.format('HH:mm'),
+                            endDate: end.format('MM-DD-YYYY'),
+                            endTime: end.format('HH:mm'),
+                            availability: 'available'
+                        };
 
-                $scope.events.push( {
+                        $scope.save = function () {
+                            $uibModalInstance.close($scope.event);
+                        };
+
+                        $scope.cancel = function () {
+                            $uibModalInstance.dismiss('cancel');
+                        };
+                    }
+                })
+                .result.then(function (event) {
+
+                $scope.events.push({
                     title: event.title,
                     start: new Date(event.startDate + ' ' + event.startTime),
                     end: new Date(event.endDate + ' ' + event.endTime)
                 });
-        });
+            });
 
 
-    };
+        };
 
-    $scope.calendar =  {
-        editable: true,
-        header: {
-            left: 'month agendaWeek agendaDay',
-            center: 'title',
-            right: 'today prev,next'
-        },
-        businessHours: {
-            start: '9:00',
-            end: '18:00'
-        },
-        minTime: '9:00',
-        maxTime: '18:00',
-        slotDuration: '00:15:00',
-        defaultView: 'agendaWeek',
-        allDaySlot: false,
-        fixedWeekCount: false,
-        selectable: true,
-        select: $scope.select
-    };
-});
+        $scope.calendar = {
+            editable: true,
+            header: {
+                left: 'month agendaWeek agendaDay',
+                center: 'title',
+                right: 'today prev,next'
+            },
+            businessHours: {
+                start: '9:00',
+                end: '18:00'
+            },
+            minTime: '9:00',
+            maxTime: '18:00',
+            slotDuration: '00:15:00',
+            defaultView: 'agendaWeek',
+            allDaySlot: false,
+            fixedWeekCount: false,
+            selectable: true,
+            select: $scope.select
+        };
+
+    }
+
+})();

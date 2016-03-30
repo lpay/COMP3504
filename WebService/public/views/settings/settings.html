@@ -1,0 +1,144 @@
+<style>
+    .tabs-below > .nav-tabs,
+    .tabs-right > .nav-tabs,
+    .tabs-left > .nav-tabs {
+        border-bottom: 0;
+        padding: 30px 0;
+    }
+
+    .tab-content > .tab-pane,
+    .pill-content > .pill-pane {
+        display: none;
+    }
+
+    .tab-content > .active,
+    .pill-content > .active {
+        display: block;
+    }
+
+    .tabs-below > .nav-tabs {
+        border-top: 1px solid #ddd;
+    }
+
+    .tabs-below > .nav-tabs > li {
+        margin-top: -1px;
+        margin-bottom: 0;
+    }
+
+    .tabs-below > .nav-tabs > li > a {
+        -webkit-border-radius: 0 0 4px 4px;
+        -moz-border-radius: 0 0 4px 4px;
+        border-radius: 0 0 4px 4px;
+    }
+
+    .tabs-below > .nav-tabs > li > a:hover,
+    .tabs-below > .nav-tabs > li > a:focus {
+        border-top-color: #ddd;
+        border-bottom-color: transparent;
+    }
+
+    .tabs-below > .nav-tabs > .active > a,
+    .tabs-below > .nav-tabs > .active > a:hover,
+    .tabs-below > .nav-tabs > .active > a:focus {
+        border-color: transparent #ddd #ddd #ddd;
+    }
+
+    .tabs-left > .nav-tabs > li,
+    .tabs-right > .nav-tabs > li {
+        float: none;
+    }
+
+    .tabs-left > .nav-tabs > li > a,
+    .tabs-right > .nav-tabs > li > a {
+        min-width: 74px;
+        margin-right: 0;
+        margin-bottom: 3px;
+    }
+
+    .tabs-left > .nav-tabs {
+        float: right;
+        text-align: right;
+        margin-right: 19px;
+        border-right: 1px solid #ddd;
+        box-shadow: -10px 0 10px -10px rgba(255,255,255,0.8) inset;
+    }
+
+    .tabs-left > .nav-tabs > li > a {
+        margin-right: -1px;
+        -webkit-border-radius: 4px 0 0 4px;
+        -moz-border-radius: 4px 0 0 4px;
+        border-radius: 4px 0 0 4px;
+    }
+
+    .tabs-left > .nav-tabs > li > a:hover,
+    .tabs-left > .nav-tabs > li > a:focus {
+        border-color: #eeeeee #dddddd #eeeeee #eeeeee;
+    }
+
+    .tabs-left > .nav-tabs .active > a,
+    .tabs-left > .nav-tabs .active > a:hover,
+    .tabs-left > .nav-tabs .active > a:focus {
+        border-color: #ddd transparent #ddd #ddd;
+        *border-right-color: #ffffff;
+    }
+
+    .tabs-right > .nav-tabs {
+        float: left;
+        margin-left: 19px;
+        border-left: 1px solid #ddd;
+    }
+
+    .tabs-right > .nav-tabs > li > a {
+        margin-left: -1px;
+        -webkit-border-radius: 0 4px 4px 0;
+        -moz-border-radius: 0 4px 4px 0;
+        border-radius: 0 4px 4px 0;
+    }
+
+    .tabs-right > .nav-tabs > li > a:hover,
+    .tabs-right > .nav-tabs > li > a:focus {
+        border-color: #eeeeee #eeeeee #eeeeee #dddddd;
+    }
+
+    .tabs-right > .nav-tabs .active > a,
+    .tabs-right > .nav-tabs .active > a:hover,
+    .tabs-right > .nav-tabs .active > a:focus {
+        border-color: #ddd #ddd #ddd transparent;
+        *border-left-color: #ffffff;
+    }
+
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="tabs-left">
+                <ul class="nav nav-tabs nav-stacked">
+                    <li class="nav-item" ng-class="{active: $state.includes('dashboard.settings.groupInformation')}">
+                        <a ui-sref=".groupInformation">Group Information</a>
+                    </li>
+                    <li class="nav-item" ng-class="{active: $state.includes('dashboard.settings.businessHours')}">
+                        <a ui-sref=".businessHours">Business Hours</a>
+                    </li>
+                    <li class="nav-item" ng-class="{active: $state.includes('dashboard.settings.holidays')}">
+                        <a ui-sref=".holidays">Holidays</a>
+                    </li>
+                    <li class="nav-item" ng-class="{active: $state.includes('dashboard.settings.appointmentSettings')}">
+                        <a ui-sref=".appointmentSettings">Appointment Settings</a>
+                    </li>
+                    <li class="nav-item" ng-class="{active: $state.includes('dashboard.settings.members')}">
+                        <a ui-sref=".members">Members</a>
+                    </li>
+                    <li class="nav-item" ng-class="{active: $state.includes('dashboard.settings.billing')}">
+                        <a ui-sref=".billing">Billing</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
+            <div ui-view></div>
+        </div>
+    </div>
+</div>
+
