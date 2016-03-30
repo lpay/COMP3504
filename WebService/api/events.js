@@ -34,37 +34,50 @@ router.get('/appointments', ensureAuthenticated, function(req, res, next) {
         .catch(next);
 });
 
-router.post('/appointments', ensureAuthenticated, function(req, res) {
+router.post('/appointments', ensureAuthenticated, function(req, res, next) {
     Group.findById(req.body.group, {'members': {$elemMatch: {user: req.body.member}}})
+        .populate('members.user')
         .then(group => {
-            return group.generateTimeslots(req.body.start, req.body.end, moment(req.body.end).diff(req.body.start).asMinutes())
-        })
-        .then(timeslots => {
+            var start = moment(req.body.start);
+            var end = moment(req.body.end);
 
-            if (!timeslots.some(function(timeslot) {
-                if (timeslot.start === req.body.start && timeslot.end === req.body.end) {
-                    Group.findOneAndUpdate(
-                        {'_id': req.body.group, 'members.user': req.body.member},
-                        {
-                            $push: {
-                                'members.$.events': {
-                                    client: req.user,
-                                    available: false,
-                                    start: timeslot.start,
-                                    end: timeslot.end
-                                }
+            return [group, group.generateTimeslots(start, end, end.diff(start, 'minutes'))];
+        })
+        .spread((group, result) => {
+            /*
+            if (result.members.length && result.members[0].timeslots.length) {
+                group.members[0].events.push({
+                    client: req.user,
+                    available: false,
+                    start: result.members[0].timeslots[0].start,
+                    end: result.members[0].timeslots[0].end
+                });
+
+                return group.save();
+            }
+            */
+
+            if (result.members.length && result.members[0].timeslots.length) {
+                return Group.update(
+                    {
+                        '_id': req.body.group,
+                        'members': {$elemMatch: {user: req.body.member}}
+                    },
+                    {
+                        $push: {
+                            'members.$.events': {
+                                client: req.user,
+                                available: false,
+                                start: result.members[0].timeslots[0].start,
+                                end: result.members[0].timeslots[0].end
                             }
                         }
-                    ).then(() => {
-                        res.send();
-                    });
-
-                    return true;
-                }
-            })) {
-                throw new APIError(409, 'requested timeslot is not available');
+                });
             }
+
+            throw new APIError(409, 'requested timeslot is not available');
         })
+        .then(() => res.send())
         .catch(next);
 });
 

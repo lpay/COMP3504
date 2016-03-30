@@ -83,7 +83,7 @@ var groupSchema = new mongoose.Schema({
             type: [{
                 client: { type: ObjectId, ref: 'User' },
                 available: { type: Boolean, default: false },
-                type: String,
+                //type: String,
                 start: Date,
                 end: Date
             }]
@@ -91,14 +91,13 @@ var groupSchema = new mongoose.Schema({
     }]
 });
 
-groupSchema.methods.generateTimeslots = function(startDate, endDate, interval, time) {
+groupSchema.methods.generateTimeslots = function(startDate, endDate, duration) {
     var group = this;
 
-    interval = interval || 15;
-    time = time || 45;
+    duration = duration || 15; // default 15 minutes
 
-    // round up to the nearest interval
-    startDate.add(interval - (startDate.minute() % interval), 'minutes');
+    // round up to the nearest duration
+    //startDate.add(duration - (startDate.minute() % duration), 'minutes');
 
     var groupAvailability = {
         'Sunday': [],
@@ -186,7 +185,7 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, interval, t
             });
         }
 
-        for (var date = startDate.clone(); date < endDate; date.add(interval, 'minutes')) {
+        for (var date = startDate.clone(); date < endDate; date.add(duration, 'minutes')) {
 
             // calculate timeslot start & end in seconds
             var start = (date.hour() * 60 + date.minute()) * 60;
