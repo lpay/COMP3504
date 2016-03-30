@@ -39,6 +39,7 @@
                     $scope.alerts.push({type: 'success', msg: 'Changes saved.'});
                 })
                 .error(function (err) {
+                    console.log(err);
                     if (err.message)
                         $scope.alerts.push({type: 'danger', msg: 'Error: ' + err.message});
                     else

@@ -268,8 +268,10 @@ groupSchema.methods.join = function(user, group) {
 groupSchema.methods.isAdmin = function(user) {
     var group = this;
 
-    return Group.find({_id: group._id, 'members.user': user, 'members.role': 'admin'})
-                .then(group => group ? true: false);
+    return group.members.some(function(member) {
+        if (user._id.equals(member.user) && member.role === 'admin')
+            return true;
+    });
 };
 
 var Group = mongoose.model('Group', groupSchema);

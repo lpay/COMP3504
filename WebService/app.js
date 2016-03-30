@@ -53,7 +53,7 @@ app.use('/', require('./api'));
 // error handler
 app.use(function(err, req, res, next) {
     if (err instanceof APIError) {
-        res.status(err.code).send(err.message);
+        res.status(err.code).send({message: err.message});
     } else {
         next(err);
     }
