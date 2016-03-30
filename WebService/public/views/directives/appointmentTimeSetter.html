@@ -10,16 +10,19 @@
     <tr>
         <td><input type="text" ng-model="new.name"></td>
         <!--<td><uib-timepicker show-spinners="false" ng-model=""></uib-timepicker></td>-->
-        <td><input type="text" ng-model="new.length"></td>
-
+        <!--<td><input type="text" ng-model="new.length"></td>-->
+        <td><input type="number" ng-model="new.length" step="15" min="0" max="720"></td>
         <td class="text-center">
             <a href="" ng-click="add()"><i class="fa fa-plus-square" style="color: green"> Add</i></a>
         </td>
     </tr>
-    <tr ng-repeat="type in profile.user.appointmentTypes">
-        <td><input type="text" ng-model="type.name"></td>
+    <tr ng-repeat="type in group.defaultAppointments">
+        <!--<td><input type="text" ng-model="type.name"></td>-->
         <!--<td><uib-timepicker show-spinners="false" ng-model=""></uib-timepicker></td>-->
-        <td><input type="text" ng-model="type.length"></td>
+        <!--<td><input type="text" ng-model="type.length"></td>-->
+
+        <td><span>{{type.name}}</span></td>
+        <td><span>{{type.length}}</span></td>
 
         <td class="text-center">
             <!--<a href ng-click="up($index)" ng-show="!$first"><i class="fa fa-chevron-up"></i></a>-->

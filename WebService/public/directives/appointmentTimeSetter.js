@@ -13,7 +13,7 @@
         return {
             restrict: 'E',
 
-            scope: {profile: '='},
+            scope: {group: '='},
 
             templateUrl: 'views/directives/appointmentTimeSetter.html',
 
@@ -22,7 +22,7 @@
 
                 scope.add = function () {
 
-                    scope.profile.user.appointmentTypes.push({
+                    scope.group.defaultAppointments.type.push({
                         name: scope.new.name,
                         length: scope.new.length
                     });
@@ -32,10 +32,10 @@
                 };
 
                 scope.remove = function (index) {
-                    scope.profile.user.appointmentTypes.splice(index, 1);
+                    scope.group.defaultAppointments.splice(index, 1);
                 };
 
-                scope.up = function (index) {
+             /*   scope.up = function (index) {
                     if (index <= 0 || scope.profile.appointmentTypes.length < 2)
                         return;
 
@@ -54,7 +54,7 @@
                     scope.profile.appointmentTypes[index] = scope.profile.appointmentTypes[index + 1];
                     scope.profile.appointmentTypes[index + 1] = type;
                 };
-
+*/
                 scope.edit = function () {
 
                     var hours = [];
