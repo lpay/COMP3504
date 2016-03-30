@@ -88,10 +88,7 @@ router.put('/groups/:id', ensureAuthenticated, function(req, res, next) {
             if (!group)
                 throw new APIError(404, 'group not found');
 
-            return group.isAdmin(req.user);
-        })
-        .then(admin => {
-            if (!admin)
+            if (!group.isAdmin(req.user))
                 throw new APIError(401, 'not authorized');
 
             // only update fields that were included in the request
