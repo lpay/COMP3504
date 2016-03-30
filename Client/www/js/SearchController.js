@@ -46,6 +46,5 @@ app.controller('SearchController', function($scope, $http, $location, $auth, $io
         };
         $scope.groups = [];
     };
-
 });
 
