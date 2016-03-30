@@ -39,10 +39,13 @@ var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router', 'ion
             .state('dashboard.home', {
                 url: '',
                 views: {
-                    'home-tab': {
-                        templateURL: 'views/Home.html',
-                        controller: 'HomeController'
-                    }
+                  'home-tab': {
+                    templateURL: 'views/Home.html',
+                    controller: 'HomeController'
+                  }
+                },
+                resolve: {
+                  loginRequired: loginRequired
                 }
             })
 
@@ -53,6 +56,9 @@ var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router', 'ion
                         templateUrl: 'views/Search.html',
                         controller: 'SearchController'
                     }
+                },
+                resolve: {
+                loginRequired: loginRequired
                 }
             })
 
@@ -64,7 +70,10 @@ var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router', 'ion
                         templateUrl: 'views/Group.html',
                         controller: 'GroupController'
                     }
-                }
+                },
+              resolve: {
+                loginRequired: loginRequired
+              }
             })
 
             .state('dashboard.timeslots', {
@@ -76,6 +85,9 @@ var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router', 'ion
                   templateUrl: 'views/Timeslots.html',
                   controller: 'TimeslotsController'
                 }
+              },
+              resolve: {
+                loginRequired: loginRequired
               }
             })
 
@@ -89,6 +101,9 @@ var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router', 'ion
                 templateUrl: 'views/BookAppointmentTime.html',
                 controller: 'BATController'
               }
+            },
+            resolve: {
+              loginRequired: loginRequired
             }
           })
 
@@ -98,7 +113,10 @@ var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router', 'ion
                     'help-tab': {
                         template: '<ion-view title="Help"></ion-view>'
                     }
-                }
+                },
+              resolve: {
+                loginRequired: loginRequired
+              }
             });
 
         function loginRequired($auth, $location, $q) {
