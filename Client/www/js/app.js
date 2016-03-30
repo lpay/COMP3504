@@ -22,7 +22,6 @@ var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router', 'ion
                 controller: 'SignupController'
             })
 
-
             .state('logout', {
                 url: '/logout',
                 controller: 'LogoutController'

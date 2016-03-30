@@ -40,9 +40,11 @@ app.controller('SearchController', function($scope, $http, $location, $auth, $io
     };
 
     $scope.clearSearch = function() {
-        $scope.search = "";
+        $scope.search = {
+          search: "",
+          start: new Date()
+        };
         $scope.groups = [];
-
     };
 
 });
