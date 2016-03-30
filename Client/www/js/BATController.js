@@ -23,7 +23,7 @@ app
                     end: $scope.timeslot.end
                 })
                 .success(function() {
-
+                  console.log("BOOKED");
                 })
                 .error(function(err){
 
