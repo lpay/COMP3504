@@ -61,12 +61,11 @@ router.post('/appointments', ensureAuthenticated, function(req, res) {
 
                     return true;
                 }
-            }))
-            {
-                throw new Error('requested timeslot is not available');
+            })) {
+                throw new APIError(409, 'requested timeslot is not available');
             }
         })
-        .catch(e => res.status(409).send({ message: e }));
+        .catch(next);
 });
 
 router.post('/appointments/search', function(req, res, next) {

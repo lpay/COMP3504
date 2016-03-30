@@ -227,7 +227,7 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, interval, t
 
                 if (hasStart && hasEnd) {
                     if (hours.available)
-                        maxTime = hours.end;
+                        maxTime = hours.end - start;
 
                     return true;
                 }
