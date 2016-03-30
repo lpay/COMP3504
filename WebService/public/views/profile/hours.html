@@ -1,0 +1,15 @@
+<div class="col-md-2">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h4>Availability</h4>
+            <hr/>
+        </div>
+    </div>
+    <div class="row" ng-repeat="entry in profile.availability">
+        <div class="col-md-12 text-center">
+            <div class="form-group">
+                <availability-editor availability="entry" group="group" profile="profile"></availability-editor>
+            </div>
+        </div>
+    </div>
+</div>

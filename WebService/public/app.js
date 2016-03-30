@@ -79,6 +79,10 @@
                 controller: 'SchedulerController'
             })
 
+            /**
+             * SETTINGS ROUTES
+             */
+
             .state('dashboard.settings', {
                 abstract: true,
                 url: '/settings',
@@ -119,15 +123,35 @@
                 templateUrl: 'views/settings/billing.html'
             })
 
+            /**
+             * PROFILE ROUTERS
+             */
+
             .state('dashboard.profile', {
                 url: '/profile',
-                templateUrl: 'views/profile.html',
+                templateUrl: 'views/profile/profile.html',
                 controller: 'ProfileController'
+            })
+
+            .state('dashboard.profile.businessHours', {
+                url: '/hours',
+                templateUrl: 'views/profile/hours.html'
+            })
+
+            .state('dashboard.profile.appointmentSettings', {
+                url: '/appointments',
+                templateUrl: 'views/profile/appointments.html'
+            })
+
+            .state('dashboard.profile.profileInformation', {
+                url: '/information',
+                templateUrl: 'views/profile/information.html'
+            })
+
+            .state('dashboard.profile.profileSettings', {
+                url: '/confirmPassword',
+                templateUrl: 'views/profile/profileSettings.html'
             });
-
-
-
-
     }
 
     function Run($rootScope, $state, $stateParams) {

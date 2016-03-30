@@ -22,7 +22,8 @@
 
                 scope.add = function () {
 
-                    scope.group.defaultAppointments.type.push({
+                    console.log(scope.group);
+                    scope.group.defaultAppointments.push({
                         name: scope.new.name,
                         length: scope.new.length
                     });
