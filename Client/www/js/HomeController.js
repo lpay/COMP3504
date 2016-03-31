@@ -5,6 +5,19 @@
 app
   .controller('HomeController', function($scope, $stateParams, $http) {
 
-    console.log("bababababba")
+    $scope.UpcomingAppoint = function() {
+
+      $http.get('http://localhost:3504/appointments')
+        .success(function(data) {
+            console.log("Upcoming Appointments fetched");
+            console.log(data);
+          $scope.groups = data;
+        })
+        .error(function(err){
+
+        });
+    };
+
+    $scope.UpcomingAppoint();
 
   });

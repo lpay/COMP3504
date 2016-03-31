@@ -40,7 +40,7 @@ var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router', 'ion
                 url: '',
                 views: {
                   'home-tab': {
-                    templateURL: 'views/Home.html',
+                    templateUrl: 'views/Home.html',
                     controller: 'HomeController'
                   }
                 },
