@@ -24,14 +24,37 @@ var APIError = require('../errors/APIError');
 var ensureAuthenticated = require('../middleware/ensureAuthenticated');
 
 router.get('/appointments', ensureAuthenticated, function(req, res, next) {
+
+    Group.aggregate([
+            {$match: {
+                'members.events.client': req.user._id
+            }}
+//            {$unwind: '$members'},
+//            {$unwind: '$members.events'},
+        ])
+        .exec()
+        .then(groups => {
+            res.send(groups);
+        })
+        .catch(next);
+
+    /*
     Group.find(
             // search
             {'members.events.client': req.user},
+
+            { "$unwind": "$groups" },
+            { "$unwind": "$groups.contacts" },
+
             // projection
             {'members.events': {$elemMatch: {client: req.user}}}
         )
-        .then(groups => res.send(groups))
+        .then(groups => {
+            res.send(groups)
+        })
         .catch(next);
+        */
+
 });
 
 router.post('/appointments', ensureAuthenticated, function(req, res, next) {
