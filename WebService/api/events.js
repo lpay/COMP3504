@@ -67,7 +67,7 @@ router.post('/appointments', ensureAuthenticated, function(req, res, next) {
             var start = moment(req.body.start);
             var end = moment(req.body.end);
 
-            return [group, group.generateTimeslots(start, end, end.diff(start, 'minutes'))];
+            return [group, group.generateTimeslots(start, end, { name: 'appt', length: end.diff(start, 'seconds') })];
         })
         .spread((group, result) => {
             /*
@@ -95,7 +95,8 @@ router.post('/appointments', ensureAuthenticated, function(req, res, next) {
                                 client: req.user,
                                 available: false,
                                 start: result.members[0].timeslots[0].start,
-                                end: result.members[0].timeslots[0].end
+                                end: result.members[0].timeslots[0].end,
+                                type: result.members[0].timeslots[0].type
                             }
                         }
                 });

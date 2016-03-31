@@ -83,9 +83,9 @@ var groupSchema = new mongoose.Schema({
         },
         events: {
             type: [{
-                client: { type: ObjectId, ref: 'User' },
-                available: { type: Boolean, default: false },
-                //type: String,
+                client: {type: ObjectId, ref: 'User'},
+                available: {type: Boolean, default: false},
+                type: {type: String},
                 start: Date,
                 end: Date
             }]
@@ -93,7 +93,7 @@ var groupSchema = new mongoose.Schema({
     }]
 });
 
-groupSchema.methods.generateTimeslots = function(startDate, endDate, duration) {
+groupSchema.methods.generateTimeslots = function(startDate, endDate, appointmentType) {
     console.time('generateTimeslots');
 
     var group = this;
@@ -234,28 +234,26 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, duration) {
                     return available;
                 };
 
-                if (duration) {
-                    checkAvailability(duration);
-                } else {
                     var appointments;
 
-                    if (member.appointments.length > 0)
+                    if (appointmentType)
+                        appointments = [appointmentType];
+                    else if (member.appointments.length > 0)
                         appointments = member.appointments;
                     else if (group.defaultAppointments.length > 0)
                         appointments = group.defaultAppointments;
-                    else
-                        appointments = [{name: 'Default Appointment', length: 2700 }];
 
-                    appointments.forEach(function(appointment) {
-                        if (checkAvailability(appointment.length)) {
-                            timeslots.push({
-                                start: date.clone(),
-                                end: date.clone().add(appointment.length, 'seconds'),
-                                type: appointment.name
-                            });
-                        }
-                    });
-                }
+                    if (appointments) {
+                        appointments.forEach(function (appointment) {
+                            if (checkAvailability(appointment.length)) {
+                                timeslots.push({
+                                    start: date.clone(),
+                                    end: date.clone().add(appointment.length, 'seconds'),
+                                    type: appointment.name
+                                });
+                            }
+                        });
+                    }
             })();
         }
 

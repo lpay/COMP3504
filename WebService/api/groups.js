@@ -111,7 +111,7 @@ router.put('/groups/:id', ensureAuthenticated, function(req, res, next) {
             if (req.body.defaultAppointments) group.defaultAppointments = req.body.defaultAppointments;
             if (req.body.defaultInterval) group.defaultInterval = req.body.defaultInterval;
 
-            if (req.body.member.appointments) group.members[0].appointments = req.body.member.appointments;
+            //if (req.body.member.appointments) group.members[0].appointments = req.body.member.appointments;
 
             return group.save();
         })
