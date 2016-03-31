@@ -1,12 +1,25 @@
 <ion-view title="Home">
   <ion-content>
-    <div>Upcoming Appointments</div>
+    <div class="subheader">Upcoming Appointments</div>
 
-    <!--<ion-list>
-      <ion-item ng-repeat="appointment in appointments">
-        {{appointment}}
-      </ion-item>
-    </ion-list>-->
+    <ion-list>
+      <div ng-repeat="group in groups">
+        <div ng-repeat="member in group.members">
+          <ion-item ng-repeat="event in member.events">
+            <div class="row">
+              <div class="col-50">
+                {{member.user.name.first}} {{member.user.name.last}}
+              </div>
+              <div class="col-50">
+                {{event.start | date: "MMMM dd, yyyy"}}<br/>
+                {{event.start | date: "H:mm"}} - {{event.end | date: "H:mm"}}
+              </div>
+            </div>
+          </ion-item>
+        </div>
+      </div>
+
+    </ion-list>
 
   </ion-content>
 </ion-view>
