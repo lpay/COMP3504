@@ -83,7 +83,7 @@ router.put('/groups/:id', ensureAuthenticated, function(req, res, next) {
 
     if (!req.params.id) return res.status(400).send({message: 'group id required'});
 
-    Group.findById(req.params.id)
+    Group.findById(req.params.id, {'members': {$elemMatch: {user: req.user}}} )
         .then(group => {
             if (!group)
                 throw new APIError(404, 'group not found');
@@ -94,25 +94,28 @@ router.put('/groups/:id', ensureAuthenticated, function(req, res, next) {
             // only update fields that were included in the request
             var update = {};
 
-            if (req.body.name) update.name = req.body.name;
-            if (req.body.address) update.address = req.body.address;
-            if (req.body.city) update.city = req.body.city;
-            if (req.body.province) update.province = req.body.province;
-            if (req.body.postalCode) update.postalCode = req.body.postalCode;
+            if (req.body.name) group.name = req.body.name;
+            if (req.body.address) group.address = req.body.address;
+            if (req.body.city) group.city = req.body.city;
+            if (req.body.province) group.province = req.body.province;
+            if (req.body.postalCode) group.postalCode = req.body.postalCode;
 
-            if (req.body.contact) update.contact = req.body.contact;
-            if (req.body.phone) update.phone = req.body.phone;
-            if (req.body.email) update.email = req.body.email;
+            if (req.body.contact) group.contact = req.body.contact;
+            if (req.body.phone) group.phone = req.body.phone;
+            if (req.body.email) group.email = req.body.email;
 
             // allow alpha-numeric characters, remove excess whitespace and add comma delimiter
             // todo: how can we prevent abuse here? cap at 5 words? enforce dictionary words?
-            if (req.body.tags) update.tags = req.body.tags.replace(/[^\w\s]+/g, '').replace(/[\s]+/g, ', ');
+            if (req.body.tags) group.tags = req.body.tags.replace(/[^\w\s]+/g, '').replace(/[\s]+/g, ', ');
             
-            if (req.body.defaultAvailability) update.defaultAvailability = req.body.defaultAvailability;
-            if (req.body.defaultAppointments) update.defaultAppointments = req.body.defaultAppointments;
-            if (req.body.defaultInterval) update.defaultInterval = req.body.defaultInterval;
+            if (req.body.defaultAvailability) group.defaultAvailability = req.body.defaultAvailability;
+            if (req.body.defaultAppointments) group.defaultAppointments = req.body.defaultAppointments;
+            if (req.body.defaultInterval) group.defaultInterval = req.body.defaultInterval;
 
-            return Group.findByIdAndUpdate(req.params.id, update, {new: true});
+            if(req.body.member.appointments) group.members[0].appointments = req.body.member.appointments;
+
+
+            return group.save();
         })
         .then(group => res.send(group))
         .catch(next);

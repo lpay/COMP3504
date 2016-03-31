@@ -1,7 +1,6 @@
 <div class="row">
     <div class="col-md-12">
-        <h4>Business Hours</h4>
-        <hr/>
+        <h4>Weekly Schedule</h4>
     </div>
 </div>
 
@@ -10,7 +9,7 @@
         <table class="table">
             <tbody>
             <tr>
-                <td class="text-center" ng-repeat="availability in group.members.availability">
+                <td class="text-center" ng-repeat="availability in profile.availability">
                     <hours-editor summary-template="/profile/hours/summary.html"
                                   modal-template="/profile/hours/modal.html"
                                   entry-title="availability.day"
@@ -40,7 +39,7 @@
 
 </script>
 
-<script type="text/ng-template" id="/settings/hours/modal.html">
+<script type="text/ng-template" id="/profile/hours/modal.html">
 
     <div class="modal-header">
         <button type="button" class="close" ng-click="close()">&times;</button>
@@ -53,37 +52,37 @@
             <tr>
                 <th>Start Time</th>
                 <th>End Time</th>
-                <th class="text-center">Open</th>
+                <th class="text-center">Availability</th>
                 <th></th>
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="entry in hours">
-                <td><uib-timepicker show-spinners="false" ng-model="entry.start"></uib-timepicker></td>
-                <td><uib-timepicker show-spinners="false" ng-model="entry.end"></uib-timepicker></td>
-                <td class="text-center">
-                    <a href ng-click="entry.available = !entry.available">
-                        <i class="fa fa-check" style="color: green" ng-show="entry.available"></i>
-                        <i class="fa fa-remove" style="color: red" ng-show="!entry.available"></i>
-                    </a>
-                </td>
-                <td class="text-center">
-                    <a href ng-click="up($index)" ng-show="!$first"><i class="fa fa-chevron-up"></i></a>
-                    <a href ng-click="down($index)" ng-show="!$last"><i class="fa fa-chevron-down"></i></a>
-                    <a href ng-click="remove($index)"><i class="fa fa-minus-square" style="color: red"></i></a>
-                </td>
-            </tr>
             <tr>
                 <td><uib-timepicker show-spinners="false" ng-model="new.start"></uib-timepicker></td>
                 <td><uib-timepicker show-spinners="false" ng-model="new.end"></uib-timepicker></td>
                 <td class="text-center">
                     <a href ng-click="new.available = !new.available">
-                        <i class="fa fa-check" style="color: green" ng-show="new.available"></i>
-                        <i class="fa fa-remove" style="color: red" ng-show="!new.available"></i>
+                        <i class="fa fa-check" style="color: green" ng-show="new.available"> Available</i>
+                        <i class="fa fa-remove" style="color: red" ng-show="!new.available"> Unavailable</i>
                     </a>
                 </td>
                 <td class="text-center">
-                    <a href ng-click="add()"><i class="fa fa-plus-square" style="color: green"></i></a>
+                    <a href ng-click="add()"><i class="fa fa-plus-square" style="color: green"> add</i></a>
+                </td>
+            </tr>
+            <tr ng-repeat="entry in hours">
+                <td><uib-timepicker show-spinners="false" ng-model="entry.start"></uib-timepicker></td>
+                <td><uib-timepicker show-spinners="false" ng-model="entry.end"></uib-timepicker></td>
+                <td class="text-center">
+                    <a href ng-click="entry.available = !entry.available">
+                        <i class="fa fa-check" style="color: green" ng-show="entry.available"> Available</i>
+                        <i class="fa fa-remove" style="color: red" ng-show="!entry.available"> Unavailable</i>
+                    </a>
+                </td>
+                <td class="text-center">
+                    <!--<a href ng-click="up($index)" ng-show="!$first"><i class="fa fa-chevron-up"></i></a>-->
+                    <!--<a href ng-click="down($index)" ng-show="!$last"><i class="fa fa-chevron-down"></i></a>-->
+                    <a href ng-click="remove($index)"><i class="fa fa-minus-square" style="color: red"> remove</i></a>
                 </td>
             </tr>
             </tbody>

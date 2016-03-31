@@ -5,20 +5,67 @@
 (function() {
     angular
         .module('app')
-        .controller('ProfileController', ProfileController);
+        .controller('ProfileController', ProfileController)
+        .controller('ProfileAptSettingController', ProfileAptSettingController);
 
+    function ProfileController($scope, profile) {
+        $scope.profile = profile;
+    }
 
-    function ProfileController($scope, $location, $http) {
-        $http.get('/profile')
-            .success(function(profile) {
+    /**
+     * PROFILE Appointment Time Settings
+     */
 
-                $scope.group.members.some(function(member) {
-                    if (member.user._id === profile._id) {
-                        $scope.profile = member;
-                        return true;
-                    }
+    function ProfileAptSettingController($http, $scope) {
+
+        //$scope.interval = $scope.currentGroup.defaultInterval || 15;
+        $scope.appointmentTypes = $scope.appointmentTypes || [];
+        $scope.appointmentTypes.length = 0;
+
+        // convert from seconds to time of day
+        $scope.profile.appointments.forEach(function (entry) {
+            $scope.appointmentTypes.push({
+                name: entry.name,
+                length: entry.length / 60
+            });
+        });
+
+        $scope.add = function() {
+            if($scope.appointmentTypes > 5){return;}
+            $scope.appointmentTypes.push({});
+        };
+
+        $scope.remove = function(index) {
+            $scope.profile.appointments.splice(index, 1);
+        };
+
+        $scope.save = function() {
+            var appointmentTypes = [];
+
+            // convert back to seconds...
+            $scope.appointmentTypes.forEach(function (entry) {
+                appointmentTypes.push({
+                    name: entry.name,
+                    length: entry.length * 60
                 });
             });
+
+            $http.put('/groups/' + encodeURIComponent($scope.currentGroup._id), {
+                    //interval: $scope.interval,
+                    "member.appointments": appointmentTypes
+                })
+                .success(function(group) {
+                    angular.copy(group, $scope.currentGroup);
+
+                    $scope.alerts.push({type: 'success', msg: 'Changes saved.'});
+                })
+                .error(function (err) {
+                    if (err.message)
+                        $scope.alerts.push({type: 'danger', msg: 'Error: ' + err.message});
+                    else
+                        $scope.alerts.push({type: 'danger', msg: 'An unknown error has occurred.'});
+                });
+        };
     }
 
 })();

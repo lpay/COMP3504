@@ -129,8 +129,25 @@
 
             .state('dashboard.profile', {
                 url: '/profile',
+                //abstract: true,
                 templateUrl: 'views/profile/profile.html',
-                controller: 'ProfileController'
+                controller: 'ProfileController',
+                resolve: {
+                    profile: function($http, $q, $scope){
+                        var deferred = $q.defer();
+                        console.log("test");
+                        $http.get('/profile')
+                            .success(function(profile) {
+                                $scope.currentGroup.members.some(function(member) {
+                                    if (member.user._id === profile._id) {
+                                        deferred.resolve(member);
+                                        return true;
+                                    }
+                                });
+                            });
+                        return deferred.promise;
+                    }
+                }
             })
 
             .state('dashboard.profile.businessHours', {
@@ -140,7 +157,8 @@
 
             .state('dashboard.profile.appointmentSettings', {
                 url: '/appointments',
-                templateUrl: 'views/profile/appointments.html'
+                templateUrl: 'views/profile/appointments.html',
+                controller: 'ProfileAptSettingController'
             })
 
             .state('dashboard.profile.profileInformation', {
