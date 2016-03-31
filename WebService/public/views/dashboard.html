@@ -35,7 +35,7 @@
                                 <a ui-sref=".settings.groupInformation">Settings</a>
                             </li>
                             <li role="presentation" ng-class="{active: $state.includes('dashboard.profile')}">
-                                <a ui-sref=".profile.profileInformation">Profile</a>
+                                <a ui-sref=".profile.profileInformation({currentGroup: currentGroup})">Profile</a>
                             </li>
                             <li role="presentation">
                                 <a ui-sref="logout">Logout</a>

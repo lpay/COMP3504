@@ -128,22 +128,29 @@
              */
 
             .state('dashboard.profile', {
+                abstract: true,
                 url: '/profile',
-                //abstract: true,
                 templateUrl: 'views/profile/profile.html',
                 controller: 'ProfileController',
+                params: {
+                    currentGroup: undefined
+                },
                 resolve: {
-                    profile: function($http, $q, $scope){
+                    profile: function($http, $q, $stateParams){
                         var deferred = $q.defer();
                         console.log("test");
+
                         $http.get('/profile')
                             .success(function(profile) {
-                                $scope.currentGroup.members.some(function(member) {
+                                $stateParams.currentGroup.members.some(function(member) {
                                     if (member.user._id === profile._id) {
                                         deferred.resolve(member);
                                         return true;
                                     }
                                 });
+                            })
+                            .error(function() {
+                                deferred.reject();
                             });
                         return deferred.promise;
                     }
