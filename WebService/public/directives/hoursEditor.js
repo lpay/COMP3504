@@ -17,7 +17,7 @@
             scope: {
                 summaryTemplate: '@',
                 modalTemplate: '@',
-                title: '=',
+                entryTitle: '=',
                 hours: '='
             },
 
@@ -45,7 +45,7 @@
 
                 $scope.edit = function () {
 
-                    var title = $scope.title;
+                    var title = $scope.entryTitle;
                     var hours = [];
 
                     // convert from seconds to time of day

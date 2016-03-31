@@ -79,7 +79,7 @@ var groupSchema = new mongoose.Schema({
             ]
         },
         appointments: {
-            type: [{name: String, min: Number, max: Number}]
+            type: [{name: String, length: Number}]
         },
         events: {
             type: [{
