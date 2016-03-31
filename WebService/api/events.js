@@ -33,7 +33,9 @@ router.get('/appointments', ensureAuthenticated, function(req, res, next) {
 //            {$unwind: '$members.events'},
         ])
         .exec()
-        .populate('members.user')
+        .then(groups => {
+            return Group.populate(groups, {path: 'members.user'});
+        })
         .then(groups => {
             res.send(groups);
         })
