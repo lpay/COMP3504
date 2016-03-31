@@ -83,7 +83,7 @@ router.put('/groups/:id', ensureAuthenticated, function(req, res, next) {
 
     if (!req.params.id) return res.status(400).send({message: 'group id required'});
 
-    Group.findById(req.params.id, {'members': {$elemMatch: {user: req.user}}} )
+    Group.findById(req.params.id)
         .then(group => {
             if (!group)
                 throw new APIError(404, 'group not found');
@@ -110,9 +110,7 @@ router.put('/groups/:id', ensureAuthenticated, function(req, res, next) {
             if (req.body.defaultAvailability) group.defaultAvailability = req.body.defaultAvailability;
             if (req.body.defaultAppointments) group.defaultAppointments = req.body.defaultAppointments;
             if (req.body.defaultInterval) group.defaultInterval = req.body.defaultInterval;
-
-            //if (req.body.member.appointments) group.members[0].appointments = req.body.member.appointments;
-
+            
             return group.save();
         })
         .then(group => res.send(group))

@@ -1,6 +1,6 @@
 <style>
-    .uib-timepicker {
-        margin: auto;
+    .table tbody>tr>td{
+        vertical-align: middle;
     }
 </style>
 
@@ -12,19 +12,24 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-7">
             <table class="table">
                 <thead>
                     <tr>
                         <th>Appointment Type</th>
-                        <th class="text-center">Length</th>
+                        <th class="text-center">Duration</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr ng-repeat="entry in appointmentTypes">
                         <td><input type="text" class="form-control" placeholder="Appointment Type" ng-model="entry.name"></td>
-                        <td class="text-center"><input type="number" class="form-control" placeholder="minutes" step="15" min="0" max="720" ng-model="entry.length"></td>
+                        <td class="text-center">
+                            <div class="form-group has-feedback" style="margin: auto; width: 8em">
+                                <input type="number" class="form-control" style="padding-right: 12px" placeholder="0" step="5" min="0" max="720" ng-model="entry.length">
+                                <span class="form-control-feedback" style="width: 7em">mins.</span>
+                            </div>
+                        </td>
                         <td class="text-center">
                             <!--
                             <a href ng-click="up($index)" ng-show="!$first"><i class="fa fa-chevron-up"></i></a>
@@ -33,18 +38,20 @@
                             <a href ng-click="remove($index)"><i class="fa fa-minus-square" style="color: red"></i></a>
                         </td>
                     </tr>
+                    <tr>
+                        <td class="text-right">Appointment Spacing:</td>
+                        <td>
+                            <div class="has-feedback" style="margin: auto; width: 8em">
+                                <input type="number" class="form-control" style="padding-right: 12px" placeholder="0" step="5" min="0" max="720" ng-model="interval">
+                                <span class="form-control-feedback" style="width: 7em">mins.</span>
+                            </div>
+                        </td>
+                        <td></td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group text-right">
                 <button ng-disabled="appointmentTypes.length > 5" type="button" class="btn btn-xs btn-primary" ng-click="add()"><i class="fa fa-plus-square">&nbsp;</i>Add Appointment Type</button>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="form-group">
-                <label class="control-label">Appointment Spacing:</label>
-                <input type="number" class="form-control" placeholder="minutes" step="15" min="0" max="60" ng-model="interval">
             </div>
         </div>
     </div>
