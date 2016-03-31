@@ -43,8 +43,10 @@ var groupSchema = new mongoose.Schema({
 
     // Defaults (overridable for each member)
     defaultAppointments: {
-        type: [{name: String, min: Number, max: Number}]
+        type: [{name: String, length: Number}]
     },
+
+    defaultInterval: { type: Number, default: 15 },
 
     defaultAvailability: {
         type: [availabilitySchema],

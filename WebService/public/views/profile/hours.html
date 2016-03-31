@@ -1,15 +1,98 @@
-<div class="col-md-2">
-    <div class="row">
-        <div class="col-md-12 text-center">
-            <h4>Availability</h4>
-            <hr/>
-        </div>
-    </div>
-    <div class="row" ng-repeat="entry in profile.availability">
-        <div class="col-md-12 text-center">
-            <div class="form-group">
-                <availability-editor availability="entry" group="group" profile="profile"></availability-editor>
-            </div>
-        </div>
+<div class="row">
+    <div class="col-md-12">
+        <h4>Business Hours</h4>
+        <hr/>
     </div>
 </div>
+
+<div class="row">
+    <div class="col-md-12">
+        <table class="table">
+            <tbody>
+            <tr>
+                <td class="text-center" ng-repeat="availability in group.members.availability">
+                    <hours-editor summary-template="/profile/hours/summary.html"
+                                  modal-template="/profile/hours/modal.html"
+                                  entry-title="availability.day"
+                                  hours="availability.hours">
+                    </hours-editor>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/ng-template" id="/profile/hours/summary.html">
+
+    <a href ng-click="edit()">{{entryTitle}}</a>
+
+    <br/>
+
+    <span ng-if="descriptions.length == 0">
+        Closed
+    </span>
+
+    <span ng-if="descriptions.length > 0" ng-repeat="description in descriptions">
+        {{description}}
+        <br ng-if="!$last">
+    </span>
+
+</script>
+
+<script type="text/ng-template" id="/settings/hours/modal.html">
+
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="close()">&times;</button>
+        <h4 class="modal-title">{{title}}</h4>
+    </div>
+
+    <div class="modal-body">
+        <table class="table table-striped table-bordered">
+            <thead>
+            <tr>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th class="text-center">Open</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="entry in hours">
+                <td><uib-timepicker show-spinners="false" ng-model="entry.start"></uib-timepicker></td>
+                <td><uib-timepicker show-spinners="false" ng-model="entry.end"></uib-timepicker></td>
+                <td class="text-center">
+                    <a href ng-click="entry.available = !entry.available">
+                        <i class="fa fa-check" style="color: green" ng-show="entry.available"></i>
+                        <i class="fa fa-remove" style="color: red" ng-show="!entry.available"></i>
+                    </a>
+                </td>
+                <td class="text-center">
+                    <a href ng-click="up($index)" ng-show="!$first"><i class="fa fa-chevron-up"></i></a>
+                    <a href ng-click="down($index)" ng-show="!$last"><i class="fa fa-chevron-down"></i></a>
+                    <a href ng-click="remove($index)"><i class="fa fa-minus-square" style="color: red"></i></a>
+                </td>
+            </tr>
+            <tr>
+                <td><uib-timepicker show-spinners="false" ng-model="new.start"></uib-timepicker></td>
+                <td><uib-timepicker show-spinners="false" ng-model="new.end"></uib-timepicker></td>
+                <td class="text-center">
+                    <a href ng-click="new.available = !new.available">
+                        <i class="fa fa-check" style="color: green" ng-show="new.available"></i>
+                        <i class="fa fa-remove" style="color: red" ng-show="!new.available"></i>
+                    </a>
+                </td>
+                <td class="text-center">
+                    <a href ng-click="add()"><i class="fa fa-plus-square" style="color: green"></i></a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-default" ng-click="close()">Cancel</button>
+        <button class="btn btn-success" ng-click="save()"><i class="fa fa-save">&nbsp;</i>Save</button>
+    </div>
+
+</script>
