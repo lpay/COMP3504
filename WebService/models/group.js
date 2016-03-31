@@ -93,7 +93,7 @@ var groupSchema = new mongoose.Schema({
     }]
 });
 
-groupSchema.methods.generateTimeslots = function(startDate, endDate, appointmentType) {
+groupSchema.methods.generateTimeslots = function(startDate, endDate, appointmentType, limit) {
     console.time('generateTimeslots');
 
     var group = this;
@@ -101,7 +101,7 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, appointment
     var interval = group.defaultInterval || 15; // default 15 minutes
 
     // round up to the nearest interval
-    var remainder = startDate.diff(startDate.startOf('day'), 'minutes') % interval;
+    var remainder = startDate.diff(startDate.clone().startOf('day'), 'minutes') % interval;
 
     if (remainder > 0)
         startDate.add(interval - remainder, 'minutes');
@@ -234,27 +234,30 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, appointment
                     return available;
                 };
 
-                    var appointments;
+                var appointments;
 
-                    if (appointmentType)
-                        appointments = [appointmentType];
-                    else if (member.appointments.length > 0)
-                        appointments = member.appointments;
-                    else if (group.defaultAppointments.length > 0)
-                        appointments = group.defaultAppointments;
+                if (appointmentType)
+                    appointments = [appointmentType];
+                else if (member.appointments.length > 0)
+                    appointments = member.appointments;
+                else if (group.defaultAppointments.length > 0)
+                    appointments = group.defaultAppointments;
 
-                    if (appointments) {
-                        appointments.forEach(function (appointment) {
-                            if (checkAvailability(appointment.length)) {
-                                timeslots.push({
-                                    start: date.clone(),
-                                    end: date.clone().add(appointment.length, 'seconds'),
-                                    type: appointment.name
-                                });
-                            }
-                        });
-                    }
+                if (appointments) {
+                    appointments.forEach(function (appointment) {
+                        if (checkAvailability(appointment.length)) {
+                            timeslots.push({
+                                start: date.clone(),
+                                end: date.clone().add(appointment.length, 'seconds'),
+                                type: appointment.name
+                            });
+                        }
+                    });
+                }
             })();
+
+            if (limit && --limit == 0)
+                break;
         }
 
         if (timeslots.length > 0) {

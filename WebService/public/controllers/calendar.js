@@ -15,11 +15,11 @@
         console.log($scope.member.events);
         $scope.member.events.forEach(function(event) {
             $scope.events.push({
-                title: 'Basic Appointment',
+                title: event.type,
                 start: new Date(event.start),
                 end: new Date(event.end)
             })
-        })
+        });
 
 
 

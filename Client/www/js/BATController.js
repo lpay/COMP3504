@@ -17,10 +17,13 @@ app
             console.log($scope);
             $http.post('http://localhost:3504/appointments',
                 {
-                    group: $scope.group._id,
-                    member: $scope.member._id,
-                    start: $scope.timeslot.start,
-                    end: $scope.timeslot.end
+                    appointment: {
+                        group: $scope.group._id,
+                        member: $scope.member._id,
+                        start: $scope.timeslot.start,
+                        end: $scope.timeslot.end,
+                        type: $scope.timeslot.type
+                    }
                 })
                 .success(function() {
                   console.log("BOOKED");

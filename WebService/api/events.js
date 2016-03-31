@@ -61,13 +61,16 @@ router.get('/appointments', ensureAuthenticated, function(req, res, next) {
 });
 
 router.post('/appointments', ensureAuthenticated, function(req, res, next) {
-    Group.findById(req.body.group, {'members': {$elemMatch: {user: req.body.member}}})
+
+    if (!req.body.appointment) return res.status(400).send({message: 'appointment is required'});
+
+    Group.findById(req.body.appointment.group, {'members': {$elemMatch: {user: req.body.appointment.member}}})
         .populate('members.user')
         .then(group => {
-            var start = moment(req.body.start);
-            var end = moment(req.body.end);
+            var start = moment(req.body.appointment.start);
+            var end = moment(req.body.appointment.end);
 
-            return [group, group.generateTimeslots(start, end, { name: 'appt', length: end.diff(start, 'seconds') })];
+            return [group, group.generateTimeslots(start, end, { name: req.body.appointment.type, length: end.diff(start, 'seconds') }, 1)];
         })
         .spread((group, result) => {
             /*
@@ -86,8 +89,8 @@ router.post('/appointments', ensureAuthenticated, function(req, res, next) {
             if (result.members.length && result.members[0].timeslots.length) {
                 return Group.update(
                     {
-                        '_id': req.body.group,
-                        'members': {$elemMatch: {user: req.body.member}}
+                        '_id': req.body.appointment.group,
+                        'members': {$elemMatch: {user: req.body.appointment.member}}
                     },
                     {
                         $push: {

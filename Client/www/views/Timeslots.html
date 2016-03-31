@@ -9,6 +9,8 @@
           <ion-item ng-repeat="timeslot in member.timeslots" ui-sref="dashboard.bookappointmenttime({timeslot: timeslot, member: member, group: group})">
            <div>
              {{timeslot.start | date: "MMMM dd, yyyy - H:mm"}}
+               <br>
+               {{timeslot.type}}
            </div>
           </ion-item>
 
