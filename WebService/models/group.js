@@ -218,13 +218,11 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, appointment
                             var startDate = date.clone();
                             var endDate = moment(date).add(end, 'seconds');
 
-                            // timeslot would completely overlap an unavailable event
-                            if (startDate.diff(event.start) <= 0 && endDate.diff(event.end) >= 0)
-                                return true;
-
-                            // event contains timeslot start or end
-                            return startDate.diff(event.start) >= 0 && startDate.diff(event.end) <= 0 ||
-                                endDate.diff(event.start) >=0 && endDate.diff(event.end) <= 0;
+                            // return true if the timeslot would overlap the event,
+                            // or if the event contains the timeslot start or end
+                            return (startDate.diff(event.start) <= 0 && endDate.diff(event.end) >= 0) ||
+                                (startDate.diff(event.start) >= 0 && startDate.diff(event.end) <= 0 ||
+                                endDate.diff(event.start) >=0 && endDate.diff(event.end) <= 0);
 
                         })) return false;
 
