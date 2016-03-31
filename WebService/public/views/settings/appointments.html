@@ -50,14 +50,14 @@
                     </tr>
                 </tbody>
             </table>
-            <div class="form-group">
-                <button ng-disabled="appointmentTypes.length > 5" type="button" class="btn btn-primary" ng-click="add()"><i class="fa fa-plus-square">&nbsp;</i>Add Appointment Type</button>
+            <div class="row">
+                <div class="col-md-6">
+                    <button ng-disabled="appointmentTypes.length > 5" type="button" class="btn btn-primary" ng-click="add()"><i class="fa fa-plus-square">&nbsp;</i>Add Appointment Type</button>
+                </div>
+                <div class="col-md-6 text-right">
+                    <button type="submit" class="btn btn-success"><i class="fa fa-save">&nbsp;</i>Save</button>
+                </div>
             </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12 text-right">
-            <button type="submit" class="btn btn-success"><i class="fa fa-save">&nbsp;</i>Save</button>
         </div>
     </div>
 </form>
