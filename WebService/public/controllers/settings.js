@@ -23,28 +23,28 @@
 
         $scope.save = function () {
             $http.put('/groups/' + encodeURIComponent($scope.group._id), {
-                    name: $scope.group.name,
-                    address: $scope.group.address,
-                    city: $scope.group.city,
-                    province: $scope.group.province,
-                    postalCode: $scope.group.postalCode,
-                    tags: $scope.group.tags,
-                    contact: $scope.group.contact,
-                    email: $scope.group.email,
-                    phone: $scope.group.phone
-                })
-                .success(function (group) {
-                    angular.copy(group, $scope.currentGroup);
+                name: $scope.group.name,
+                address: $scope.group.address,
+                city: $scope.group.city,
+                province: $scope.group.province,
+                postalCode: $scope.group.postalCode,
+                tags: $scope.group.tags,
+                contact: $scope.group.contact,
+                email: $scope.group.email,
+                phone: $scope.group.phone
+            })
+            .success(function (group) {
+                angular.copy(group, $scope.currentGroup);
 
-                    $scope.alerts.push({type: 'success', msg: 'Changes saved.'});
-                })
-                .error(function (err) {
-                    console.log(err);
-                    if (err.message)
-                        $scope.alerts.push({type: 'danger', msg: 'Error: ' + err.message});
-                    else
-                        $scope.alerts.push({type: 'danger', msg: 'An unknown error has occurred.'});
-                });
+                $scope.alerts.push({type: 'success', msg: 'Changes saved.'});
+            })
+            .error(function (err) {
+                console.log(err);
+                if (err.message)
+                    $scope.alerts.push({type: 'danger', msg: 'Error: ' + err.message});
+                else
+                    $scope.alerts.push({type: 'danger', msg: 'An unknown error has occurred.'});
+            });
         }
     }
 
@@ -70,6 +70,7 @@
     }
 
     function GroupAppointmentSettingsController($http, $scope) {
+        $scope.interval = $scope.currentGroup.defaultInterval || 15;
         $scope.appointmentTypes = $scope.appointmentTypes || [];
         $scope.appointmentTypes.length = 0;
 
@@ -77,16 +78,12 @@
         $scope.currentGroup.defaultAppointments.forEach(function (entry) {
             $scope.appointmentTypes.push({
                 name: entry.name,
-                min: moment().startOf('day').add(moment.duration(entry.min, 'seconds')),
-                max: moment().startOf('day').add(moment.duration(entry.max, 'seconds'))
+                length: entry.length / 60
             });
         });
 
         $scope.add = function() {
-            $scope.appointmentTypes.push({
-                min: moment().startOf('day'),
-                max: moment().startOf('day')
-            });
+            $scope.appointmentTypes.push({});
         };
 
         $scope.remove = function(index) {
@@ -114,16 +111,16 @@
             $scope.appointmentTypes.forEach(function (entry) {
                 appointmentTypes.push({
                     name: entry.name,
-                    min: moment.duration(moment(entry.min) - moment(entry.min).startOf('day')).asSeconds(),
-                    max: moment.duration(moment(entry.max) - moment(entry.max).startOf('day')).asSeconds()
+                    length: entry.length * 60
                 });
             });
 
             $http.put('/groups/' + encodeURIComponent($scope.currentGroup._id), {
+                    defaultInterval: $scope.interval,
                     defaultAppointments: appointmentTypes
                 })
                 .success(function(group) {
-                    angular.copy(group.defaultAppointments, $scope.currentGroup.defaultAppointments);
+                    angular.copy(group, $scope.currentGroup);
 
                     $scope.alerts.push({type: 'success', msg: 'Changes saved.'});
                 })

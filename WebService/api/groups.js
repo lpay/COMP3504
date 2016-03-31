@@ -110,6 +110,7 @@ router.put('/groups/:id', ensureAuthenticated, function(req, res, next) {
             
             if (req.body.defaultAvailability) update.defaultAvailability = req.body.defaultAvailability;
             if (req.body.defaultAppointments) update.defaultAppointments = req.body.defaultAppointments;
+            if (req.body.defaultInterval) update.defaultInterval = req.body.defaultInterval;
 
             return Group.findByIdAndUpdate(req.params.id, update, {new: true});
         })
