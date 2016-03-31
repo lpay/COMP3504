@@ -18,7 +18,7 @@
                     <tr>
                         <th>Appointment Type</th>
                         <th class="text-center">Length</th>
-                        <th class="text-center"><button type="button" class="btn btn-xs btn-primary" ng-click="add()"><i class="fa fa-plus-square">&nbsp;</i>Add</button></th>
+                        <th class="text-center"><button ng-disabled="appointmentTypes.length > 5" type="button" class="btn btn-xs btn-primary" ng-click="add()"><i class="fa fa-plus-square">&nbsp;</i>Add</button></th>
                     </tr>
                 </thead>
                 <tbody>

@@ -83,6 +83,7 @@
         });
 
         $scope.add = function() {
+            if($scope.appointmentTypes > 5){return;}
             $scope.appointmentTypes.push({});
         };
 
