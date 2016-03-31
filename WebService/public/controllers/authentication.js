@@ -17,7 +17,7 @@
         $scope.authenticate = function(provider) {
             $auth.authenticate(provider)
                 .then(function() {
-                    $state.go('dashboard');
+                    $state.go('dashboard.scheduler');
                 })
                 .catch(function(res) {
                     console.log(res);
@@ -27,7 +27,7 @@
         $scope.login = function() {
             $auth.login($scope.user)
                 .then(function() {
-                    $state.go('dashboard');
+                    $state.go('dashboard.scheduler');
                 })
                 .catch(function() {
                     $("#login").effect('shake');

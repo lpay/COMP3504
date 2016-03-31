@@ -19,7 +19,7 @@
                             <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{currentGroup.name}} <span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li ng-repeat="group in groups">
-                                    <a ui-sref="dashboard({group: group})">{{group.name}}</a>
+                                    <a ui-sref="dashboard.scheduler({group: group})">{{group.name}}</a>
                                 </li>
                                 <li role="separator" class="divider"></li>
                                 <li role="presentation"><a ui-sref="join">Create Group</a></li>

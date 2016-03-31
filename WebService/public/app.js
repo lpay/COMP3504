@@ -45,7 +45,7 @@
             })
 
             .state('dashboard', {
-                //abstract: true,
+                abstract: true,
                 url: '/dashboard',
                 templateUrl: 'views/dashboard.html',
                 controller: 'DashboardController',
@@ -138,7 +138,6 @@
                 resolve: {
                     profile: function($http, $q, $stateParams){
                         var deferred = $q.defer();
-                        console.log("test");
 
                         $http.get('/profile')
                             .success(function(profile) {

@@ -94,12 +94,17 @@ var groupSchema = new mongoose.Schema({
 });
 
 groupSchema.methods.generateTimeslots = function(startDate, endDate, duration) {
+    console.time('generateTimeslots');
+
     var group = this;
 
-    duration = duration || 15; // default 15 minutes
+    var interval = group.defaultInterval || 15; // default 15 minutes
 
-    // round up to the nearest duration
-    //startDate.add(duration - (startDate.minute() % duration), 'minutes');
+    // round up to the nearest interval
+    var remainder = startDate.diff(startDate.startOf('day'), 'minutes') % interval;
+
+    if (remainder > 0)
+        startDate.add(interval - remainder, 'minutes');
 
     var groupAvailability = {
         'Sunday': [],
@@ -116,13 +121,6 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, duration) {
         entry.hours.forEach(function(hours) {
             groupAvailability[entry.day].push({ start: hours.start, end: hours.end, available: hours.available, rank: 0});
         })
-    });
-
-    // get min appointment time
-    var min = 2700; // 45 mins (default)
-    group.defaultAppointments.forEach(function(entry) {
-        if (entry.min < min)
-            min = entry.min;
     });
 
     // organize available timeslots by member
@@ -187,59 +185,78 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, duration) {
             });
         }
 
-        for (var date = startDate.clone(); date < endDate; date.add(duration, 'minutes')) {
+        for (var date = startDate.clone(); date < endDate; date.add(interval, 'minutes')) {
 
-            // calculate timeslot start & end in seconds
-            var start = (date.hour() * 60 + date.minute()) * 60;
+            (function() {
 
-            // min time
-            var minTime = start + min;
+                // calculate timeslot start in seconds
+                var start = (date.hour() * 60 + date.minute()) * 60;
 
-            // max time
-            var maxTime = 0;
+                var checkAvailability = function(duration) {
 
-            // check for conflicting events
-            /*
-            if (member.events.some(event => {
-                    return !event.available && (
-                            date.diff(event.start) >= 0 &&
-                            date.diff(event.end) <= 0
-                        ) || (
-                            moment(date).add(end, 'seconds').diff(event.start) >= 0 &&
-                            moment(date).add(end, 'seconds').diff(event.end) <= 0
-                        );
-                })) continue;
-            */
+                    // calculate timeslot end in seconds
+                    var end = start + duration;
 
-            // check availability
-            var hours = availability[weekdays[startDate.day()]];
+                    var available = false;
+                    var hours = availability[weekdays[startDate.day()]];
 
-            hours.some(hours => {
-                var hasStart = (start >= hours.start && start <= hours.end);
-                var hasEnd = (minTime >= hours.start && minTime <= hours.end);
+                    // check for conflicting events
+                    /*
+                     if (member.events.some(event => {
+                     return !event.available && (
+                     date.diff(event.start) >= 0 &&
+                     date.diff(event.end) <= 0
+                     ) || (
+                     moment(date).add(end, 'seconds').diff(event.start) >= 0 &&
+                     moment(date).add(end, 'seconds').diff(event.end) <= 0
+                     );
+                     })) return false;
+                     */
 
-                // mininum timeslot would completely overlap an unavailable time
-                if (start <= hours.start && minTime >= hours.end && !hours.available)
-                    return true;
+                    hours.some(hours => {
+                        var hasStart = (start >= hours.start && start <= hours.end);
+                        var hasEnd = (end >= hours.start && end <= hours.end);
 
-                // timeslot would start or end in an unavailable time
-                if ((hasStart || hasEnd) && !hours.available)
-                    return true;
+                        // mininum timeslot would completely overlap an unavailable time
+                        if (start <= hours.start && end >= hours.end && !hours.available)
+                            return true;
 
-                if (hasStart && hasEnd) {
-                    if (hours.available)
-                        maxTime = hours.end - start;
+                        // timeslot would start or end in an unavailable time
+                        if ((hasStart || hasEnd) && !hours.available)
+                            return true;
 
-                    return true;
+                        if (hasStart && hasEnd) {
+                            available = hours.available;
+                            return true;
+                        }
+                    });
+
+                    return available;
+                };
+
+                if (duration) {
+                    checkAvailability(duration);
+                } else {
+                    var appointments;
+
+                    if (member.appointments.length > 0)
+                        appointments = member.appointments;
+                    else if (group.defaultAppointments.length > 0)
+                        appointments = group.defaultAppointments;
+                    else
+                        appointments = [{name: 'Default Appointment', length: 2700 }];
+
+                    appointments.forEach(function(appointment) {
+                        if (checkAvailability(appointment.length)) {
+                            timeslots.push({
+                                start: date.clone(),
+                                end: date.clone().add(appointment.length, 'seconds'),
+                                type: appointment.name
+                            });
+                        }
+                    });
                 }
-            });
-
-            if (maxTime > 0) {
-                timeslots.push({
-                    start: moment(date),
-                    end: moment(date).add(maxTime, 'seconds')
-                });
-            }
+            })();
         }
 
         if (timeslots.length > 0) {
@@ -253,6 +270,8 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, duration) {
             totalTimeslots += timeslots.length;
         }
     });
+
+    console.timeEnd('generateTimeslots');
 
     return {
         startDate: startDate,

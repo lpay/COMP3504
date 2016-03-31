@@ -92,7 +92,6 @@ router.put('/groups/:id', ensureAuthenticated, function(req, res, next) {
                 throw new APIError(401, 'not authorized');
 
             // only update fields that were included in the request
-            var update = {};
 
             if (req.body.name) group.name = req.body.name;
             if (req.body.address) group.address = req.body.address;
@@ -112,8 +111,7 @@ router.put('/groups/:id', ensureAuthenticated, function(req, res, next) {
             if (req.body.defaultAppointments) group.defaultAppointments = req.body.defaultAppointments;
             if (req.body.defaultInterval) group.defaultInterval = req.body.defaultInterval;
 
-            if(req.body.member.appointments) group.members[0].appointments = req.body.member.appointments;
-
+            if (req.body.member.appointments) group.members[0].appointments = req.body.member.appointments;
 
             return group.save();
         })
@@ -147,8 +145,8 @@ router.get('/groups/search/:search', function (req, res, next) {
     var search = {};
 
     if (req.params.search) {
-        search.name = {$regex: new RegExp(req.params.search, "i")}
-        search.tags = {$regex: new RegExp(req.params.search, "i")}
+        search.name = {$regex: new RegExp(req.params.search, "i")};
+        search.tags = {$regex: new RegExp(req.params.search, "i")};
     }
 
     Group.find(search, 'name address city province postalCode')

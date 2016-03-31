@@ -9,9 +9,20 @@
         .controller('CalendarController', CalendarController);
 
     function CalendarController($scope, $uibModal) {
-
         $scope.events = [];
         $scope.eventSources = [$scope.events];
+
+        console.log($scope.member.events);
+        $scope.member.events.forEach(function(event) {
+            $scope.events.push({
+                title: 'Basic Appointment',
+                start: new Date(event.start),
+                end: new Date(event.end)
+            })
+        })
+
+
+
 
         $scope.select = function (start, end) {
 
