@@ -185,6 +185,18 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, appointment
             });
         }
 
+        var appointmentTypes;
+
+        if (appointmentType)
+            appointmentTypes = [appointmentType];
+        else if (member.appointments.length > 0)
+            appointmentTypes = member.appointments;
+        else if (group.defaultAppointments.length > 0)
+            appointmentTypes = group.defaultAppointments;
+
+        if (!appointmentTypes)
+            return;
+        
         for (var date = startDate.clone(); date < endDate; date.add(interval, 'minutes')) {
 
             (function() {
@@ -197,29 +209,31 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, appointment
                     // calculate timeslot end in seconds
                     var end = start + duration;
 
+                    // check for conflicting events
+                    if (member.events.some(event => {
+                            if (event.available)
+                                return false;
+
+                            var hasStart = date.diff(event.start) >= 0 && date.diff(event.end) <= 0;
+                            var hasEnd = moment(date).add(end, 'seconds').diff(event.start) >=0 &&
+                                    moment(date).add(end, 'seconds').diff(event.end) <= 0;
+
+                            return hasStart || hasEnd;
+
+                        })) return false;
+
+                    // check availability
                     var available = false;
                     var hours = availability[weekdays[startDate.day()]];
-
-                    // check for conflicting events
-                    /*
-                     if (member.events.some(event => {
-                     return !event.available && (
-                     date.diff(event.start) >= 0 &&
-                     date.diff(event.end) <= 0
-                     ) || (
-                     moment(date).add(end, 'seconds').diff(event.start) >= 0 &&
-                     moment(date).add(end, 'seconds').diff(event.end) <= 0
-                     );
-                     })) return false;
-                     */
-
+                    
                     hours.some(hours => {
-                        var hasStart = (start >= hours.start && start <= hours.end);
-                        var hasEnd = (end >= hours.start && end <= hours.end);
-
                         // mininum timeslot would completely overlap an unavailable time
                         if (start <= hours.start && end >= hours.end && !hours.available)
                             return true;
+
+
+                        var hasStart = (start >= hours.start && start <= hours.end);
+                        var hasEnd = (end >= hours.start && end <= hours.end);
 
                         // timeslot would start or end in an unavailable time
                         if ((hasStart || hasEnd) && !hours.available)
@@ -234,26 +248,16 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, appointment
                     return available;
                 };
 
-                var appointments;
+                appointmentTypes.forEach(function (appointmentType) {
+                    if (checkAvailability(appointmentType.length)) {
+                        timeslots.push({
+                            start: date.clone(),
+                            end: date.clone().add(appointmentType.length, 'seconds'),
+                            type: appointmentType.name
+                        });
+                    }
+                });
 
-                if (appointmentType)
-                    appointments = [appointmentType];
-                else if (member.appointments.length > 0)
-                    appointments = member.appointments;
-                else if (group.defaultAppointments.length > 0)
-                    appointments = group.defaultAppointments;
-
-                if (appointments) {
-                    appointments.forEach(function (appointment) {
-                        if (checkAvailability(appointment.length)) {
-                            timeslots.push({
-                                start: date.clone(),
-                                end: date.clone().add(appointment.length, 'seconds'),
-                                type: appointment.name
-                            });
-                        }
-                    });
-                }
             })();
 
             if (limit && --limit == 0)
