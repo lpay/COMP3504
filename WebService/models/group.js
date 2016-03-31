@@ -143,47 +143,30 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, appointment
             });
         });
 
-        var stop = false;
 
-        while (!stop) {
-            stop = true;
+        
+        Object.keys(availability).forEach(function (day) {
+            // sort
+            availability[day].sort(function (a, b) {
+                // sort by rank (desc)
+                if (a.rank != b.rank)
+                    return b.rank - a.rank;
 
-            Object.keys(availability).forEach(function (day) {
+                // sort by timespan
+                if (a.end - a.start != b.end - b.start)
+                    return ((a.end - a.start) - (b.end - b.start));
 
-                // sort
-                availability[day].sort(function (a, b) {
-                    // sort by rank (desc)
-                    if (a.rank != b.rank)
-                        return b.rank - a.rank;
+                // sort by start
+                if (a.start != b.start)
+                    return a.start - b.start;
 
-                    // sort by timespan
-                    if (a.end - a.start != b.end - b.start)
-                        return ((a.end - a.start) - (b.end - b.start));
+                // sort by end
+                if (a.end != b.end)
+                    return a.end - b.end;
 
-                    // sort by start
-                    if (a.start != b.start)
-                        return a.start - b.start;
-
-                    // sort by end
-                    if (a.end != b.end)
-                        return a.end - b.end;
-
-                    return 0;
-                });
-
-                /*
-                // group
-                for (var i = availability[day].length; i > 0; i--) {
-                    var prev = availability[day][i - 1];
-                    var curr = availability[day][i];
-
-                    if (curr.start == prev.end) {
-                        if (curr.rank >)
-                    }
-                }
-                */
+                return 0;
             });
-        }
+        });
 
         var appointmentTypes;
 
@@ -197,6 +180,7 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, appointment
         if (!appointmentTypes)
             return;
         
+        // generate timeslots
         for (var date = startDate.clone(); date < endDate; date.add(interval, 'minutes')) {
 
             (function() {

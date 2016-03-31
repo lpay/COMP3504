@@ -70,22 +70,9 @@ router.post('/appointments', ensureAuthenticated, function(req, res, next) {
             var start = moment(req.body.appointment.start);
             var end = moment(req.body.appointment.end);
 
-            return [group, group.generateTimeslots(start, end, { name: req.body.appointment.type, length: end.diff(start, 'seconds') }, 1)];
+            return group.generateTimeslots(start, end, { name: req.body.appointment.type, length: end.diff(start, 'seconds') }, 1);
         })
-        .spread((group, result) => {
-            /*
-            if (result.members.length && result.members[0].timeslots.length) {
-                group.members[0].events.push({
-                    client: req.user,
-                    available: false,
-                    start: result.members[0].timeslots[0].start,
-                    end: result.members[0].timeslots[0].end
-                });
-
-                return group.save();
-            }
-            */
-
+        .then(result => {
             if (result.members.length && result.members[0].timeslots.length) {
                 return Group.update(
                     {
@@ -118,9 +105,9 @@ router.post('/appointments/search', function(req, res, next) {
     var search = [];
 
     search.push({'name': {$regex: new RegExp(req.body.search, "i")}});
-    //search.push({'tags': {$regex: new RegExp("/\\b(?:" + req.body.search + ")\b/", "i")}});
+    search.push({'tags': {$regex: new RegExp("\\b(?:" + req.body.search + ")\\b", "i")}});
 
-    User.find({'name.last': {$regex: new RegExp(req.body.search, "i")}})
+    User.find({'name.last': {$regex: new RegExp("\\b(?:" + req.body.search + ")\\b", "i")}})
         .then(users => {
             if (users.length) {
                 var members = [];
@@ -138,7 +125,7 @@ router.post('/appointments/search', function(req, res, next) {
             var timeslots = [];
 
             var start = req.body.start ? moment(req.body.start) : moment();
-            var end = req.body.end || moment(start).add(1, 'days');
+            var end = req.body.end || moment(start).endOf('day');
 
             // round up to next whole minute
             if (start.seconds() > 0 || start.milliseconds() > 0)
