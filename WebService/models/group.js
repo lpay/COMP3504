@@ -211,23 +211,29 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, appointment
 
                     // check for conflicting events
                     if (member.events.some(event => {
+                            // skip available events
                             if (event.available)
                                 return false;
 
-                            var hasStart = date.diff(event.start) >= 0 && date.diff(event.end) <= 0;
-                            var hasEnd = moment(date).add(end, 'seconds').diff(event.start) >=0 &&
-                                    moment(date).add(end, 'seconds').diff(event.end) <= 0;
+                            var startDate = date.clone();
+                            var endDate = moment(date).add(end, 'seconds');
 
-                            return hasStart || hasEnd;
+                            // timeslot would completely overlap an unavailable event
+                            if (startDate.diff(event.start) <= 0 && endDate.diff(event.end) >= 0)
+                                return true;
+
+                            // event contains timeslot start or end
+                            return startDate.diff(event.start) >= 0 && startDate.diff(event.end) <= 0 ||
+                                endDate.diff(event.start) >=0 && endDate.diff(event.end) <= 0;
 
                         })) return false;
 
                     // check availability
                     var available = false;
                     var hours = availability[weekdays[startDate.day()]];
-                    
+
                     hours.some(hours => {
-                        // mininum timeslot would completely overlap an unavailable time
+                        // timeslot would completely overlap an unavailable time
                         if (start <= hours.start && end >= hours.end && !hours.available)
                             return true;
 
