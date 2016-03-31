@@ -12,7 +12,7 @@
                     <td class="text-center" ng-repeat="availability in group.defaultAvailability">
                         <hours-editor summary-template="/settings/hours/summary.html"
                                       modal-template="/settings/hours/modal.html"
-                                      title="availability.day"
+                                      entry-title="availability.day"
                                       hours="availability.hours">
                         </hours-editor>
                     </td>
@@ -24,7 +24,7 @@
 
 <script type="text/ng-template" id="/settings/hours/summary.html">
 
-    <a href ng-click="edit()">{{title}}</a>
+    <a href ng-click="edit()">{{entryTitle}}</a>
 
     <br/>
 
