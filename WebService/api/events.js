@@ -63,7 +63,10 @@ router.get('/appointments', ensureAuthenticated, function(req, res, next) {
             'email': 1,
 
             'member': '$members.user',
-            'event': '$members.events'
+
+            'start': '$members.events.start',
+            'end': '$members.events.end',
+            'type': '$members.events.type'
         }},
 
         // sort by date

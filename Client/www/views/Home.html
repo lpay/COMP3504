@@ -26,8 +26,8 @@
           {{appointment.member.name.first}} {{appointment.member.name.last}}
         </div>
         <div class="col-50">
-          {{appointment.event.start | date: "MMMM dd, yyyy"}}<br/>
-          {{appointment.event.start | date: "H:mm"}} - {{appointment.event.end | date: "H:mm"}}
+          {{appointment.start | date: "MMMM dd, yyyy"}}<br/>
+          {{appointment.start | date: "H:mm"}} - {{appointment.end | date: "H:mm"}}
       </ion-item>
 
     </ion-list>
