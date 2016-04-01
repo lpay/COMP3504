@@ -11,7 +11,7 @@ app
         .success(function(data) {
             console.log("Upcoming Appointments fetched");
             console.log(data);
-          $scope.groups = data;
+          $scope.appointments = data;
         })
         .error(function(err){
 

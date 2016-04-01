@@ -3,6 +3,7 @@
     <div class="subheader">Upcoming Appointments</div>
 
     <ion-list>
+      <!--
       <div ng-repeat="group in groups">
         <div ng-repeat="member in group.members">
           <ion-item ng-repeat="event in member.events">
@@ -18,6 +19,16 @@
           </ion-item>
         </div>
       </div>
+      -->
+
+      <ion-item ng-repeat="appointment in appointments">
+        <div class="col-50">
+          {{appointment.member.name.first}} {{appointment.member.name.last}}
+        </div>
+        <div class="col-50">
+          {{appointment.event.start | date: "MMMM dd, yyyy"}}<br/>
+          {{appointment.event.start | date: "H:mm"}} - {{appointment.event.end | date: "H:mm"}}
+      </ion-item>
 
     </ion-list>
 

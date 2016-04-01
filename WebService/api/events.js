@@ -25,13 +25,53 @@ var ensureAuthenticated = require('../middleware/ensureAuthenticated');
 
 router.get('/appointments', ensureAuthenticated, function(req, res, next) {
 
+    var date = new Date();
+
     Group.aggregate([
+        // limit initial list of groups
         {$match: {
             $and: [
                 {'members.events.client': req.user._id},
-                {'members.events.start': {$gt: new Date()}}
+                {'members.events.start': {$gt: date}}
             ]
         }},
+
+        // unwind members
+        {$unwind: '$members'},
+
+        // unwind events
+        {$unwind: '$members.events'},
+
+        // filter members.events
+        {$match: {
+            $and: [
+                {'members.events.client': req.user._id},
+                {'members.events.start': {$gt: date}}
+            ]
+        }},
+
+        // projection (only expose minimal information, and un-nest members.user & members.events
+        {$project: {
+            'name': 1,
+            'address': 1,
+            'city': 1,
+            'province': 1,
+            'postalCode': 1,
+
+            'contact': 1,
+            'phone': 1,
+            'email': 1,
+
+            'member': '$members.user',
+            'event': '$members.events'
+        }},
+
+        // sort by date
+        {$sort: {'event.start': 1}}
+
+
+        /*
+
         {$project: {
 
             'name': 1,
@@ -44,7 +84,7 @@ router.get('/appointments', ensureAuthenticated, function(req, res, next) {
             'phone': 1,
             'email': 1,
 
-            'members': {
+            'member': {
                 $filter: {
                     'input': {
                         $map: {
@@ -52,14 +92,14 @@ router.get('/appointments', ensureAuthenticated, function(req, res, next) {
                             'as': 'member',
                             'in': {
                                 'user': '$$member.user',
-                                'events': {
+                                'event': {
                                     $filter: {
                                         'input': '$$member.events',
                                         'as': 'event',
                                         'cond': {
                                             $and: [
                                                 {$eq: ['$$event.client', req.user._id]},
-                                                {$gt: ['$$event.start', new Date()]}
+                                                {$gt: ['$$event.start', date]}
                                             ]
                                         }
                                     }
@@ -68,14 +108,17 @@ router.get('/appointments', ensureAuthenticated, function(req, res, next) {
                         }
                     },
                     'as': 'member',
-                    'cond': {$gt: [{$size: '$$member.events'}, 0]}
+                    'cond': {$gt: [{$size: '$$member.event'}, 0]}
                 }
-            }
+            },
         }},
-        {$sort: {'members.events.start': 1}}
+        {$unwind: '$member'},
+        {$unwind: '$member.event'},
+        {$sort: {'member.event.start': 1}}
+        */
     ])
     .exec()
-    .then(groups => Group.populate(groups, {path: 'members.user', select: 'name'}))
+    .then(groups => Group.populate(groups, {path: 'member', model: User, select: 'name'}))
     .then(groups => res.send(groups))
     .catch(next);
 });
