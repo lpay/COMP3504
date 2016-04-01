@@ -26,38 +26,58 @@ var ensureAuthenticated = require('../middleware/ensureAuthenticated');
 router.get('/appointments', ensureAuthenticated, function(req, res, next) {
 
     Group.aggregate([
-            {$match: {
-                'members.events.client': req.user._id
-            }}
-//            {$unwind: '$members'},
-//            {$unwind: '$members.events'},
-        ])
-        .exec()
-        .then(groups => {
-            return Group.populate(groups, {path: 'members.user'});
-        })
-        .then(groups => {
-            res.send(groups);
-        })
-        .catch(next);
+        {$match: {
+            $and: [
+                {'members.events.client': req.user._id},
+                {'members.events.start': {$gt: new Date()}}
+            ]
+        }},
+        {$project: {
 
-    /*
-    Group.find(
-            // search
-            {'members.events.client': req.user},
+            'name': 1,
+            'address': 1,
+            'city': 1,
+            'province': 1,
+            'postalCode': 1,
 
-            { "$unwind": "$groups" },
-            { "$unwind": "$groups.contacts" },
+            'contact': 1,
+            'phone': 1,
+            'email': 1,
 
-            // projection
-            {'members.events': {$elemMatch: {client: req.user}}}
-        )
-        .then(groups => {
-            res.send(groups)
-        })
-        .catch(next);
-        */
-
+            'members': {
+                $filter: {
+                    'input': {
+                        $map: {
+                            'input': '$members',
+                            'as': 'member',
+                            'in': {
+                                'user': '$$member.user',
+                                'events': {
+                                    $filter: {
+                                        'input': '$$member.events',
+                                        'as': 'event',
+                                        'cond': {
+                                            $and: [
+                                                {$eq: ['$$event.client', req.user._id]},
+                                                {$gt: ['$$event.start', new Date()]}
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    'as': 'member',
+                    'cond': {$gt: [{$size: '$$member.events'}, 0]}
+                }
+            }
+        }},
+        {$sort: {'members.events.start': 1}}
+    ])
+    .exec()
+    .then(groups => Group.populate(groups, {path: 'members.user', select: 'name'}))
+    .then(groups => res.send(groups))
+    .catch(next);
 });
 
 router.post('/appointments', ensureAuthenticated, function(req, res, next) {
