@@ -12,11 +12,11 @@
         </div>
         <div>
           <ion-datetime-picker title="timepickerTitle" ng-model="search.start">
-            <button class="button button-block button-positive" > {{search.start| date: "yyyy-MM-dd H:mm"}} </button>
+            <button class="button button-block button-calm" > {{search.start| date: "yyyy-MM-dd H:mm"}} </button>
           </ion-datetime-picker>
         </div>
 
-        <ion-list>
+        <ion-list class="card">
             <ion-item ng-repeat="group in groups" ui-sref="dashboard.group({group: group})">
                 <div class="row">
                     <div class="col">{{group.name}}</div>

@@ -18,6 +18,7 @@ app.controller('SearchController', function($scope, $http, $location, $auth, $io
 
         $http.post('http://localhost:3504/appointments/search', $scope.search)
             .success(function(groups) {
+                console.log(groups);
                 $scope.groups = groups;
             })
             .error(function (err) {

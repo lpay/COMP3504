@@ -9,4 +9,5 @@ app.controller('TimeslotsController', function($scope, $stateParams) {
 
   console.log($scope.member);
   console.log($scope.group);
+  console.log($scope.timeslot);
 });

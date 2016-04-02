@@ -1,11 +1,11 @@
 <ion-view title="Group">
     <ion-content>
-        {{group.name}}
+        <div class="subheader">{{group.name}}</div>
 
-        <ion-list>
+        <ion-list class="card">
             <ion-item ng-repeat="member in group.members" ui-sref="dashboard.timeslots({member: member, group: group})">
-                {{member.name.first}} {{member.name.last}} - {{member.timeslots.length}}
-
+                <div class="col">{{member.name.first}} {{member.name.last}}</div>
+                <div class="col">{{member.timeslots.length}} Timeslots Available</div>
             </ion-item>
         </ion-list>
     </ion-content>

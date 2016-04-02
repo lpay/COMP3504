@@ -1,32 +1,39 @@
 /* Empty. Add your own CSS if you like */
 
 .ion-nav-view {
-  background-color: black;
+  background: snow;
+
 }
 
 .card:active {
-
   text-align: center;
   font-family: Helvetica;
   font-weight: bolder;
   border-color: aqua;
   box-shadow: inset 1px 1px 1px 1px aqua;
-
 }
 
-.card {
+.card .item{
+  font-weight: bold;
+  opacity: 0.8;
+  color: #444444;
 
+  background: snow;
+  border-width: 2px;
+  border-color: #444444;
+  border-radius: 10px;
+}
+.card-center .item{
   font-weight: bold;
   text-align: center;
   opacity: 0.8;
+  color: #444444;
 
-  background-color: snow;
-  border-width: 5px;
-  padding: 10px;
-  border-color: blue;
+  background: snow;
+  border-width: 2px;
+  border-color: #444444;
   border-radius: 10px;
-
-}
+ }
 
 .membername {
   text-align: center;
@@ -35,7 +42,33 @@
 }
 
 .subheader {
+  padding-top: 8px;
   text-align: center;
-  font-size: larger;
 
+  font-size: x-large;
+  font-weight: bold;
+
+  color: #444444;
+}
+
+.card-black .item{
+  font-weight: bold;
+  opacity: 0.8;
+
+  background: black;
+  color: #bbbbbb;
+  border-width: 2px;
+  border-color: #bbbbbb;
+
+  border-radius: 10px;
+}
+
+.subheaderblack {
+  padding-top: 8px;
+  text-align: center;
+
+  font-size: x-large;
+  font-weight: bold;
+
+  color: #bbbbbb;
 }
