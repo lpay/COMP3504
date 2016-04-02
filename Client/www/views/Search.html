@@ -16,16 +16,18 @@
           </ion-datetime-picker>
         </div>
 
-        <ion-list class="card">
-            <ion-item ng-repeat="group in groups" ui-sref="dashboard.group({group: group})">
-                <div class="row">
+        <ion-list class="list list-inset">
+          <ion-item ng-repeat="group in groups" ui-sref="dashboard.group({group: group})">
+                <div class="item item-borderless">
+                  <div class="row">
                     <div class="col">{{group.name}}</div>
                     <div class="col">{{group.totalTimeslots}} time(s) available!</div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        {{group.address}}
-                    </div>
+                  </div>
+                  <div class="row">
+                      <div class="col">
+                          {{group.address}}
+                      </div>
+                  </div>
                 </div>
             </ion-item>
         </ion-list>

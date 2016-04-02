@@ -1,18 +1,29 @@
 <ion-view title="Book Appointment">
   <ion-content>
 
-    <ion-item>
-      {{member.name.first}} {{member.name.last}}<br/>
-      {{group.address}}<br/>
-      {{group.city}} {{group.province}}, {{group.postalCode}}
-    </ion-item>
-    <ion-item>
-      Start Time: {{timeslot.start | date: "MMMM dd, yyyy - H:mm"}}<br/>
-      End Time: {{timeslot.end | date: "MMMM dd, yyyy - H:mm"}}
-    </ion-item>
 
-    <button ng-click="bookAppt()">Book Appointment</button><br/>
-    <button>Cancel</button>
+        <ion-item>
+          {{member.name.first}} {{member.name.last}}<br/>
+          {{group.address}}<br/>
+          {{group.city}} {{group.province}}, {{group.postalCode}}
+        </ion-item>
+        <ion-item>
+          Start Time: {{timeslot.start | date: "MMMM dd, yyyy - H:mm"}}<br/>
+          End Time: {{timeslot.end | date: "MMMM dd, yyyy - H:mm"}}
+        </ion-item>
+
+    <div class="row">
+      <div class="col-50">
+        <button class="button button-calm" ng-click="bookAppt()">Book Appointment</button>
+      </div>
+      <div class="col-50 text-right">
+        <button class="button button-calm" ui-sref="dashboard.home">Cancel</button>
+      </div>
+    </div>
+
+    <!--<div id="map" data-tap-disabled="true" ng-controller="mapController">
+      <ui-gmap-google-map center='map.center' options="options" zoom='map.zoom'></ui-gmap-google-map>
+    </div>-->
 
   </ion-content>
 </ion-view>

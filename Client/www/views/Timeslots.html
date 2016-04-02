@@ -5,9 +5,9 @@
 
     </div>
 
-        <ion-list class="card-center">
+        <ion-list class="list list-inset">
           <ion-item ng-repeat="timeslot in member.timeslots" ui-sref="dashboard.bookappointmenttime({timeslot: timeslot, member: member, group: group})">
-           <div>
+           <div class="item item-borderless">
              {{timeslot.start | date: "MMMM dd, yyyy - H:mm"}}
                <br>
                {{timeslot.type}}

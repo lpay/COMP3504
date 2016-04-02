@@ -10,8 +10,9 @@ app
       $http.get('http://localhost:3504/appointments')
         .success(function(data) {
             console.log("Upcoming Appointments fetched");
-            console.log(data);
-          $scope.appointments = data;
+
+            $scope.appointments = data;
+            console.log($scope.appointments);
         })
         .error(function(err){
 

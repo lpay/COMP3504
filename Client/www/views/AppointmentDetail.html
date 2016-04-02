@@ -1,0 +1,16 @@
+<ion-view title="Appointment Detail">
+  <ion-content>
+    <ion-item>
+      <div class="item item-borderless">
+        <div class="row">
+          <div class="col-50">
+            {{appointment.member.name.first}} {{appointment.member.name.last}}
+          </div>
+          <div class="col-50">
+            {{appointment.start | date: "MMMM dd, yyyy"}}<br/>
+            {{appointment.start | date: "H:mm"}} - {{appointment.end | date: "H:mm"}}
+          </div>
+        </div></div>
+    </ion-item>
+  </ion-content>
+</ion-view>

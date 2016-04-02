@@ -5,7 +5,7 @@
 
 }
 
-.card:active {
+/*.card:active {
   text-align: center;
   font-family: Helvetica;
   font-weight: bolder;
@@ -22,8 +22,24 @@
   border-width: 2px;
   border-color: #444444;
   border-radius: 10px;
+
+  padding-bottom: 1px;
+}*/
+
+.list {
+
 }
-.card-center .item{
+
+.list .item{
+  opacity: 0.8;
+  color: black;
+  font-weight: bold;
+  border-radius: 10px;
+}
+
+
+
+/*.card-center .item{
   font-weight: bold;
   text-align: center;
   opacity: 0.8;
@@ -33,7 +49,7 @@
   border-width: 2px;
   border-color: #444444;
   border-radius: 10px;
- }
+ }*/
 
 .membername {
   text-align: center;
@@ -43,6 +59,7 @@
 
 .subheader {
   padding-top: 8px;
+  padding-bottom: 8px;
   text-align: center;
 
   font-size: x-large;
@@ -51,7 +68,7 @@
   color: #444444;
 }
 
-.card-black .item{
+/*.card-black .item{
   font-weight: bold;
   opacity: 0.8;
 
@@ -72,3 +89,7 @@
 
   color: #bbbbbb;
 }
+
+.angular-google-map-container {
+  height: 100%;
+}*/

@@ -3,6 +3,7 @@
  */
 
 var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router', 'ion-datetime-picker'])
+    //, 'uiGmapgoogle-maps', 'nemLogging'
 
     .config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 
@@ -42,6 +43,19 @@ var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router', 'ion
                   'home-tab': {
                     templateUrl: 'views/Home.html',
                     controller: 'HomeController'
+                  }
+                },
+                resolve: {
+                  loginRequired: loginRequired
+                }
+            })
+
+            .state('dashboard.appointmentdetail', {
+                url: '/appointmentdetail',
+                views: {
+                  'home-tab': {
+                    templateUrl: 'views/AppointmentDetail.html',
+                    controller: 'AppointmentDetailController'
                   }
                 },
                 resolve: {
