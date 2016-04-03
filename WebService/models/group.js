@@ -17,36 +17,78 @@ var ObjectId = mongoose.Schema.ObjectId;
 
 
 var availabilitySchema = new mongoose.Schema({
-    day: { type: String, enum: weekdays },
+    day: {type: String, enum: weekdays},
     hours: [{
         start: Number,
         end: Number,
-        available: { type: Boolean, default: true }
+        available: {type: Boolean, default: true}
     }]
+});
+
+var memberSchema = new mongoose.Schema({
+
+    user: {type: ObjectId, ref: 'User'},
+
+    role: {type: String, default: 'member', enum: ['admin', 'member'], required: true},
+
+    availability: {
+        type: [availabilitySchema],
+        default: [
+            {day: 'Sunday', hours: []},
+            {day: 'Monday', hours: []},
+            {day: 'Tuesday', hours: []},
+            {day: 'Wednesday', hours: []},
+            {day: 'Thursday', hours: []},
+            {day: 'Friday', hours: []},
+            {day: 'Saturday', hours: []}
+        ]
+    },
+
+    appointments: {
+        type: [{name: String, length: Number}]
+    },
+
+    events: {
+        type: [{
+            client: {type: ObjectId, ref: 'User'},
+            available: {type: Boolean, default: false},
+            type: {type: String},
+            start: Date,
+            end: Date,
+            notes: String
+        }]
+    }
 });
 
 var groupSchema = new mongoose.Schema({
 
     // Group Information
-    name: { type: String, required: true, unique: true },
+    name: {type: String, required: true, unique: true},
 
-    address: { type: String, required: true },
-    city: { type: String, required: true },
-    province: { type: String, required: true },
-    postalCode: { type: String, required: true },
+    address: {type: String, required: true},
+    city: {type: String, required: true},
+    province: {type: String, required: true},
+    postalCode: {type: String, required: true},
 
     contact: String,
     phone: String,
     email: String,
 
-    tags: { type: String, lowercase: true },
+    tags: {type: String, lowercase: true},
+
+    // Settings
+
+    requiredApproval: {type: Boolean, default: true},
 
     // Defaults (overridable for each member)
     defaultAppointments: {
-        type: [{name: String, length: Number}]
+        type: [{name: String, length: Number}],
+        // for some reason the default is causing a validation error - moved to POST /groups
+        //default: [{name: 'Standard', length: 2700}],
+        required: true
     },
 
-    defaultInterval: { type: Number, default: 15 },
+    defaultInterval: {type: Number, default: 15, required: true},
 
     defaultAvailability: {
         type: [availabilitySchema],
@@ -63,34 +105,49 @@ var groupSchema = new mongoose.Schema({
     },
 
     // Members
-    members: [{
-        user: { type: ObjectId, ref: 'User' },
-        role: { type: String, default: 'professional', enum: ['admin', 'professional'], required: true },
-        availability: {
-            type: [availabilitySchema],
-            default: [
-                {day: 'Sunday', hours: []},
-                {day: 'Monday', hours: []},
-                {day: 'Tuesday', hours: []},
-                {day: 'Wednesday', hours: []},
-                {day: 'Thursday', hours: []},
-                {day: 'Friday', hours: []},
-                {day: 'Saturday', hours: []}
-            ]
-        },
-        appointments: {
-            type: [{name: String, length: Number}]
-        },
-        events: {
-            type: [{
-                client: {type: ObjectId, ref: 'User'},
-                available: {type: Boolean, default: false},
-                type: {type: String},
-                start: Date,
-                end: Date
-            }]
+    members: [memberSchema],
+
+    // Pending members
+    pending: [{type: ObjectId, ref: 'User'}]
+});
+
+availabilitySchema.pre('save', function(next) {
+    var availability = this;
+    var hours = availability.hours;
+
+    hours.sort(function(a, b) {
+        // sort by timespan
+        if (a.end - a.start != b.end - b.start)
+            return ((a.end - a.start) - (b.end - b.start));
+
+        // sort by start
+        if (a.start != b.start)
+            return a.start - b.start;
+
+        // sort by end
+        if (a.end != b.end)
+            return a.end - b.end;
+    });
+
+    // group similar hours
+    for (var i = hours.length - 1; i > 0; i--) {
+        var prev = hours[i - 1];
+        var curr = hours[i];
+
+        if (prev.available == curr.available && prev.end >= curr.start) {
+            if (curr.start < prev.start) {
+                prev.start = curr.start;
+            } else {
+                prev.end = curr.end;
+            }
+
+            hours.splice(i, 1);
         }
-    }]
+
+        // TODO: check other for bizarre things a user might do when editing availability
+    }
+
+    next();
 });
 
 groupSchema.methods.generateTimeslots = function(startDate, endDate, appointmentType, limit) {
@@ -143,8 +200,6 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, appointment
             });
         });
 
-
-        
         Object.keys(availability).forEach(function (day) {
             // sort
             availability[day].sort(function (a, b) {
@@ -212,13 +267,12 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, appointment
 
                     // check availability
                     var available = false;
-                    var hours = availability[weekdays[startDate.day()]];
+                    var hours = availability[startDate.format('dddd')];
 
                     hours.some(hours => {
                         // timeslot would completely overlap an unavailable time
                         if (start <= hours.start && end >= hours.end && !hours.available)
                             return true;
-
 
                         var hasStart = (start >= hours.start && start <= hours.end);
                         var hasEnd = (end >= hours.start && end <= hours.end);

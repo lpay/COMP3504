@@ -50,17 +50,18 @@ router.get('/appointments', ensureAuthenticated, function(req, res, next) {
             ]
         }},
 
-        // projection (only expose minimal information, and un-nest members.user & members.events
+        // projection
+        // only expose minimal information, and un-nest members.user & members.events
         {$project: {
-            'name': 1,
-            'address': 1,
-            'city': 1,
-            'province': 1,
-            'postalCode': 1,
+            'name': true,
+            'address': true,
+            'city': true,
+            'province': true,
+            'postalCode': true,
 
-            'contact': 1,
-            'phone': 1,
-            'email': 1,
+            'contact': true,
+            'phone': true,
+            'email': true,
 
             'member': '$members.user',
 

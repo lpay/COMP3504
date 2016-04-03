@@ -8,7 +8,8 @@
         .controller('GroupSettingsController', GroupSettingsController)
         .controller('GroupInformationController', GroupInformationController)
         .controller('GroupHoursController', GroupHoursController)
-        .controller('GroupAppointmentSettingsController', GroupAppointmentSettingsController);
+        .controller('GroupAppointmentSettingsController', GroupAppointmentSettingsController)
+        .controller('GroupMembersController', GroupMembersController);
 
     function GroupSettingsController($scope) {
         $scope.alerts = [];
@@ -19,6 +20,7 @@
     }
 
     function GroupInformationController($http, $scope) {
+        $scope.alerts.length = 0;
         $scope.group = angular.copy($scope.currentGroup);
 
         $scope.save = function () {
@@ -49,6 +51,7 @@
     }
 
     function GroupHoursController($http, $scope) {
+        $scope.alerts.length = 0;
         $scope.group = angular.copy($scope.currentGroup);
 
         $scope.$on('OnHoursChanged', function(event) {
@@ -70,6 +73,7 @@
     }
 
     function GroupAppointmentSettingsController($http, $scope) {
+        $scope.alerts.length = 0;
         $scope.interval = $scope.currentGroup.defaultInterval || 15;
         $scope.appointmentTypes = $scope.appointmentTypes || [];
         $scope.appointmentTypes.length = 0;
@@ -83,26 +87,15 @@
         });
 
         $scope.add = function() {
-            if($scope.appointmentTypes > 5){return;}
-            $scope.appointmentTypes.push({});
+            if ($scope.appointmentTypes > 5)
+                return;
+
+            $scope.appointmentTypes.push({length: 45});
         };
 
         $scope.remove = function(index) {
-            $scope.appointmentTypes.splice(index, 1);
-        };
-
-        $scope.up = function(index) {
-            var entry = $scope.appointmentTypes[index];
-
-            $scope.appointmentTypes[index] = $scope.appointmentTypes[index - 1];
-            $scope.appointmentTypes[index - 1] = entry;
-        };
-
-        $scope.down = function(index) {
-            var entry = $scope.appointmentTypes[index];
-
-            $scope.appointmentTypes[index] = $scope.appointmentTypes[index + 1];
-            $scope.appointmentTypes[index + 1] = entry;
+            if ($scope.appointmentTypes.length > 0)
+                $scope.appointmentTypes.splice(index, 1);
         };
 
         $scope.save = function() {
@@ -115,7 +108,7 @@
                     length: entry.length * 60
                 });
             });
-
+            
             $http.put('/groups/' + encodeURIComponent($scope.currentGroup._id), {
                     defaultInterval: $scope.interval,
                     defaultAppointments: appointmentTypes
@@ -132,5 +125,9 @@
                         $scope.alerts.push({type: 'danger', msg: 'An unknown error has occurred.'});
                 });
         };
+    }
+
+    function GroupMembersController($scope) {
+        $scope.alerts.length = 0;
     }
 })();

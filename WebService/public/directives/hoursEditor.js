@@ -113,8 +113,8 @@
 
                             // convert back to seconds...
                             hours.forEach(function (entry) {
-                                entry.start = moment.duration(moment(entry.start) - moment(entry.start).startOf('day')).asSeconds();
-                                entry.end = moment.duration(moment(entry.end) - moment(entry.end).startOf('day')).asSeconds();
+                                entry.start = moment.duration(moment(entry.start).seconds(0).milliseconds(0) - moment(entry.start).startOf('day')).asSeconds();
+                                entry.end = moment.duration(moment(entry.end).seconds(0).milliseconds(0) - moment(entry.end).startOf('day')).asSeconds();
                             });
 
                             // copy back to original

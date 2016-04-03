@@ -1,0 +1,114 @@
+<!-- Group Members -->
+
+<div class="row">
+    <div class="col-md-12">
+        <h4>Group Members</h4>
+        <hr/>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <td>Name</td>
+                <td class="text-center">Security Role</td>
+                <td class="text-center">Last Login</td>
+                <td></td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="member in currentGroup.members">
+                <td>
+                    {{member.user.name.first}} {{member.user.name.last}}
+                </td>
+                <td class="text-center" ng-switch on="member.role">
+                    <span ng-switch-when="admin">Administrator</span>
+                    <span ng-switch-when="member">Member</span>
+                </td>
+                <td class="text-center">
+                    {{member.user.last_login | date: 'MMMM MM/dd/yyyy, H:mm a' }}
+                </td>
+                <td>
+                    <a href title="Remove" ng-click="remove($index)"><i class="fa fa-minus-square" style="color: red"></i></a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 text-right">
+        <button class="btn btn-primary"><i class="fa fa-user">&nbsp;</i> Add Member</button>
+    </div>
+</div>
+
+<!-- Pending Members -->
+
+<div class="row" style="padding-top: 20px">
+    <div class="col-md-12">
+        <h4>Pending Members</h4>
+        <hr/>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-striped" ng-show="currentGroup.pending.length">
+            <thead>
+            <tr>
+                <td>Name</td>
+                <td class="text-center">Security Role</td>
+                <td class="text-center">Last Login</td>
+                <td></td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="user in currentGroup.pending">
+                <td>
+                    {{member.user.name.first}} {{member.user.name.last}}
+                </td>
+                <td class="text-center" ng-switch on="member.role">
+                    <span ng-switch-when="admin">Administrator</span>
+                    <span ng-switch-when="member">Member</span>
+                </td>
+                <td class="text-center">
+                    {{member.user.last_login | date: 'MMMM MM/dd/yyyy, H:mm a' }}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <span ng-show="!currentGroup.pending.length">
+            There are currently no users pending approval...
+        </span>
+    </div>
+</div>
+
+<!-- Other Settings -->
+
+<form role="form" ng-submit="save()">
+    <div class="row" style="padding-top: 50px">
+        <div class="col-md-12">
+            <h4>Other Settings</h4>
+            <hr/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="checkbox">
+                <label><input type="checkbox" ng-model="currentGroup.requiredApproval"> Require new members to be approved by an administrator before joining?</label>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <button type="submit" class="btn btn-success"><i class="fa fa-save">&nbsp;</i> Save</button>
+        </div>
+    </div>
+</form>
+
+<script type="text/ng-template" id="/settings/members/newModal.html">
+
+</script>

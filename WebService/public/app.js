@@ -115,7 +115,8 @@
 
             .state('dashboard.settings.members', {
                 url: '/members',
-                templateUrl: 'views/settings/members.html'
+                templateUrl: 'views/settings/members.html',
+                controller: 'GroupMembersController'
             })
 
             .state('dashboard.settings.billing', {

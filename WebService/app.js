@@ -12,7 +12,6 @@ var mongoose = require('mongoose');
 var morgan = require('morgan');
 var favicon = require('serve-favicon');
 var bodyParser = require('body-parser');
-var crypto = require('crypto');
 var cors = require('cors');
 var APIError = require('./errors/APIError');
 
@@ -39,7 +38,7 @@ app.use(favicon('./public/assets/images/favicon.ico'));
 app.use(bodyParser.json());
 
 // accept application/x-www-form-urlencoded in requests
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({extended: true}));
 
 // enable cors
 app.use(cors());

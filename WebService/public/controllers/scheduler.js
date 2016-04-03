@@ -6,7 +6,6 @@
     angular
         .module('app')
         .controller('SchedulerController', SchedulerController)
-        .directive('calendarFlow', CalendarFlow);
 
     function SchedulerController($scope) {
 
@@ -17,23 +16,6 @@
         });
     }
 
-    function CalendarFlow() {
-        return {
-            restrict: 'A',
-            link: function(scope, element) {
-                element.coverflow({
-                    easing: 'swing',
-                    duration: 'slow',
-                    visible: 'density',
-                    index: scope.index || 0,
-                    selectedCss: {opacity: 1},
-                    outerCss: {opacity: 0.33},
-                    select: function(event, element, index) {
-                        scope.$emit('OnCalendarChanged', index);
-                    }
-                });
-            }
-        };
-    }
+
 
 })();

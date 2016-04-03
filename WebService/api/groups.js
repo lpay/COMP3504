@@ -49,7 +49,7 @@ router.post('/groups', ensureAuthenticated, function (req, res, next) {
             if (existingGroup)
                 throw new APIError(400, 'group exists');
 
-            return Group.create({
+            var group = new Group({
                 name: req.body.name,
                 address: req.body.address,
                 city: req.body.city,
@@ -58,8 +58,11 @@ router.post('/groups', ensureAuthenticated, function (req, res, next) {
                 contact: req.user.name.first + ' ' + req.user.name.last,
                 phone: req.user.phone,
                 email: req.user.email,
-                members: [{user: req.user, role: 'admin'}]
+                members: [{user: req.user, role: 'admin'}],
+                defaultAppointments: [{name: 'Standard', length: 2700}]
             });
+
+            return group.save();
         })
         .then(group => res.status(201).location('/groups/' + group._id).send())
         .catch(next);
@@ -110,7 +113,7 @@ router.put('/groups/:id', ensureAuthenticated, function(req, res, next) {
             if (req.body.defaultAvailability) group.defaultAvailability = req.body.defaultAvailability;
             if (req.body.defaultAppointments) group.defaultAppointments = req.body.defaultAppointments;
             if (req.body.defaultInterval) group.defaultInterval = req.body.defaultInterval;
-            
+
             return group.save();
         })
         .then(group => res.send(group))
@@ -130,7 +133,7 @@ router.post('/groups/join', ensureAuthenticated, function (req, res, next) {
 
             group.members.push({
                 user: req.user,
-                role: 'professional'
+                role: 'member'
             });
 
             return group.save();
@@ -144,7 +147,7 @@ router.get('/groups/search/:search', function (req, res, next) {
 
     if (req.params.search) {
         search.name = {$regex: new RegExp(req.params.search, "i")};
-        search.tags = {$regex: new RegExp(req.params.search, "i")};
+        //search.tags = {$regex: new RegExp(req.params.search, "i")};
     }
 
     Group.find(search, 'name address city province postalCode')

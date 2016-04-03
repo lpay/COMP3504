@@ -19,6 +19,10 @@ footer p {
     margin: 20px 0;
 }
 
+hr {
+    margin: 2px 0 15px 0;
+}
+
 /* remove ugly bootstrap focus border */
 :focus { outline: none !important }
 

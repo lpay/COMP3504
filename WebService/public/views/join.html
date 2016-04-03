@@ -1,73 +1,99 @@
-<div class="container">
-    <div class="row" style="margin-top: 200px">
-    </div>
-
-    <div class="row" ng-show="!showCreate">
-        <div class="col-md-4 col-md-offset-4">
-            <form ng-submit="joinGroup()">
-                <div class="form-group">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <label for="search">Join a group...</label>
-                        </div>
-                        <div class="col-md-4 textright">
-                            or <a href="" ng-model="create" ng-click="showCreate = true">create one!</a>
-                        </div>
-                    </div>
-                    <div class="right-inner-addon">
-                        <i class="fa fa-search"></i>
-                        <selectize id="search" config="selectize" ng-model="selectedGroup"></selectize>
-                    </div>
-
-                    <div class="form-group text-center">
-                        <button type="submit" class="btn btn-block btn-success">Join Group!</button>
+<header>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6">
+                    <a class="navbar-brand" ui-sref="login">ScheduleUP</a>
+                </div>
+                <div class="col-md-6">
+                    <div id="menu" class="collapse navbar-collapse navbar-right">
+                        <ul class="nav navbar-nav">
+                            <li role="presentation" ng-class="{active: !showCreate}"><a href ng-click="showCreate = false">Join Group</a></li>
+                            <li role="presentation" ng-class="{active: showCreate}"><a href ng-click="showCreate = true">Create Group</a></li>
+                        </ul>
                     </div>
                 </div>
-            </form>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="container">
+    <div class="row" style="margin-top: 75px">
+    </div>
+    <div class="row" ng-show="!showCreate" >
+        <div class="col-md-4 col-md-offset-4">
+            <div class="panel panel-default" style="box-shadow: 5px 5px 5px 0 rgba(204, 204, 204, 0.75);">
+                <div class="panel-body">
+                    <form ng-submit="joinGroup()">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="search">Join a group...</label>
+                                </div>
+                                <div class="col-md-6 text-right">
+                                    or <a href ng-model="create" ng-click="showCreate = true">create one!</a>
+                                </div>
+                            </div>
+                            <div class="right-inner-addon">
+                                <i class="fa fa-search"></i>
+                                <selectize id="search" config="selectize" ng-model="selectedGroup"></selectize>
+                            </div>
+
+                            <div class="form-group text-center">
+                                <button type="submit" class="btn btn-block btn-success">Join Group!</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
     <div class="row" ng-show="showCreate">
         <div class="col-md-4 col-md-offset-4">
-            <form ng-submit="createGroup()">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label class="control-label" for="name">Group Name</label>
-                            <input type="text" id="name" ng-model="group.name" class="form-control" />
+            <div class="panel panel-default" style="box-shadow: 5px 5px 5px 0 rgba(204, 204, 204, 0.75);">
+                <div class="panel-body">
+                    <form ng-submit="createGroup()">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="control-label" for="name">Group Name</label>
+                                    <input type="text" id="name" ng-model="group.name" class="form-control" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="address">Address</label>
+                                    <input type="text" id="address" ng-model="group.address" class="form-control" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="city">City</label>
+                                    <input type="text" id="city" ng-model="group.city" class="form-control" />
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label" for="address">Address</label>
-                            <input type="text" id="address" ng-model="group.address" class="form-control" />
+                        <div class="row">
+                            <div class="col-xs-7">
+                                <div class="form-group">
+                                    <label class="control-label" for="province">Province</label>
+                                    <input type="text" id="province" ng-model="group.province" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-xs-5">
+                                <div class="form-group">
+                                    <label class="control-label" for="postalCode">Postal Code</label>
+                                    <input type="text" id="postalCode" ng-model="group.postalCode" class="form-control" />
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label" for="city">City</label>
-                            <input type="text" id="city" ng-model="group.city" class="form-control" />
+                        <div class="row form-group">
+                            <div class="col-md-6">
+                                <a href ng-click="showCreate = false">Back</a>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <button type="submit" class="btn btn-success">Create Group!</button>
+                            </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
-                <div class="row">
-                    <div class="col-xs-8">
-                        <div class="form-group">
-                            <label class="control-label" for="province">Province</label>
-                            <input type="text" id="province" ng-model="group.province" class="form-control" />
-                        </div>
-                    </div>
-                    <div class="col-xs-4">
-                        <div class="form-group">
-                            <label class="control-label" for="postalCode">Postal Code</label>
-                            <input type="text" id="postalCode" ng-model="group.postalCode" class="form-control" />
-                        </div>
-                    </div>
-                </div>
-                <div class="row form-group">
-                    <div class="col-md-6">
-                        <a href="" ng-click="showCreate = false">Back</a>
-                    </div>
-                    <div class="col-md-6 text-right">
-                        <button type="submit" class="btn btn-success">Create Group!</button>
-                    </div>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
