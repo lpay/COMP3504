@@ -8,16 +8,17 @@
         .module('app')
         .controller('CalendarController', CalendarController);
 
-    function CalendarController($scope, $uibModal) {
+    function CalendarController($compile, $scope, $uibModal) {
         var businessHours = [];
         var events = [];
-
+        
+        
         $scope.member.events.forEach(function(event) {
             events.push({
                 title: event.type,
                 start: new Date(event.start),
                 end: new Date(event.end)
-            })
+            });
         });
 
         $scope.eventSources = [businessHours, events];
@@ -60,9 +61,14 @@
         $scope.calendar = {
             editable: true,
             header: {
+                left: '',
+                center: '',
+                right: ''
+                /*
                 left: 'month agendaWeek agendaDay',
                 center: 'title',
                 right: 'today prev,next'
+                */
             },
             slotDuration: '00:15:00',
             defaultView: 'agendaWeek',
@@ -80,6 +86,7 @@
                 var min = 86400;
                 var max = 0; // 24 hours
 
+                /*
                 $scope.currentGroup.defaultAvailability.forEach(function(day) {
                     availability[day.day] = day.hours;
                 });
@@ -103,9 +110,10 @@
                         });
                     });
                 }
+                */
 
-                view.calendar.options.minTime = view.start.clone().startOf('day').add(min, 'seconds').format('HH:mm');
-                view.calendar.options.maxTime = view.end.clone().startOf('day').add(max, 'seconds').format('HH:mm');
+                //view.calendar.options.minTime = view.start.clone().startOf('day').add(min, 'seconds').format('HH:mm');
+                //view.calendar.options.maxTime = view.end.clone().startOf('day').add(max, 'seconds').format('HH:mm');
             }
         };
     }

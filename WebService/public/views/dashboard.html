@@ -1,8 +1,25 @@
+<style>
+    .navbar {
+        margin-bottom: 0;
+    }
+
+    .navbar-brand {
+        line-height:12px;
+        padding-top:20px;
+        padding-bottom: 5px;
+    }
+
+    .navbar-brand small {
+        display: block;
+        font-size: 10px;
+    }
+</style>
+
 <header>
     <nav class="navbar navbar-default">
         <div class="container">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <div class="navbar-header">
                         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="menu" aria-expanded="false">
                             <span class="sr-only">Toggle navigation</span>
@@ -10,27 +27,25 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-                        <a class="navbar-brand" ui-sref="dashboard.scheduler({group: group})" ui-sref-opts="{reload: true}">Schedule-UP!</a>
+                        <a class="navbar-brand" ui-sref="dashboard.scheduler({group: group})" ui-sref-opts="{reload: true}">ScheduleUP!<small><i>for</i> {{currentGroup.name}}</small></a>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <ul class="nav navbar-nav">
-                        <li role="presentation" class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{currentGroup.name}} <span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                <li ng-repeat="group in groups">
-                                    <a ui-sref="dashboard.scheduler({group: group})">{{group.name}}</a>
-                                </li>
-                                <li role="separator" class="divider"></li>
-                                <li role="presentation"><a ui-sref="join">Create Group</a></li>
-                                <li role="presentation"><a ui-sref="join">Join Group</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-                <div class="col-md-4">
+                <div class="col-md-6 text-right">
                     <div id="menu" class="collapse navbar-collapse navbar-right">
                         <ul class="nav navbar-nav">
+                            <li role="presentation" class="dropdown" ng-class="{active: $state.includes('dashboard.scheduler')}">
+                                <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                    Dashboard<span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li ng-repeat="group in groups">
+                                        <a ui-sref="dashboard.scheduler({group: group})">{{group.name}}</a>
+                                    </li>
+                                    <li role="separator" class="divider"></li>
+                                    <li role="presentation"><a ui-sref="join({createMode: true})">Create Group</a></li>
+                                    <li role="presentation"><a ui-sref="join">Join Group</a></li>
+                                </ul>
+                            </li>
                             <li role="presentation" ng-class="{active: $state.includes('dashboard.settings')}">
                                 <a ui-sref=".settings.groupInformation">Settings</a>
                             </li>

@@ -39,6 +39,9 @@
                 url: '/join',
                 templateUrl: 'views/join.html',
                 controller: 'JoinController',
+                params: {
+                    createMode: false
+                },
                 resolve: {
                     loginRequired: loginRequired
                 }

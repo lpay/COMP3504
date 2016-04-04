@@ -5,19 +5,69 @@
 
     #calendars .calendar {
         background-color: white;
-        width: 900px;
+        width: 980px;
         box-shadow: 0 0 4em 1em white;
+    }
+    .navbar-center {
+        float: none;
+        display: inline-block;
     }
 </style>
 
-<div class="container-fluid">
-    <div class="row">
-        <div id="calendars" class="col-md-10 col-md-offset-1" coverflow>
-            <div ng-controller="CalendarController" class="calendar" ng-repeat="member in currentGroup.members">
-                <h4><i class="fa fa-user"></i>{{member.user.name.title}} {{member.user.name.first}} {{member.user.name.last}}</h4>
-                <div ui-calendar="calendar" ng-model="eventSources"></div>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="navbar-header">
+                    <ul class="nav navbar-nav">
+                        <li role="presentation" class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                {{currentMember.user.name.first}} {{currentMember.user.name.last}}<span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li role="presentation" ng-repeat="member in currentGroup.members" ng-show="member.user._id != currentMember.user._id">
+                                    <a href ng-click="changeMember($index)">{{member.user.name.first}} {{member.user.name.last}}</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <ul class="nav navbar-nav navbar-center">
+                    <li role="presentation"><a href ng-click="prev()"><i class="fa fa-chevron-left"></i>&nbsp;</a></li>
+                    <li role="presentation"><a href>{{title}}</a></li>
+                    <li role="presentation"><a href ng-click="next()"><i class="fa fa-chevron-right">&nbsp;</i></a></li>
+                </ul>
+            </div>
+            <div class="col-md-4 text-right">
+                <ul class="nav nav-pills navbar-right" style="margin-top: 10px">
+                    <li role="presentation" ng-class="{active: currentView == 'month'}"><a href ng-click="changeView('month')">Month</a></li>
+                    <li role="presentation" ng-class="{active: currentView == 'agendaWeek'}"><a href ng-click="changeView('agendaWeek')">Week</a></li>
+                    <li role="presentation" ng-class="{active: currentView == 'agendaDay'}"><a href ng-click="changeView('agendaDay')">Day</a></li>
+                </ul>
             </div>
         </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <!--
+        <div class="col-md-1 text-center">
+            <a href ng-click="prevMember()"><i class="fa fa-chevron-circle-left" style="font-size: 3em"></i></a>
+        </div>
+        -->
+        <div id="calendars" class="col-md-10 col-md-offset-1" coverflow>
+            <div ng-controller="CalendarController" class="calendar" ng-repeat="member in currentGroup.members">
+                <div ui-calendar="calendar" calendar="{{$index}}" ng-model="eventSources"></div>
+            </div>
+        </div>
+        <!--
+        <div class="col-md-1 text-center">
+            <a href ng-click="nextMember()"><i class="fa fa-chevron-circle-right" style="font-size: 3em"></i></a>
+        </div>
+        -->
     </div>
 </div>
 

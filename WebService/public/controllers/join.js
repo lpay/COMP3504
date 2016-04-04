@@ -9,10 +9,10 @@
         .module('app')
         .controller('JoinController', JoinController);
 
-    function JoinController($scope, $location, $http) {
+    function JoinController($http, $location, $scope, $stateParams) {
 
         $scope.selectedGroup = null;
-        $scope.showCreate = false;
+        $scope.createMode = $stateParams.createMode || false;
 
         $scope.createGroup = function() {
             $http.post('/groups', $scope.group)

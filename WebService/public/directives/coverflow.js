@@ -23,10 +23,14 @@
                         selectedCss: {opacity: 1},
                         outerCss: {opacity: 0.33},
                         select: function (event, cover, index) {
-                            //scope.$emit('OnCalendarChanged', index);
+                            scope.$emit('OnCoverChange', index);
                         }
                     });
                 }, 0);
+
+                scope.$on('OnChangeCover', function(event, index) {
+                    element.coverflow('index', index);
+                });
             }
         };
     }
