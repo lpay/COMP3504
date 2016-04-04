@@ -18,7 +18,7 @@
                         easing: 'swing',
                         duration: 'slow',
                         visible: 'density',
-                        enableWheel: false,
+                        //enableWheel: false,
                         index: scope.index || 0,
                         selectedCss: {opacity: 1},
                         outerCss: {opacity: 0.33},
