@@ -2,29 +2,8 @@
  *
  */
 
-var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router', 'ion-datetime-picker', 'uiGmapgoogle-maps', 'nemLogging'])
-
-  .config(function (uiGmapGoogleMapApiProvider) {
-    uiGmapGoogleMapApiProvider.configure({
-      key: AIzaSyCQdk4t9VItzqrgTwA7BX4P4asFWW6kgsI,
-      v: '3.17'
-      //libraries: 'weather,geometry,visualization'
-    });
-  })
-
-  .controller("mapController", function ($scope, uiGmapGoogleMapApi) {
-
-    // Define variables for our Map object
-    var areaLat = 44.2126995,
-      areaLng = -100.2471641,
-      areaZoom = 3;
-
-    uiGmapGoogleMapApi.then(function (maps) {
-      $scope.map = { center: { latitude: areaLat, longitude: areaLng }, zoom: areaZoom };
-      $scope.options = { scrollwheel: false };
-    });
-
-  });
+var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router', 'ion-datetime-picker'])
+    //, 'uiGmapgoogle-maps', 'nemLogging'
 
     .config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 
@@ -64,6 +43,19 @@ var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router', 'ion
                   'home-tab': {
                     templateUrl: 'views/Home.html',
                     controller: 'HomeController'
+                  }
+                },
+                resolve: {
+                  loginRequired: loginRequired
+                }
+            })
+
+            .state('dashboard.appointmentdetail', {
+                url: '/appointmentdetail',
+                views: {
+                  'home-tab': {
+                    templateUrl: 'views/AppointmentDetail.html',
+                    controller: 'AppointmentDetailController'
                   }
                 },
                 resolve: {

@@ -4,6 +4,10 @@
  *
  * API ENDPOINTS
  *
+ * GET      /events                 get a list of events for the authenticated user
+ * POST     /events                 create a new event
+ * PUT      /events/:id             update an event
+ * DELETE   /events/:id             delete an event
  *
  * GET      /appointments           get a list of registered appointments for the authenticated user
  * POST     /appointments           book an appointment for the authenticated user
@@ -22,6 +26,10 @@ var Group = require('../models/group');
 var APIError = require('../errors/APIError');
 
 var ensureAuthenticated = require('../middleware/ensureAuthenticated');
+
+router.get('/events', ensureAuthenticated, function(req, res, next) {
+    
+});
 
 router.get('/appointments', ensureAuthenticated, function(req, res, next) {
 

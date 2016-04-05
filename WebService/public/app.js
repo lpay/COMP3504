@@ -17,7 +17,7 @@
 
     function StateConfig($stateProvider, $urlRouterProvider) {
 
-        $urlRouterProvider.otherwise('/dashboard');
+        $urlRouterProvider.otherwise('/login');
 
         $stateProvider
 
@@ -40,6 +40,7 @@
                 templateUrl: 'views/join.html',
                 controller: 'JoinController',
                 params: {
+                    currentGroup: undefined,
                     createMode: false
                 },
                 resolve: {
@@ -55,6 +56,22 @@
                 params: {group: undefined},
                 resolve: {
                     loginRequired: loginRequired,
+                    profile: function($http, $q) {
+                        var deferred = $q.defer();
+
+                        $http.get('/profile')
+                            .success(function(profile) {
+                                if (!profile)
+                                    deferred.reject('unable to get profile');
+
+                                deferred.resolve(profile);
+                            })
+                            .error(function(err) {
+                                deferred.reject(err);
+                            });
+
+                        return deferred.promise;
+                    },
                     groups: function ($state, $http, $q) {
                         var deferred = $q.defer();
 
@@ -63,8 +80,8 @@
                                 if (groups.length) {
                                     deferred.resolve(groups);
                                 } else {
-                                    $state.go('join');
                                     deferred.reject();
+                                    $state.go('join');
                                 }
                             })
                             .error(function () {
@@ -135,29 +152,7 @@
                 abstract: true,
                 url: '/profile',
                 templateUrl: 'views/profile/profile.html',
-                controller: 'ProfileController',
-                params: {
-                    currentGroup: undefined
-                },
-                resolve: {
-                    profile: function($http, $q, $stateParams){
-                        var deferred = $q.defer();
-
-                        $http.get('/profile')
-                            .success(function(profile) {
-                                $stateParams.currentGroup.members.some(function(member) {
-                                    if (member.user._id === profile._id) {
-                                        deferred.resolve(member);
-                                        return true;
-                                    }
-                                });
-                            })
-                            .error(function() {
-                                deferred.reject();
-                            });
-                        return deferred.promise;
-                    }
-                }
+                controller: 'ProfileController'
             })
 
             .state('dashboard.profile.businessHours', {
@@ -178,7 +173,7 @@
 
             .state('dashboard.profile.profileSettings', {
                 url: '/confirmPassword',
-                templateUrl: 'views/profile/profileSettings.html'
+                templateUrl: 'views/profile/account.html'
             });
     }
 

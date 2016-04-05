@@ -9,15 +9,16 @@
         .module('app')
         .controller('JoinController', JoinController);
 
-    function JoinController($http, $location, $scope, $stateParams) {
+    function JoinController($http, $scope, $state, $stateParams) {
 
         $scope.selectedGroup = null;
-        $scope.createMode = $stateParams.createMode || false;
+        $scope.createMode = $stateParams.createMode;
+        $scope.currentGroup = $stateParams.currentGroup;
 
         $scope.createGroup = function() {
             $http.post('/groups', $scope.group)
-                .success(function() {
-                    $location.path('/dashboard');
+                .success(function(group) {
+                    $state.go('dashboard.scheduler', {group: group});
                 })
                 .error(function(err) {
                     console.log(err);
@@ -26,9 +27,8 @@
 
         $scope.joinGroup = function() {
             $http.post('/groups/join', { group: $scope.selectedGroup })
-                .success(function(data) {
-                    console.log(data);
-                    $location.path('/dashboard');
+                .success(function(group) {
+                    $state.go('dashboard.scheduler', {group: group});
                 })
                 .error(function(err) {
                     console.log(err);

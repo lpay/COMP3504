@@ -19,7 +19,7 @@
     <nav class="navbar navbar-default">
         <div class="container">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-2">
                     <div class="navbar-header">
                         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="menu" aria-expanded="false">
                             <span class="sr-only">Toggle navigation</span>
@@ -29,6 +29,11 @@
                         </button>
                         <a class="navbar-brand" ui-sref="dashboard.scheduler({group: group})" ui-sref-opts="{reload: true}">ScheduleUP!<small><i>for</i> {{currentGroup.name}}</small></a>
                     </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <ul class="nav navbar-nav">
+                        <li role="presentation"><a href>{{currentMember.user.name.title}} {{currentMember.user.name.first}} {{currentMember.user.name.last}}</a></li>
+                    </ul>
                 </div>
                 <div class="col-md-6 text-right">
                     <div id="menu" class="collapse navbar-collapse navbar-right">
@@ -42,8 +47,8 @@
                                         <a ui-sref="dashboard.scheduler({group: group})">{{group.name}}</a>
                                     </li>
                                     <li role="separator" class="divider"></li>
-                                    <li role="presentation"><a ui-sref="join({createMode: true})">Create Group</a></li>
-                                    <li role="presentation"><a ui-sref="join">Join Group</a></li>
+                                    <li role="presentation"><a ui-sref="join({currentGroup: currentGroup, createMode: true})">Create Group</a></li>
+                                    <li role="presentation"><a ui-sref="join({currentGroup: currentGroup})">Join Group</a></li>
                                 </ul>
                             </li>
                             <li role="presentation" ng-class="{active: $state.includes('dashboard.settings')}">

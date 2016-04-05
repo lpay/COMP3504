@@ -8,7 +8,7 @@
                 <div class="col-md-6">
                     <div id="menu" class="collapse navbar-collapse navbar-right">
                         <ul class="nav navbar-nav">
-                            <!--<li role="presentation" ng-if="currentGroup"><a href ui-sref="dashboard.scheduler">Dashboard</a></li>-->
+                            <li role="presentation" ng-if="currentGroup"><a href ui-sref="dashboard.scheduler({group: currentGroup})">Dashboard</a></li>
                             <li role="presentation" ng-class="{active: !createMode}"><a href ng-click="createMode=false">Join Group</a></li>
                             <li role="presentation" ng-class="{active: createMode}"><a href ng-click="createMode=true">Create Group</a></li>
                         </ul>
@@ -85,7 +85,7 @@
                             </div>
                         </div>
                         <div class="row form-group">
-                            <div class="col-md-6">6
+                            <div class="col-md-6">
                                 <a href ng-click="createMode=false">Back</a>
                             </div>
                             <div class="col-md-6 text-right">

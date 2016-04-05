@@ -8,8 +8,8 @@
         .controller('ProfileController', ProfileController)
         .controller('ProfileAptSettingController', ProfileAptSettingController);
 
-    function ProfileController($scope, profile) {
-        $scope.profile = profile;
+    function ProfileController($scope) {
+
     }
 
     /**
@@ -23,7 +23,7 @@
         $scope.appointmentTypes.length = 0;
 
         // convert from seconds to time of day
-        $scope.profile.appointments.forEach(function (entry) {
+        $scope.currentMember.appointmentTypes.forEach(function (entry) {
             $scope.appointmentTypes.push({
                 name: entry.name,
                 length: entry.length / 60
@@ -50,9 +50,10 @@
                 });
             });
 
+            // TODO: we will have to put to /groups/:groupId/members/:memberId - need to create the route in the api
             $http.put('/groups/' + encodeURIComponent($scope.currentGroup._id), {
                     //interval: $scope.interval,
-                    "member.appointments": appointmentTypes
+                    "member.appointmentTypess": appointmentTypes
                 })
                 .success(function(group) {
                     angular.copy(group, $scope.currentGroup);

@@ -14,6 +14,8 @@
  * POST     /groups/join                joins the authenticated user to a group
  * GET      /groups/search/:search      retrieve a list of groups matching :search
  *
+ * DELETE   /groups/:groupId/members/:memberId         delete a member from a group
+ *
  */
 var router = require('express').Router();
 var Group = require('../models/group');
@@ -59,12 +61,12 @@ router.post('/groups', ensureAuthenticated, function (req, res, next) {
                 phone: req.user.phone,
                 email: req.user.email,
                 members: [{user: req.user, role: 'admin'}],
-                defaultAppointments: [{name: 'Standard', length: 2700}]
+                defaultAppointmentTypes: [{name: 'Standard', length: 2700}]
             });
 
             return group.save();
         })
-        .then(group => res.status(201).location('/groups/' + group._id).send())
+        .then(group => res.status(201).location('/groups/' + group._id).send(group))
         .catch(next);
 });
 
@@ -111,7 +113,7 @@ router.put('/groups/:id', ensureAuthenticated, function(req, res, next) {
             if (req.body.tags) group.tags = req.body.tags.replace(/[^\w\s]+/g, '').replace(/[\s]+/g, ', ');
             
             if (req.body.defaultAvailability) group.defaultAvailability = req.body.defaultAvailability;
-            if (req.body.defaultAppointments) group.defaultAppointments = req.body.defaultAppointments;
+            if (req.body.defaultAppointmentTypes) group.defaultAppointmentTypes = req.body.defaultAppointmentTypes;
             if (req.body.defaultInterval) group.defaultInterval = req.body.defaultInterval;
 
             return group.save();
@@ -138,7 +140,7 @@ router.post('/groups/join', ensureAuthenticated, function (req, res, next) {
 
             return group.save();
         })
-        .then(group => res.status(200).send())
+        .then(group => res.send(group))
         .catch(next);
 });
 
@@ -152,6 +154,17 @@ router.get('/groups/search/:search', function (req, res, next) {
 
     Group.find(search, 'name address city province postalCode')
         .then(groups => res.send(groups))
+        .catch(next);
+});
+
+router.delete('/groups/:groupId/members/:memberId', ensureAuthenticated, function(req, res, next) {
+    Group.update({_id: req.params.groupId}, { $pull: {'members': { 'user': req.params.memberId }}}, {new: true})
+        .then(group => {
+            if (!group)
+                throw new APIError(404, 'group not found');
+
+            res.send();
+        })
         .catch(next);
 });
 

@@ -79,7 +79,7 @@
         $scope.appointmentTypes.length = 0;
 
         // convert from seconds to time of day
-        $scope.currentGroup.defaultAppointments.forEach(function (entry) {
+        $scope.currentGroup.defaultAppointmentTypes.forEach(function (entry) {
             $scope.appointmentTypes.push({
                 name: entry.name,
                 length: entry.length / 60
@@ -111,7 +111,7 @@
             
             $http.put('/groups/' + encodeURIComponent($scope.currentGroup._id), {
                     defaultInterval: $scope.interval,
-                    defaultAppointments: appointmentTypes
+                    defaultAppointmentTypes: appointmentTypes
                 })
                 .success(function(group) {
                     angular.copy(group, $scope.currentGroup);
@@ -127,7 +127,25 @@
         };
     }
 
-    function GroupMembersController($scope) {
+    function GroupMembersController($http, $scope) {
         $scope.alerts.length = 0;
+
+        $scope.remove = function(index) {
+            $http.delete('/groups/' + encodeURIComponent($scope.currentGroup._id) + '/members/' + $scope.currentGroup.members[index].user._id)
+                .success(function() {
+                    for (var i = $scope.currentGroup.members - 1; i >= 0; i--) {
+                        if ($scope.currentGroup.members[i].user._id === memberId)
+                            $scope.currentGroup.members.splice(i, 1);
+                    }
+
+                    $scope.$apply();
+                })
+                .error(function(err) {
+                    if (err.message)
+                        $scope.alerts.push({type: 'danger', msg: 'Error: ' + err.message});
+                    else
+                        $scope.alerts.push({type: 'danger', msg: 'An unknown error has occurred.'});
+                });
+        };
     }
 })();

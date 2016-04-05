@@ -44,7 +44,7 @@ var memberSchema = new mongoose.Schema({
         ]
     },
 
-    appointments: {
+    appointmentTypes: {
         type: [{name: String, length: Number}]
     },
 
@@ -81,7 +81,7 @@ var groupSchema = new mongoose.Schema({
     requiredApproval: {type: Boolean, default: true},
 
     // Defaults (overridable for each member)
-    defaultAppointments: {
+    defaultAppointmentTypes: {
         type: [{name: String, length: Number}],
         // for some reason the default is causing a validation error - moved to POST /groups
         //default: [{name: 'Standard', length: 2700}],
@@ -227,10 +227,10 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, appointment
 
         if (appointmentType)
             appointmentTypes = [appointmentType];
-        else if (member.appointments.length > 0)
-            appointmentTypes = member.appointments;
-        else if (group.defaultAppointments.length > 0)
-            appointmentTypes = group.defaultAppointments;
+        else if (member.appointmentTypes.length > 0)
+            appointmentTypes = member.appointmentTypes;
+        else if (group.appointmentTypes.length > 0)
+            appointmentTypes = group.appointmentTypes;
 
         if (!appointmentTypes)
             return;
