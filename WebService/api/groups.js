@@ -158,13 +158,9 @@ router.get('/groups/search/:search', function (req, res, next) {
 });
 
 router.delete('/groups/:groupId/members/:memberId', ensureAuthenticated, function(req, res, next) {
-    Group.update({_id: req.params.groupId}, { $pull: {'members': { 'user': req.params.memberId }}}, {new: true})
-        .then(group => {
-            if (!group)
-                throw new APIError(404, 'group not found');
-
-            res.send();
-        })
+    // TODO: prevent last group admin from removing themself
+    Group.update({_id: req.params.groupId}, {$pull: {'members': {'user': req.params.memberId}}})
+        .then(() => { res.send() })
         .catch(next);
 });
 

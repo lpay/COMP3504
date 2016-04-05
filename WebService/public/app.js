@@ -182,13 +182,14 @@
         $rootScope.$stateParams = $stateParams;
     }
 
-    function skipIfLoggedIn($auth, $q) {
+    function skipIfLoggedIn($auth, $state, $q) {
         var deferred = $q.defer();
 
         if ($auth.isAuthenticated()) {
-            deferred.reject();
-        } else {
             deferred.resolve();
+            $state.go('dashboard.scheduler');
+        } else {
+            deferred.reject();
         }
 
         return deferred.promise;
@@ -200,6 +201,7 @@
         if ($auth.isAuthenticated()) {
             deferred.resolve();
         } else {
+            deferred.reject();
             $state.go('login');
         }
 
