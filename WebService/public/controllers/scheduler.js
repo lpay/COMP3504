@@ -83,6 +83,8 @@
         $scope.$on('OnCoverChange', function(event, index) {
             currentIndex = index;
 
+            uiCalendarConfig.calendars[index].fullCalendar('render');
+
             $scope.currentMember = $scope.currentGroup.members[index];
             $scope.$apply();
 

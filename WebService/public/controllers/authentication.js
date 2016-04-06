@@ -46,13 +46,13 @@
         };
     }
 
-    function LogoutController($auth, $state) {
+    function LogoutController($auth, $location) {
         if (!$auth.isAuthenticated())
-            $state.go('login');
+            $location.path('/login');
 
         $auth.logout()
             .then(function() {
-                $state.go('login');
+                $location.path('/login');
             });
     }
 

@@ -182,27 +182,25 @@
         $rootScope.$stateParams = $stateParams;
     }
 
-    function skipIfLoggedIn($auth, $state, $q) {
+    function skipIfLoggedIn($auth, $location, $q) {
         var deferred = $q.defer();
 
         if ($auth.isAuthenticated()) {
-            deferred.resolve();
-            $state.go('dashboard.scheduler');
+            $location.path('/dashboard');
         } else {
-            deferred.reject();
+            deferred.resolve();
         }
 
         return deferred.promise;
     }
 
-    function loginRequired($auth, $state, $q) {
+    function loginRequired($auth, $location, $q) {
         var deferred = $q.defer();
 
         if ($auth.isAuthenticated()) {
             deferred.resolve();
         } else {
-            deferred.reject();
-            $state.go('login');
+            $location.path('/login');
         }
 
         return deferred.promise;
