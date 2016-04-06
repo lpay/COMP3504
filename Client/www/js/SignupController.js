@@ -10,7 +10,7 @@ app.controller('SignupController', function($auth, $scope, $state) {
         $auth.signup($scope.register)
             .then(function(token) {
                 $auth.setToken(token);
-                $state.go('dashboard.home');
+                $state.go('login');
             })
             .catch(function(res) {
                 console.log(res);
