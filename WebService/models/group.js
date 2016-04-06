@@ -229,7 +229,7 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, appointment
             appointmentTypes = [appointmentType];
         else if (member.appointmentTypes.length > 0)
             appointmentTypes = member.appointmentTypes;
-        else if (group.appointmentTypes.length > 0)
+        else if (group.defaultAppointmentTypes.length > 0)
             appointmentTypes = group.defaultAppointmentTypes;
 
         if (!appointmentTypes)
