@@ -190,6 +190,8 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, appointment
     group.members.forEach(function(member) {
         var timeslots = [];
 
+        interval = member.interval || interval;
+
         // deserialize
         var availability = JSON.parse(groupAvailability);
 
