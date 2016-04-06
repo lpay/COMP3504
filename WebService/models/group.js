@@ -52,7 +52,7 @@ var memberSchema = new mongoose.Schema({
         type: [{
             client: {type: ObjectId, ref: 'User'},
             available: {type: Boolean, default: false},
-            type: {type: String},
+            title: String,
             start: Date,
             end: Date,
             notes: String
@@ -295,7 +295,7 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, appointment
                         timeslots.push({
                             start: date.clone(),
                             end: date.clone().add(appointmentType.length, 'seconds'),
-                            type: appointmentType.name
+                            title: appointmentType.name
                         });
                     }
                 });

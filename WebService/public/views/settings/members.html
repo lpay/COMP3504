@@ -13,6 +13,7 @@
             <thead>
             <tr>
                 <td>Name</td>
+                <td>Email</td>
                 <td class="text-center">Security Role</td>
                 <td class="text-center">Last Login</td>
                 <td></td>
@@ -22,6 +23,9 @@
             <tr ng-repeat="member in currentGroup.members">
                 <td>
                     {{member.user.name.first}} {{member.user.name.last}}
+                </td>
+                <td>
+                    {{member.user.email}}
                 </td>
                 <td class="text-center" ng-switch on="member.role">
                     <span ng-switch-when="admin">Administrator</span>

@@ -26,7 +26,7 @@ app
                         member: $scope.member._id,
                         start: $scope.timeslot.start,
                         end: $scope.timeslot.end,
-                        type: $scope.timeslot.type
+                        title: $scope.timeslot.title
                     }
                 })
                 .success(function() {

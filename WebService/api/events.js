@@ -28,7 +28,44 @@ var APIError = require('../errors/APIError');
 var ensureAuthenticated = require('../middleware/ensureAuthenticated');
 
 router.get('/events', ensureAuthenticated, function(req, res, next) {
-    
+
+});
+
+router.post('/events', ensureAuthenticated, function(req, res, next) {
+
+    // validate request
+    if (!req.body.group) return res.status(400).send({message: 'group is required'});
+    if (!req.body.member) return res.status(400).send({message: 'member is required'});
+
+    var event = {
+        title: req.body.title,
+        notes: req.body.notes,
+        start: req.body.start,
+        end: req.body.end,
+        available: req.body.available,
+        client: req.body.client
+    };
+
+    Group.update(
+        {
+            '_id': req.body.group,
+            'members': {$elemMatch: {user: req.body.member}}
+        },
+        {
+            $push: {
+                'members.$.events': event
+            }
+        })
+        .then(() => res.status(201).send(event))
+        .catch(next);
+});
+
+router.put('/events', ensureAuthenticated, function(req, res, next) {
+
+});
+
+router.delete('/events', ensureAuthenticated, function(req, res, next) {
+
 });
 
 router.get('/appointments', ensureAuthenticated, function(req, res, next) {
@@ -75,7 +112,7 @@ router.get('/appointments', ensureAuthenticated, function(req, res, next) {
 
             'start': '$members.events.start',
             'end': '$members.events.end',
-            'type': '$members.events.type'
+            'title': '$members.events.title'
         }},
 
         // sort by date
@@ -161,7 +198,7 @@ router.post('/appointments', ensureAuthenticated, function(req, res, next) {
                                 available: false,
                                 start: result.members[0].timeslots[0].start,
                                 end: result.members[0].timeslots[0].end,
-                                type: result.members[0].timeslots[0].type
+                                title: result.members[0].timeslots[0].title
                             }
                         }
                 });
