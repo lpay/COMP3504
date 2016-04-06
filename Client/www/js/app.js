@@ -169,7 +169,7 @@ var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router', 'ion
 
         $authProvider.google(angular.extend({}, commonConfig, {
             clientId: '870728536471-ilmvcb2obgo6ioucqokrgvcj211nj7t3.apps.googleusercontent.com',
-            url: 'http://localhost:3504/auth/google'
+            url: 'http://scheduleup.crazyirish.ca/auth/google'
         }));
     })
 
