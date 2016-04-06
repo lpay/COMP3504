@@ -10,7 +10,7 @@ app
         $scope.timeslot = $stateParams.timeslot;
         $scope.group = $stateParams.group;
 
-        var push = new Ionic.Push({});
+        //var push = new Ionic.Push({});
 
         //$scope.map = { center: { latitude: 45, longitude: -73 }, zoom: 8 };
 
