@@ -10,6 +10,8 @@ app
         $scope.timeslot = $stateParams.timeslot;
         $scope.group = $stateParams.group;
 
+        var push = new Ionic.Push({});
+
         //$scope.map = { center: { latitude: 45, longitude: -73 }, zoom: 8 };
 
         console.log($scope.member);
@@ -19,7 +21,7 @@ app
 
         $scope.bookAppt= function() {
             console.log($scope);
-            $http.post('http://localhost:3504/appointments',
+            $http.post('http://scheduleup.crazyirish.ca/appointments',
                 {
                     appointment: {
                         group: $scope.group._id,
@@ -31,6 +33,7 @@ app
                 })
                 .success(function() {
                   console.log("BOOKED");
+
                 })
                 .error(function(err){
 

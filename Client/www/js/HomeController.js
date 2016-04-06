@@ -7,7 +7,7 @@ app
 
     $scope.UpcomingAppoint = function() {
 
-      $http.get('http://localhost:3504/appointments')
+      $http.get('http://scheduleup.crazyirish.ca/appointments')
         .success(function(data) {
             console.log("Upcoming Appointments fetched");
 

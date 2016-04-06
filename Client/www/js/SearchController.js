@@ -16,7 +16,7 @@ app.controller('SearchController', function($scope, $http, $location, $auth, $io
     $scope.doSearch = function() {
         $scope.show($ionicLoading);
 
-        $http.post('http://localhost:3504/appointments/search', $scope.search)
+        $http.post('http://scheduleup.crazyirish.ca/appointments/search', $scope.search)
             .success(function(groups) {
                 console.log(groups);
                 $scope.groups = groups;
