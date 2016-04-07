@@ -157,6 +157,24 @@ router.get('/groups/search/:search', function (req, res, next) {
         .catch(next);
 });
 
+router.put('/groups/:groupId/members/:memberId', ensureAuthenticated, function(req, res, next) {
+
+    if (!req.params.groupId) return res.status(400).send({message: 'group is required'});
+    if (!req.params.memberId) return res.status(400).send({message: 'member is required'});
+
+    Group.findById(req.params.groupId, {'members': {$elemMatch: {'user': req.params.memberId}}})
+        .then(group => {
+            if (!group)
+                throw new APIError(404, 'group not found');
+
+            if (req.body.appointmentTypes) group.members[0].appointmentTypes = req.body.appointmentTypes;
+
+            return group.save();
+        })
+        .then(group => res.send(group))
+        .catch(next);
+});
+
 router.delete('/groups/:groupId/members/:memberId', ensureAuthenticated, function(req, res, next) {
     // TODO: prevent last group admin from removing themself
     Group.update({_id: req.params.groupId}, {$pull: {'members': {'user': req.params.memberId}}})
