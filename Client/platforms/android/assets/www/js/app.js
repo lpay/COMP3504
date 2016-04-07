@@ -52,6 +52,7 @@ var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router', 'ion
 
             .state('dashboard.appointmentdetail', {
                 url: '/appointmentdetail',
+                params: { appointment: undefined },
                 views: {
                   'home-tab': {
                     templateUrl: 'views/AppointmentDetail.html',
@@ -163,12 +164,12 @@ var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router', 'ion
             commonConfig.redirectUri = 'http://localhost:8100';
         }
 
-        $authProvider.loginUrl = 'http://localhost:3504/auth/login';
-        $authProvider.signupUrl = 'http://localhost:3504/auth/signup';
+        $authProvider.loginUrl = 'http://scheduleup.crazyirish.ca/auth/login';
+        $authProvider.signupUrl = 'http://scheduleup.crazyirish.ca/auth/signup';
 
         $authProvider.google(angular.extend({}, commonConfig, {
             clientId: '870728536471-ilmvcb2obgo6ioucqokrgvcj211nj7t3.apps.googleusercontent.com',
-            url: 'http://localhost:3504/auth/google'
+            url: 'http://scheduleup.crazyirish.ca/auth/google'
         }));
     })
 
@@ -187,5 +188,13 @@ var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router', 'ion
             if(window.StatusBar) {
                 StatusBar.styleDefault();
             }
+
+            //Push Notifications
+            /*var push = new Ionic.Push({});
+            push.register(function(token) {
+              console.log("Device token:",token.token);
+              push.saveToken(token); // persist the totken in the Ionic
+
+            })*/
         });
     });

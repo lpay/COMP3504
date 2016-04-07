@@ -43,6 +43,7 @@ var memberSchema = new mongoose.Schema({
             {day: 'Saturday', hours: []}
         ]
     },
+    interval: {type: Number, default: 15, required: true},
 
     appointmentTypes: {
         type: [{name: String, length: Number}]

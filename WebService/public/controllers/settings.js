@@ -91,6 +91,8 @@
                 return;
 
             $scope.appointmentTypes.push({length: 45});
+
+            console.log($scope.appointmentTypes);
         };
 
         $scope.remove = function(index) {
