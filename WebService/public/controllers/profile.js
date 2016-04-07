@@ -6,7 +6,8 @@
     angular
         .module('app')
         .controller('ProfileController', ProfileController)
-        .controller('ProfileAptSettingController', ProfileAptSettingController);
+        .controller('ProfileAptSettingController', ProfileAptSettingController)
+        .controller('ProfileHoursController', ProfileHoursController);
 
     function ProfileController($scope) {
         $scope.alerts = [];
@@ -14,6 +15,31 @@
         $scope.closeAlert = function(index) {
             $scope.alerts.splice(index, 1);
         };
+    }
+
+    /**
+     * PROFILE WEEKLY HOURS SETTINGS/CONTROLLER
+     */
+    function ProfileHoursController($http, $scope) {
+        $scope.alerts.length = 0;
+        $scope.group = angular.copy($scope.currentGroup);
+
+        $scope.$on('OnHoursChanged', function(event) {
+            $http.put('/groups/' + encodeURIComponent($scope.currentGroup._id) + "/members/" + encodeURIComponent($scope.currentMember.user._id), {
+                    availability: $scope.currentMember.availability
+                })
+                .success(function (group) {
+                    angular.copy(group, $scope.currentGroup);
+
+                    $scope.alerts.push({type: 'success', msg: 'Changes saved.'});
+                })
+                .error(function (err) {
+                    if (err.message)
+                        $scope.alerts.push({type: 'danger', msg: 'Error: ' + err.message});
+                    else
+                        $scope.alerts.push({type: 'danger', msg: 'An unknown error has occurred.'});
+                })
+        });
     }
 
     /**

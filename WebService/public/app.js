@@ -157,7 +157,8 @@
 
             .state('dashboard.profile.businessHours', {
                 url: '/hours',
-                templateUrl: 'views/profile/hours.html'
+                templateUrl: 'views/profile/hours.html',
+                controller: 'ProfileHoursController'
             })
 
             .state('dashboard.profile.appointmentSettings', {
