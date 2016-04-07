@@ -1,0 +1,25 @@
+<ion-view title={{group.name}}>
+  <ion-content>
+
+    <div class="row">
+      <div class="col-33">
+        <button style="width:100%" class="button button-calm" ui-sref="dashboard.group({group: group})">By Member</button>
+      </div>
+      <div class="col-34">
+        <button style="width:100%" class="button button-calm" ui-sref="dashboard.byTime({group: group})"  ng-disabled="$state.includes('dashboard.byTime')">By Time</button>
+      </div>
+      <div class="col-33">
+        <button style="width:100%" class="button button-calm" ui-sref="dashboard.byType({group: group})">By Type</button>
+      </div>
+    </div>
+
+    <ion-list class="list list-inset">
+      <ion-item ng-repeat="member in group.members" ui-sref="dashboard.timeslots({member: member, group: group})">
+        <div class="item item-borderless">
+          <div class="col">{{member.name.first}} {{member.name.last}}</div>
+          <div class="col">{{member.timeslots.length}} Timeslots Available</div>
+        </div>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

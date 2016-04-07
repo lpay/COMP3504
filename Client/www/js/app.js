@@ -91,6 +91,34 @@ var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router', 'ion
               }
             })
 
+            .state('dashboard.byTime', {
+                  url: '/byTime',
+                  params: { group: undefined },
+                  //views: {
+                  //    'search-tab': {
+                          templateUrl: 'views/ByTime.html',
+                          controller: 'ByTimeController',
+                  //    }
+                  //},
+                resolve: {
+                  loginRequired: loginRequired
+                }
+              })
+
+            .state('dashboard.byType', {
+                    url: '/byType',
+                    params: { group: undefined },
+                    //views: {
+                    //    'search-tab': {
+                            templateUrl: 'views/ByType.html',
+                            controller: 'ByTypeController',
+                    //    }
+                    //},
+                  resolve: {
+                    loginRequired: loginRequired
+                  }
+                })
+
             .state('dashboard.timeslots', {
               url: '/timeslots',
               params: { member: undefined,
