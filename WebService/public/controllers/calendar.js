@@ -43,7 +43,7 @@
             maxTime: '17:00',
             selectable: true,
 
-            select: function (start, end) {
+            select: function (start, end, event, view) {
 
                 $uibModal
                     .open({
@@ -83,6 +83,8 @@
                                     start: new Date(event.startDate + ' ' + event.startTime),
                                     end: new Date(event.endDate + ' ' + event.endTime)
                                 });
+
+                                //view.displayEvents(events);
                             })
                             .error(function (err) {
 
