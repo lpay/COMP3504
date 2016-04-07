@@ -162,15 +162,15 @@ router.put('/groups/:groupId/members/:memberId', ensureAuthenticated, function(r
     if (!req.params.groupId) return res.status(400).send({message: 'group is required'});
     if (!req.params.memberId) return res.status(400).send({message: 'member is required'});
 
-    Group.findById(req.params.groupId, {'members': {$elemMatch: {'user': req.params.memberId}}})
-        .then(group => {
-            if (!group)
-                throw new APIError(404, 'group not found');
+    var update = {};
 
-            if (req.body.appointmentTypes) group.members[0].appointmentTypes = req.body.appointmentTypes;
+    if (req.body.appointmentTypes) update.appointmentTypes = req.body.appointmentTypes;
 
-            return group.save();
-        })
+    return Group.update(
+        {
+            '_id': req.params.groupId,
+            'members': {$elemMatch: {'user': req.params.memberId}}
+        }, update, {new: true})
         .then(group => res.send(group))
         .catch(next);
 });
