@@ -164,14 +164,15 @@ router.put('/groups/:groupId/members/:memberId', ensureAuthenticated, function(r
 
     var update = {};
 
-    if (req.body.appointmentTypes) update.appointmentTypes = req.body.appointmentTypes;
+    if (req.body.appointmentTypes) update['members.$.appointmentTypes'] = req.body.appointmentTypes;
 
     return Group.update(
         {
             '_id': req.params.groupId,
             'members': {$elemMatch: {'user': req.params.memberId}}
         }, update, {new: true})
-        .then(group => res.send(group))
+        .then(group =>
+            res.send(group))
         .catch(next);
 });
 

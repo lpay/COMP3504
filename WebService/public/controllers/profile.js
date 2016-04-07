@@ -9,7 +9,11 @@
         .controller('ProfileAptSettingController', ProfileAptSettingController);
 
     function ProfileController($scope) {
+        $scope.alerts = [];
 
+        $scope.closeAlert = function(index) {
+            $scope.alerts.splice(index, 1);
+        };
     }
 
     /**
@@ -17,7 +21,7 @@
      */
 
     function ProfileAptSettingController($http, $scope) {
-
+        $scope.alerts.length = 0;
         //$scope.interval = $scope.currentGroup.defaultInterval || 15;
         $scope.appointmentTypes = $scope.appointmentTypes || [];
         $scope.appointmentTypes.length = 0;
@@ -56,7 +60,7 @@
             // TODO: we will have to put to /groups/:groupId/members/:memberId - need to create the route in the api
             $http.put('/groups/' + encodeURIComponent($scope.currentGroup._id) + "/members/" + encodeURIComponent($scope.currentMember.user._id), {
                     interval: $scope.interval,
-                    "currentMember.appointmentTypes": appointmentTypes
+                    "appointmentTypes": appointmentTypes
                 })
                 .success(function(group) {
                     angular.copy(group, $scope.currentGroup);
