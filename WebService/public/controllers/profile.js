@@ -31,12 +31,15 @@
         });
 
         $scope.add = function() {
-            if($scope.appointmentTypes > 5){return;}
-            $scope.appointmentTypes.push({});
+
+            if($scope.appointmentTypes > 5)return;
+
+            $scope.appointmentTypes.push({length: 30});
         };
 
         $scope.remove = function(index) {
-            $scope.profile.appointments.splice(index, 1);
+            if ($scope.appointmentTypes.length > 0)
+                $scope.appointmentTypes.splice(index, 1);
         };
 
         $scope.save = function() {
@@ -51,13 +54,12 @@
             });
 
             // TODO: we will have to put to /groups/:groupId/members/:memberId - need to create the route in the api
-            $http.put('/groups/' + encodeURIComponent($scope.currentGroup._id), {
-                    //interval: $scope.interval,
-                    "member.appointmentTypess": appointmentTypes
+            $http.put('/groups/' + encodeURIComponent($scope.currentGroup._id) + "/members/" + encodeURIComponent($scope.currentMember.user._id), {
+                    interval: $scope.interval,
+                    "currentMember.appointmentTypes": appointmentTypes
                 })
                 .success(function(group) {
                     angular.copy(group, $scope.currentGroup);
-
                     $scope.alerts.push({type: 'success', msg: 'Changes saved.'});
                 })
                 .error(function (err) {
