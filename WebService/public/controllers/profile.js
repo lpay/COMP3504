@@ -22,7 +22,7 @@
 
     function ProfileAptSettingController($http, $scope) {
         $scope.alerts.length = 0;
-        //$scope.interval = $scope.currentGroup.defaultInterval || 15;
+        $scope.interval = $scope.currentMember.interval || 15;
         $scope.appointmentTypes = $scope.appointmentTypes || [];
         $scope.appointmentTypes.length = 0;
 
@@ -56,11 +56,11 @@
                     length: entry.length * 60
                 });
             });
-
+            console.log($scope.interval);
             // TODO: we will have to put to /groups/:groupId/members/:memberId - need to create the route in the api
             $http.put('/groups/' + encodeURIComponent($scope.currentGroup._id) + "/members/" + encodeURIComponent($scope.currentMember.user._id), {
                     interval: $scope.interval,
-                    "appointmentTypes": appointmentTypes
+                    appointmentTypes: appointmentTypes
                 })
                 .success(function(group) {
                     angular.copy(group, $scope.currentGroup);

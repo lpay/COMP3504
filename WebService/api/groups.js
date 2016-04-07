@@ -165,6 +165,7 @@ router.put('/groups/:groupId/members/:memberId', ensureAuthenticated, function(r
     var update = {};
 
     if (req.body.appointmentTypes) update['members.$.appointmentTypes'] = req.body.appointmentTypes;
+    if(req.body.interval) update['members.$.interval'] = req.body.interval;
 
     return Group.update(
         {
