@@ -5,6 +5,10 @@
 
 }
 
+.bar.bar-header .button+.title {
+  text-align: center !important;
+}
+
 /*.card:active {
   text-align: center;
   font-family: Helvetica;
