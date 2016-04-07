@@ -8,9 +8,9 @@
  *
  * GET      /users          get a list of users
  *
- * GET      /users/:email   get user details
- * PUT      /users/:email   update user details
- * DELETE   /users/:email   delete user
+ * GET      /users/:id   get user details
+ * PUT      /users/:id   update user details
+ * DELETE   /users/:id   delete user
  *
  */
 
@@ -42,7 +42,7 @@ router.get('/users', function (req, res, next) {
         .catch(next);
 });
 
-router.route('/users/:email')
+router.route('/users/:id')
 
     /**
      * Get user details.
