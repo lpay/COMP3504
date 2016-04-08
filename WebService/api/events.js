@@ -11,6 +11,7 @@
  *
  * GET      /appointments           get a list of registered appointments for the authenticated user
  * POST     /appointments           book an appointment for the authenticated user
+ * GET      /appointments/:id       get an appointment
  * PUT      /appointments/:id       update an appointment
  * DELETE   /appointments/:id       delete an appointment
  *
@@ -174,31 +175,34 @@ router.get('/appointments', ensureAuthenticated, function(req, res, next) {
 
 router.post('/appointments', ensureAuthenticated, function(req, res, next) {
 
-    if (!req.body.appointment) return res.status(400).send({message: 'appointment is required'});
+    if (!req.body.group) return res.status(400).send({message: 'group is required'});
+    if (!req.body.member) return res.status(400).send({message: 'member is required'});
 
-    Group.findById(req.body.appointment.group, {'members': {$elemMatch: {user: req.body.appointment.member}}})
+    Group.findById(req.body.group, {'members': {$elemMatch: {user: req.body.member}}})
         .populate('members.user')
         .then(group => {
-            var start = moment(req.body.appointment.start);
-            var end = moment(req.body.appointment.end);
+            var start = moment(req.body.start);
+            var end = moment(req.body.end);
 
-            return group.generateTimeslots(start, end, { name: req.body.appointment.type, length: end.diff(start, 'seconds') }, 1);
+            return group.generateTimeslots(start, end, {name: req.body.type, length: end.diff(start, 'seconds')}, 1);
         })
-        .then(result => {
-            if (result.members.length && result.members[0].timeslots.length) {
+        .then(timeslots => {
+            if (timeslots.length == 1) {
+                var timeslot = timeslots[0];
+
                 return Group.update(
                     {
-                        '_id': req.body.appointment.group,
-                        'members': {$elemMatch: {user: req.body.appointment.member}}
+                        '_id': req.body.group,
+                        'members': {$elemMatch: {user: req.body.member}}
                     },
                     {
                         $push: {
                             'members.$.events': {
                                 client: req.user,
                                 available: false,
-                                start: result.members[0].timeslots[0].start,
-                                end: result.members[0].timeslots[0].end,
-                                title: result.members[0].timeslots[0].title
+                                start: timeslot.start,
+                                end: timeslot.end,
+                                title: timeslot.type
                             }
                         }
                 });
@@ -212,71 +216,25 @@ router.post('/appointments', ensureAuthenticated, function(req, res, next) {
 
 router.post('/appointments/search', function(req, res, next) {
 
-    if (!req.body.search) return res.status(400).send({message: 'search is required'});
+    if (!req.body.group) return res.status(400).send({message: 'group is required'});
 
-    var search = [];
-
-    search.push({'name': {$regex: new RegExp(req.body.search, "i")}});
-    search.push({'tags': {$regex: new RegExp("\\b(?:" + req.body.search + ")\\b", "i")}});
-
-    User.find({'name.last': {$regex: new RegExp("\\b(?:" + req.body.search + ")\\b", "i")}})
-        .then(users => {
-            if (users.length) {
-                var members = [];
-
-                users.forEach(function(user) {
-                    members.push({'members.user': user});
-                });
-
-                search.push({ $or: members });
-            }
-
-            return Group.find({$or: search }).populate('members.user');
-        })
-        .then(groups => {
-            var timeslots = [];
-
+    Group.findById(req.body.group)
+        .populate('members.user')
+        .then(group => {
             var start = req.body.start ? moment(req.body.start) : moment();
+
+            if (start < moment())
+                start = moment();
+
             var end = req.body.end || moment(start).endOf('day');
 
             // round up to next whole minute
             if (start.seconds() > 0 || start.milliseconds() > 0)
                 start.add(1, 'minutes').seconds(0).milliseconds(0);
 
-            // generate timeslots
-            groups.forEach(function(group) {
-                var result = group.generateTimeslots(start, end);
-
-                if (result.totalTimeslots > 0) {
-                    timeslots.push({
-                        // only expose certain information about the group
-                        _id: group._id,
-
-                        slug: group.slug,
-                        name: group.name,
-
-                        address: group.address,
-                        city: group.city,
-                        province: group.province,
-                        postalCode: group.postalCode,
-
-                        contact: group.contact,
-                        phone: group.phone,
-                        email: group.email,
-
-                        startDate: result.startDate,
-                        endDate: result.endDate,
-                        totalTimeslots: result.totalTimeslots,
-
-                        members: result.members
-                    });
-                }
-            });
-
-            res.send(timeslots);
+            res.send(group.generateTimeslots(start, end));
         })
         .catch(next);
-
 });
 
 module.exports = router;

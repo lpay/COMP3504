@@ -2,32 +2,36 @@
  * Created by Liddy on 10-Feb-2016.
  */
 
-app
+(function() {
+    angular
+        .module('app')
+        .controller('LoginController', LoginController)
+        .controller('LogoutController', LogoutController);
 
-    .controller('LoginController', function($auth, $scope, $state) {
-
+    function LoginController($auth, $scope, $state) {
         $scope.login = function() {
             $auth.login($scope.auth)
                 .then(function () {
-                    $state.go('dashboard.home');
+                    $state.go('app.home');
                 })
                 .catch(function (res) {
-                    console.log(res);
+                    // TODO: login failed message
                 });
         };
 
         $scope.authenticate = function(provider) {
             $auth.authenticate(provider)
                 .then(function() {
-                    $state.go('dashboard.home');
+                    $state.go('app.home');
                 })
                 .catch(function(res) {
-                    console.log(res);
+                    // TODO: login failed message
                 });
         };
-    })
+    }
 
-    .controller('LogoutController', function($auth, $state) {
+    function LogoutController($auth, $state) {
         $auth.logout();
         $state.go('login');
-    });
+    }
+})();

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget id="com.ionicframework.client446029" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-  <name>Client</name>
+<widget id="com.scheduleup" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+  <name>ScheduleUP</name>
   <description>
-        An Ionic Framework and Cordova project.
+        Schedule and appointment management.
     </description>
-  <author email="you@example.com" href="http://example.com.com/">
-      Your Name Here
+  <author email="mark@crazyirish.ca" href="http://scheduleup.crazyirish.ca/">
+      John Apostalakos, Nolan Walker, Liddy Pay, Mark O'Donnell
     </author>
   <content src="index.html"/>
   <access origin="*"/>

@@ -1,0 +1,29 @@
+<ion-view title="Book Appointment">
+    <ion-content>
+        <ion-item>
+            <strong>{{group.name}}</strong>
+            <br/>
+            {{timeslot.name.title}} {{timeslot.name.first}} {{timeslot.name.last}}
+            <br/>
+            {{group.address}}
+            <br/>
+            {{group.city}} {{group.province}}, {{group.postalCode}}
+        </ion-item>
+        <ion-item>
+            {{timeslot.start | date: "EEEE, MMMM d, y"}}
+            <br/>
+            {{timeslot.start | date: "H:mma"}} - {{timeslot.end | date: "H:mma"}}
+            <br/>
+            {{timeslot.type}}
+        </ion-item>
+
+        <div class="row">
+            <div class="col-50">
+                <button class="button button-calm" ng-click="book()">Book Appointment</button>
+            </div>
+            <div class="col-50 text-right">
+                <button class="button button-calm" ng-click="$window.history.back()">Back</button>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>

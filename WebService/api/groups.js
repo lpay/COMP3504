@@ -19,6 +19,7 @@
  */
 var router = require('express').Router();
 var Group = require('../models/group');
+var User = require('../models/user');
 var APIError = require('../errors/APIError');
 
 var ensureAuthenticated = require('../middleware/ensureAuthenticated');
@@ -145,15 +146,29 @@ router.post('/groups/join', ensureAuthenticated, function (req, res, next) {
 });
 
 router.get('/groups/search/:search', function (req, res, next) {
-    var search = {};
 
-    if (req.params.search) {
-        search.name = {$regex: new RegExp(req.params.search, "i")};
-        //search.tags = {$regex: new RegExp(req.params.search, "i")};
-    }
+    if (!req.params.search) return res.status(400).send({message: 'search is required'});
 
-    Group.find(search, 'name address city province postalCode')
-        .then(groups => res.send(groups))
+    var search = [];
+
+    search.push({'name': {$regex: new RegExp(req.params.search, "i")}});
+    search.push({'tags': {$regex: new RegExp("\\b(?:" + req.params.search + ")\\b", "i")}});
+
+    User.find({'name.last': {$regex: new RegExp("\\b(?:" + req.params.search + ")\\b", "i")}})
+        .then(users => {
+            if (users.length) {
+                var members = [];
+
+                users.forEach(function(user) {
+                    members.push({'members.user': user._id});
+                });
+
+                search.push({$or: members});
+            }
+
+            return Group.find({$or: search}, 'name address city province postalCode contact phone email')
+        })
+        .then(groups => {res.send(groups)})
         .catch(next);
 });
 
@@ -165,16 +180,15 @@ router.put('/groups/:groupId/members/:memberId', ensureAuthenticated, function(r
     var update = {};
 
     if (req.body.appointmentTypes) update['members.$.appointmentTypes'] = req.body.appointmentTypes;
-    if(req.body.interval) update['members.$.interval'] = req.body.interval;
-    if(req.body.availability) update['members.$.availability'] = req.body.availability;
+    if (req.body.interval) update['members.$.interval'] = req.body.interval;
+    if (req.body.availability) update['members.$.availability'] = req.body.availability;
 
     return Group.update(
         {
             '_id': req.params.groupId,
             'members': {$elemMatch: {'user': req.params.memberId}}
         }, update, {new: true})
-        .then(group =>
-            res.send(group))
+        .then(group => res.send(group))
         .catch(next);
 });
 

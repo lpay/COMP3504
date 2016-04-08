@@ -33,8 +33,11 @@
             </div>
         </div></div>
       </ion-item>
-
     </ion-list>
+
+    <span ng-if="appointments.length == 0">
+      You currently have no appointments...
+    </span>
 
   </ion-content>
 </ion-view>

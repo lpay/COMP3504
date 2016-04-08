@@ -1,0 +1,48 @@
+<ion-view view-title="Login">
+    <ion-pane class="padding">
+        <div class="row">
+            <div class="col text-center">
+                <h2>ScheduleUP</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <form ng-submit="login()">
+                    <div class="list list-inset">
+                        <label class="item item-input">
+                            <input type="text" placeholder="Email" ng-model="auth.email">
+                        </label>
+                        <label class="item item-input">
+                            <input type="password" placeholder="Password" ng-model="auth.password">
+                        </label>
+                    </div>
+
+                    <button class="button button-block button-calm" ng-click="login()">Login</button>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-40">
+                <a href>Forgot Password?</a>
+            </div>
+            <div class="col-60 text-right">
+                Don't have an account?
+                <br>
+                <a ui-sref="signup">Sign up!</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div style="height: 1px; background-color: lightgrey; width: 45%; float: left"></div>
+                <div style="text-align: center; color: lightgrey; position: relative; top: -0.75em; width: 10%; float: left">or</div>
+                <div style="height: 1px; background-color: lightgrey; width: 45%; float: left"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <button class="button button-block button-assertive" ng-click="authenticate('google')"><i class="ion-social-googleplus">&nbsp;</i>Sign in with Google+</button>
+                <button class="button button-block button-positive" ng-click="authenticate('facebook')"><i class="ion-social-facebook">&nbsp;</i>Sign in with Facebook</button>
+            </div>
+        </div>
+    </ion-pane>
+</ion-view>

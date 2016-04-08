@@ -1,26 +1,58 @@
-<ion-view title={{group.name}}>
-    <ion-content>
+<ion-view title="{{group.name}}">
+    <ion-pane>
 
-    <div class="row">
-      <div class="col-33">
-        <button style="width:100%" class="button button-calm" ui-sref="dashboard.group({group: group})" ng-disabled="$state.includes('dashboard.group')">By Member</button>
-      </div>
-      <div class="col-34">
-      <button style="width:100%" class="button button-calm" ui-sref="dashboard.byTime({group: group})">By Time</button>
-      </div>
-      <div class="col-33">
-      <button style="width:100%" class="button button-calm" ui-sref="dashboard.byType({group: group})" ng-disabled="$state.includes('dashboard.byType')">By Type</button>
-      </div>
-    </div>
+        <ui-gmap-google-map center="map.center" zoom="map.zoom">
+            <ui-gmap-marker coords="marker.coords" options="marker.options" events="marker.events" idkey="marker.id"></ui-gmap-marker>
+        </ui-gmap-google-map>
 
-        <ion-list class="list list-inset">
-            <ion-item ng-repeat="member in group.members" ui-sref="dashboard.timeslots({member: member, group: group})">
-              <div class="item item-borderless">
-                <div class="col">{{member.name.first}} {{member.name.last}}</div>
-                <div class="col">{{member.timeslots.length}} Timeslots Available</div>
-              </div>
-            </ion-item>
-        </ion-list>
+        <div class="row">
+            <div class="col-10 text-right">
+                <button class="button button-light" ng-click="prev()" ng-disabled="date <= min"><i class="icon ion-chevron-left"></i></button>
+            </div>
+            <div class="col-80 text-center">
+                <button class="button button-light" ng-click="selectDate()">{{date | date: 'EEEE, MMMM d, y'}}</button>
+            </div>
+            <div class="col-10">
+                <button class="button button-light" ng-click="next()" ng-disabled="date >= max"><i class="icon ion-chevron-right"></i></button>
+            </div>
+        </div>
 
-    </ion-content>
+
+        <div class="row" style="padding: 0">
+            <div class="col-34">
+                <select ng-model="filter.member" class="item item-input item-select" style="width:100%">
+                    <option value="">Member</option>
+                    <option value="{{timeslot.user}}" ng-repeat="timeslot in timeslots | unique: 'user'">{{timeslot.name.title}} {{timeslot.name.last}}</option>
+                </select>
+            </div>
+            <div class="col-33">
+                <select ng-model="filter.type" class="item item-input item-select" style="width:100%">
+                    <option value="">Type</option>
+                    <option value="{{timeslot.type}}" ng-repeat="timeslot in timeslots | unique: 'type'">{{timeslot.type}}</option>
+                </select>
+            </div>
+            <div class="col-33">
+                <select ng-model='filter.time' class="item item-input item-select" style="width:100%">
+                    <option value="">Time</option>
+                    <option value="{{timeslot.start}}" ng-repeat="timeslot in timeslots | unique: 'start'">{{timeslot.start | date: 'H:mma'}}</option>
+                </select>
+            </div>
+        </div>
+        <ion-scroll>
+            <ion-list class="list list-inset" style="margin: 0">
+                <ion-item ng-repeat="timeslot in timeslots | filter: {user: filter.member, type: filter.type, start: filter.time}" ui-sref="app.book({group: group, timeslot: timeslot})">
+                    <div class="row">
+                        <div class="col-50">{{timeslot.name.title}} {{timeslot.name.first}} {{timeslot.name.last}}</div>
+                        <div class="col-50 text-right">{{timeslot.start | date: 'H:mma'}} - {{timeslot.end | date: 'H:mma'}}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-50 col-offset-50 text-right"><i>{{timeslot.type}}</i></div>
+                    </div>
+                </ion-item>
+                <ion-item ng-show="timeslots.length == 0">
+                    No appointments available.
+                </ion-item>
+            </ion-list>
+        </ion-scroll>
+    </ion-pane>
 </ion-view>

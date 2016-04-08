@@ -31,7 +31,7 @@ var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router', 'ion
             .state('dashboard', {
                 url: '/dashboard',
                 abstract: true,
-                templateUrl: 'views/Dashboard.html',
+                templateUrl: 'views/app.html',
                 resolve: {
                     loginRequired: loginRequired
                 }
@@ -55,7 +55,7 @@ var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router', 'ion
                 params: { appointment: undefined },
                 views: {
                   'home-tab': {
-                    templateUrl: 'views/AppointmentDetail.html',
+                    templateUrl: 'views/Appointment.html',
                     controller: 'AppointmentDetailController'
                   }
                 },
@@ -113,7 +113,7 @@ var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router', 'ion
                       group: undefined },
             views: {
               'search-tab': {
-                templateUrl: 'views/BookAppointmentTime.html',
+                templateUrl: 'views/Book.html',
                 controller: 'BATController'
               }
             },

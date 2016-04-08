@@ -2,15 +2,14 @@
  * Created by Liddy on 18-Mar-2016.
  */
 
-app.controller('TimeslotsController', function($scope, $stateParams, $ionicLoading) {
+(function() {
+    angular
+        .module('app')
+        .controller('TimeslotsController', TimeslotsController);
 
-  //$scope.loadingSpinner = $ionicLoading.show( $ionicLoading);
-  //element.on($ionicView.loaded => $scope.hide($ionicLoading));
+    function TimeslotsController($scope, $stateParams, $ionicLoading) {
+        $scope.member = $stateParams.member;
+        $scope.group = $stateParams.group;
+    }
 
-  $scope.member = $stateParams.member;
-  $scope.group = $stateParams.group;
-
-  console.log($scope.member);
-  console.log($scope.group);
-
-});
+})();

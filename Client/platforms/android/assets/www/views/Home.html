@@ -1,0 +1,40 @@
+<ion-view title="Home">
+  <ion-content>
+    <div class="subheader">Upcoming Appointments</div>
+
+    <ion-list class="list list-inset">
+      <!--
+      <div ng-repeat="group in groups">
+        <div ng-repeat="member in group.members">
+          <ion-item ng-repeat="event in member.events">
+            <div class="row">
+              <div class="col-50">
+                {{member.user.name.first}} {{member.user.name.last}}
+              </div>
+              <div class="col-50">
+                {{event.start | date: "MMMM dd, yyyy"}}<br/>
+                {{event.start | date: "H:mm"}} - {{event.end | date: "H:mm"}}
+              </div>
+            </div>
+          </ion-item>
+        </div>
+      </div>
+      -->
+
+      <ion-item ng-repeat="appointment in appointments" ui-sref="dashboard.appointmentdetail({appointment: appointment})">
+        <div class="item item-borderless">
+          <div class="row">
+          <div class="col-50">
+              {{appointment.member.name.first}} {{appointment.member.name.last}}
+          </div>
+          <div class="col-50">
+              {{appointment.start | date: "MMMM dd, yyyy"}}<br/>
+              {{appointment.start | date: "H:mm"}} - {{appointment.end | date: "H:mm"}}
+            </div>
+        </div></div>
+      </ion-item>
+
+    </ion-list>
+
+  </ion-content>
+</ion-view>
