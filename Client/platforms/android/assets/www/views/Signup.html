@@ -1,4 +1,4 @@
-<ion-pane>
+<ion-view>
     <ion-content>
       <div class="row">
         <div class="col text-center">
@@ -6,38 +6,36 @@
         </div>
       </div>
 
-      <div class="row">
-        <div class="col">
-          <form ng-submit="signup()">
-            <div class="list list-inset">
-              <label class="item item-input">
-                <input type="text" placeholder="First Name" ng-model="register.name.first" />
-              </label>
-              <label class="item item-input">
-                <input type="text" placeholder="Last Name" ng-model="register.name.last" />
-              </label>
-              <label class="item item-input">
-                <input type="email" placeholder="Email" ng-model="register.email"/>
-              </label>
-              <label class="item item-input">
-                <input type="password" placeholder="Password" ng-model="register.password"/>
-              </label>
-              <label class="item item-input">
-                <input type="password" placeholder="Confirm Password" ng-model="register.confirm"/>
-              </label>
-            </div>
-
-              <button type="submit" class="button button-block button-calm">Register</button><br/>
-
-          </form>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-100">
-        Already have an account? <a ui-sref="login">Click here</a> to login.
+    <div class="row">
+      <div class="col">
+        <form ng-submit="signup()">
+          <div class="list list-inset">
+            <label class="item item-input ">
+              <input type="text" placeholder="First Name" ng-model="register.name.first" />
+            </label>
+            <label class="item item-input">
+              <input type="text" placeholder="Last Name" ng-model="register.name.last" />
+            </label>
+            <label class="item item-input">
+              <input type="email" placeholder="Email" ng-model="register.email"/>
+            </label>
+            <label class="item item-input">
+              <input type="password" placeholder="Password" ng-model="register.password"/>
+            </label>
+            <label class="item item-input">
+              <input type="password" placeholder="Confirm Password" ng-model="register.confirm"/>
+            </label>
           </div>
-        </div>
+          <button type="submit" class="button button-block button-calm">Register</button><br/>
+        </form>
+      </div>
+    </div>
 
-    </ion-content>
-</ion-pane>
+    <div class="row">
+      <div class="col-100">
+        Already have an account? <a ui-sref="login">Click here</a> to login.
+      </div>
+    </div>
+
+  </ion-content>
+</ion-view>

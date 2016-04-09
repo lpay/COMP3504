@@ -34,7 +34,7 @@
             <div class="col-33">
                 <select ng-model='filter.time' class="item item-input item-select" style="width:100%">
                     <option value="">Time</option>
-                    <option value="{{timeslot.start}}" ng-repeat="timeslot in timeslots | unique: 'start'">{{timeslot.start | date: 'H:mma'}}</option>
+                    <option value="{{timeslot.start}}" ng-repeat="timeslot in timeslots | unique: 'start' | orderBy: 'start'">{{timeslot.start | date: 'h:mma'}}</option>
                 </select>
             </div>
         </div>
@@ -43,7 +43,7 @@
                 <ion-item ng-repeat="timeslot in timeslots | filter: {user: filter.member, type: filter.type, start: filter.time}" ui-sref="app.book({group: group, timeslot: timeslot})">
                     <div class="row">
                         <div class="col-50">{{timeslot.name.title}} {{timeslot.name.first}} {{timeslot.name.last}}</div>
-                        <div class="col-50 text-right">{{timeslot.start | date: 'H:mma'}} - {{timeslot.end | date: 'H:mma'}}</div>
+                        <div class="col-50 text-right">{{timeslot.start | date: 'h:mma'}} - {{timeslot.end | date: 'h:mma'}}</div>
                     </div>
                     <div class="row">
                         <div class="col-50 col-offset-50 text-right"><i>{{timeslot.type}}</i></div>

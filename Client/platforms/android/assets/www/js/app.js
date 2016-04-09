@@ -2,34 +2,48 @@
  *
  */
 
-var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router', 'ion-datetime-picker'])
-    //, 'uiGmapgoogle-maps', 'nemLogging'
+(function() {
+    angular
+        .module('app', ['ionic', 'satellizer', 'ui.router', 'ionic-datepicker', 'uiGmapgoogle-maps', 'ui.filters'])
+        .config(StateConfig)
+        .config(AuthConfig)
+        .run(Run);
 
-    .config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
+    function StateConfig($stateProvider, $urlRouterProvider, $ionicConfigProvider, uiGmapGoogleMapApiProvider) {
 
-        $urlRouterProvider.otherwise('/dashboard');
+        $ionicConfigProvider.tabs.position('bottom');
+
+        $urlRouterProvider.otherwise('/home');
 
         $stateProvider
 
             .state('login', {
                 url: '/login',
                 templateUrl: 'views/Login.html',
-                controller: 'LoginController'
+                controller: 'LoginController',
+                resolve: {
+                    skipIfLoggedIn: skipIfLoggedIn
+                }
             })
 
             .state('signup', {
                 url: '/signup',
                 templateUrl: 'views/Signup.html',
-                controller: 'SignupController'
+                controller: 'SignupController',
+                resolve: {
+                    skipIfLoggedIn: skipIfLoggedIn
+                }
             })
 
             .state('logout', {
                 url: '/logout',
-                controller: 'LogoutController'
+                controller: 'LogoutController',
+                resolve: {
+                    loginRequired: loginRequired
+                }
             })
 
-            .state('dashboard', {
-                url: '/dashboard',
+            .state('app', {
                 abstract: true,
                 templateUrl: 'views/app.html',
                 resolve: {
@@ -37,120 +51,93 @@ var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router', 'ion
                 }
             })
 
-            .state('dashboard.home', {
-                url: '',
+            .state('app.home', {
+                url: '/home',
                 views: {
-                  'home-tab': {
-                    templateUrl: 'views/Home.html',
-                    controller: 'HomeController'
-                  }
-                },
-                resolve: {
-                  loginRequired: loginRequired
+                    'home-tab': {
+                        templateUrl: 'views/Home.html',
+                        controller: 'HomeController'
+                    }
                 }
             })
 
-            .state('dashboard.appointmentdetail', {
-                url: '/appointmentdetail',
-                params: { appointment: undefined },
-                views: {
-                  'home-tab': {
-                    templateUrl: 'views/Appointment.html',
-                    controller: 'AppointmentDetailController'
-                  }
-                },
-                resolve: {
-                  loginRequired: loginRequired
-                }
-            })
-
-            .state('dashboard.search', {
+            .state('app.search', {
                 url: '/search',
                 views: {
                     'search-tab': {
                         templateUrl: 'views/Search.html',
                         controller: 'SearchController'
                     }
-                },
-                resolve: {
-                loginRequired: loginRequired
                 }
             })
 
-            .state('dashboard.group', {
+            .state('app.group', {
                 url: '/group',
-                params: { group: undefined },
+                params: {group: undefined},
                 views: {
                     'search-tab': {
                         templateUrl: 'views/Group.html',
                         controller: 'GroupController'
                     }
-                },
-              resolve: {
-                loginRequired: loginRequired
-              }
-            })
-
-            .state('dashboard.timeslots', {
-              url: '/timeslots',
-              params: { member: undefined,
-                        group: undefined },
-              views: {
-                'search-tab': {
-                  templateUrl: 'views/Timeslots.html',
-                  controller: 'TimeslotsController'
                 }
-              },
-              resolve: {
-                loginRequired: loginRequired
-              }
             })
 
-          .state('dashboard.bookappointmenttime', {
-            url: '/bookappointmenttime',
-            params: { timeslot: undefined,
-                      member: undefined,
-                      group: undefined },
-            views: {
-              'search-tab': {
-                templateUrl: 'views/Book.html',
-                controller: 'BATController'
-              }
-            },
-            resolve: {
-              loginRequired: loginRequired
-            }
-          })
-
-            .state('dashboard.help', {
-                url: '/help',
+            .state('app.book', {
+                url: '/book',
+                params: {group: undefined, timeslot: undefined},
                 views: {
-                    'help-tab': {
-                        template: '<ion-view title="Help"></ion-view>'
+                    'search-tab': {
+                        templateUrl: 'views/Book.html',
+                        controller: 'BookController'
                     }
-                },
-              resolve: {
-                loginRequired: loginRequired
-              }
+                }
             });
 
+            /*
+            .state('app.appointmentdetail', {
+                url: '/appointmentdetail',
+                params: { appointment: undefined },
+                views: {
+                    'home-tab': {
+                        templateUrl: 'views/Appointment.html',
+                        controller: 'AppointmentDetailController'
+                    }
+                }
+            })
+            */
+
+        uiGmapGoogleMapApiProvider.configure({
+            key: 'AIzaSyB7xdB1LlQv-J5H7TaxczIRGU2ZCroAweI',
+            //v: '3.20', //defaults to latest 3.X anyhow
+            libraries: 'weather,geometry,visualization'
+        });
+
+        function skipIfLoggedIn($auth, $location, $q) {
+            var deferred = $q.defer();
+
+            if ($auth.isAuthenticated()) {
+                $location.path('/home');
+            } else {
+                deferred.resolve();
+            }
+
+            return deferred.promise;
+        }
+        
         function loginRequired($auth, $location, $q) {
             var deferred = $q.defer();
 
             if ($auth.isAuthenticated()) {
                 deferred.resolve();
             } else {
-                //$state.go('login');
                 $location.path('/login');
             }
 
             return deferred.promise;
         }
-
-        $ionicConfigProvider.tabs.position('bottom');
-    })
-
-    .config(function($authProvider) {
+    }
+    
+    function AuthConfig($authProvider) {
         var commonConfig = {
             popupOptions: {
                 location: 'no',
@@ -171,9 +158,10 @@ var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router', 'ion
             clientId: '870728536471-ilmvcb2obgo6ioucqokrgvcj211nj7t3.apps.googleusercontent.com',
             url: 'http://scheduleup.crazyirish.ca/auth/google'
         }));
-    })
+    }
 
-    .run(function($ionicPlatform, $stateParams) {
+
+    function Run($ionicPlatform, $stateParams) {
         $ionicPlatform.ready(function() {
             if(window.cordova && window.cordova.plugins.Keyboard) {
                 // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -191,10 +179,12 @@ var app = angular.module('ScheduleUP', ['ionic', 'satellizer', 'ui.router', 'ion
 
             //Push Notifications
             /*var push = new Ionic.Push({});
-            push.register(function(token) {
-              console.log("Device token:",token.token);
-              push.saveToken(token); // persist the totken in the Ionic
+             push.register(function(token) {
+             console.log("Device token:",token.token);
+             push.saveToken(token); // persist the totken in the Ionic
 
-            })*/
+             })*/
         });
-    });
+    }
+
+})();

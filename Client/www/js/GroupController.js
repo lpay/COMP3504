@@ -14,12 +14,6 @@
         $scope.min = $scope.date;
         $scope.max = moment($scope.date).add(1, 'years').toDate();
 
-        $scope.filter = {
-            member: '',
-            type: '',
-            time: ''
-        };
-
         uiGmapGoogleMapApi.then(function(maps) {
             var geocoder = new maps.Geocoder();
 
@@ -91,7 +85,13 @@
                 });
         });
 
-        $scope.$watch('filter', function(newFilter) { console.log(newFilter)});
+        $scope.$watch('timeslots', function() {
+            $scope.filter = {
+                member: '',
+                type: '',
+                time: ''
+            };
+        });
 
         /*
         $scope.byTime = [];

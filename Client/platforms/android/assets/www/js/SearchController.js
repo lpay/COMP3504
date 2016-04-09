@@ -1,52 +1,33 @@
 /**
- * Created by Johnny Admin on 2/29/2016.
+ * Created by Johnny on 2/29/2016.
  */
 
-app.controller('SearchController', function($scope, $http, $location, $auth, $ionicSideMenuDelegate, $ionicLoading, $state) {
+(function() {
+    angular
+        .module('app')
+        .controller('SearchController', SearchController);
 
-    $scope.groups = [];
-
-    $scope.search = {
-        search: "",
-        start: new Date()
-    };
-
-    $scope.timepickerTitle = "Select desired appointment time:";
-
-    $scope.doSearch = function() {
-        $scope.show($ionicLoading);
-
-        $http.post('http://scheduleup.crazyirish.ca/appointments/search', $scope.search)
-            .success(function(groups) {
-                console.log(groups);
-                $scope.groups = groups;
-            })
-            .error(function (err) {
-
-            })
-            .finally(function ($ionicLoading) {
-                // On both cases hide the loading
-                $scope.hide($ionicLoading);
-            });
-    };
-
-    $scope.show = function() {
-        $ionicLoading.show({
-            template: '<p>Searching</p><ion-spinner></ion-spinner>'
-        });
-    };
-
-    $scope.hide = function() {
-        $ionicLoading.hide();
-    };
-
-    $scope.clearSearch = function() {
-        $scope.search = {
-          search: "",
-          start: new Date()
-        };
+    function SearchController($scope, $http, $ionicLoading, ionicDatePicker) {
         $scope.groups = [];
-    };
 
-});
+        $scope.search = {string: ''};
 
+        $scope.findGroups = function() {
+
+            $ionicLoading.show({template: '<p>Searching</p><ion-spinner></ion-spinner>'});
+
+            $http.get('http://scheduleup.crazyirish.ca/groups/search/' + encodeURIComponent($scope.search.string))
+                .success(function(groups) {
+                    $scope.groups = groups;
+                })
+                .error(function (err) {
+                    // TODO: visual error notification
+                })
+                .finally(function() {
+                    $ionicLoading.hide();
+                });
+        };
+    }
+
+
+})();
