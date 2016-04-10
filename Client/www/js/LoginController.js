@@ -9,6 +9,11 @@
         .controller('LogoutController', LogoutController);
 
     function LoginController($auth, $scope, $state) {
+        $scope.auth = {
+            email: '',
+            password: ''
+        };
+
         $scope.login = function() {
             $auth.login($scope.auth)
                 .then(function () {
@@ -30,8 +35,17 @@
         };
     }
 
-    function LogoutController($auth, $state) {
-        $auth.logout();
-        $state.go('login');
+    function LogoutController($auth, $ionicHistory, $scope, $state) {
+        if (!$auth.isAuthenticated())
+            return;
+
+        $scope.$on("$ionicView.afterLeave", function () {
+            $ionicHistory.clearCache();
+        });
+
+        $auth.logout()
+            .then(function() {
+                $state.go('login');
+            });
     }
 })();
