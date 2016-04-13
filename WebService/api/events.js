@@ -65,8 +65,13 @@ router.put('/events', ensureAuthenticated, function(req, res, next) {
 
 });
 
-router.delete('/events', ensureAuthenticated, function(req, res, next) {
+router.delete('/events/:id', ensureAuthenticated, function(req, res, next) {
 
+    if (!req.params.id) return res.status(400).send({message: 'id is required'});
+
+    Group.update({'members.events._id': req.params.id}, {$pull: {'members.$.events': {_id: req.params.id}}})
+        .then(() => res.send())
+        .catch(next);
 });
 
 router.get('/appointments', ensureAuthenticated, function(req, res, next) {
@@ -99,6 +104,7 @@ router.get('/appointments', ensureAuthenticated, function(req, res, next) {
         // projection
         // only expose minimal information, and un-nest members.user & members.events
         {$project: {
+            'id': '$members.events._id',
             'name': true,
             'address': true,
             'city': true,

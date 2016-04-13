@@ -8,7 +8,7 @@
         .module('app')
         .controller('AppointmentController', AppointmentController);
 
-    function AppointmentController($scope, $stateParams, $timeout, uiGmapGoogleMapApi) {
+    function AppointmentController($http, $state, $scope, $stateParams, $timeout, uiGmapGoogleMapApi) {
         $scope.appointment = $stateParams.appointment;
 
 
@@ -43,6 +43,17 @@
             });
 
         });
+
+        $scope.cancel = function() {
+            $http.delete('http://scheduleup.crazyirish.ca/events/' + encodeURIComponent($scope.appointment.id))
+                .success(function() {
+                    $state.go('app.home');
+                })
+                .error(function(err){
+                    console.log(err);
+                });
+
+        }
 
     }
 

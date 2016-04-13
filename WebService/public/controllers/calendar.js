@@ -14,9 +14,10 @@
 
         $scope.member.events.forEach(function (event) {
             events.push({
-                title: event.title,
+                title: event.client ? event.client.name.first + ' ' + event.client.name.last : event.title,
                 start: new Date(event.start),
-                end: new Date(event.end)
+                end: new Date(event.end),
+                event: event
             });
         });
 
@@ -90,6 +91,33 @@
 
                             });
                     });
+            },
+
+            eventClick: function(event, e, view) {
+                /*
+                $uibModal.open({
+                    templateUrl: 'editEvent.html',
+                    controller: function($scope, $uibModalInstance) {
+                        $scope.event = {
+                            startDate: start.format('MM-DD-YYYY'),
+                            startTime: start.format('HH:mm'),
+                            endDate: end.format('MM-DD-YYYY'),
+                            endTime: end.format('HH:mm')
+                        };
+
+                        $scope.save = function () {
+                            $uibModalInstance.close($scope.event);
+                        };
+
+                        $scope.cancel = function () {
+                            $uibModalInstance.dismiss('cancel');
+                        };
+                    }
+                }).result
+                .then(function(event) {
+
+                });
+                */
             },
 
             viewRender: function (view) {
