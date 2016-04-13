@@ -123,7 +123,7 @@ router.get('/appointments', ensureAuthenticated, function(req, res, next) {
         }},
 
         // sort by date
-        {$sort: {'event.start': 1}}
+        {$sort: {'start': 1}}
 
 
         /*
