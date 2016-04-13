@@ -8,7 +8,7 @@
         .module('app')
         .controller('CalendarController', CalendarController);
 
-    function CalendarController($http, $scope, $uibModal) {
+    function CalendarController($http, $scope, $state, $uibModal) {
         var businessHours = [];
         var events = [];
 
@@ -78,12 +78,17 @@
                                 available: event.available == 'available',
                                 notes: event.notes
                             })
-                            .success(function (event) {
+                            .success(function() {
+                                $state.reload();
+                                /*
                                 events.push({
                                     title: event.title,
                                     start: new Date(event.startDate + ' ' + event.startTime),
-                                    end: new Date(event.endDate + ' ' + event.endTime)
+                                    end: new Date(event.endDate + ' ' + event.endTime),
+                                    event: event
                                 });
+                                */
+
 
                                 //view.displayEvents(events);
                             })
@@ -94,30 +99,47 @@
             },
 
             eventClick: function(event, e, view) {
-                /*
+                var originalEvent = event.event;
+
+                console.log(event);
                 $uibModal.open({
                     templateUrl: 'editEvent.html',
                     controller: function($scope, $uibModalInstance) {
                         $scope.event = {
-                            startDate: start.format('MM-DD-YYYY'),
-                            startTime: start.format('HH:mm'),
-                            endDate: end.format('MM-DD-YYYY'),
-                            endTime: end.format('HH:mm')
+                            title: event.event.title,
+                            startDate: event.start.format('MM-DD-YYYY'),
+                            startTime: event.start.format('h:mm a'),
+                            endDate: event.end.format('MM-DD-YYYY'),
+                            endTime: event.end.format('h:mm a'),
+                            client: event.event.client,
+                            available: event.event.available ? 'available' : 'unavailable'
                         };
 
-                        $scope.save = function () {
+                        $scope.save = function() {
                             $uibModalInstance.close($scope.event);
                         };
 
-                        $scope.cancel = function () {
+                        $scope.delete = function() {
+                            $http.delete('http://localhost:3504/events/' + encodeURIComponent(event.event._id))
+                                .success(function() {
+                                    $state.reload();
+                                })
+                                .finally(function() {
+                                    $uibModalInstance.close();
+                                });
+                        };
+
+                        $scope.cancel = function() {
                             $uibModalInstance.dismiss('cancel');
                         };
                     }
                 }).result
                 .then(function(event) {
+                    if (event) {
 
+                    }
                 });
-                */
+
             },
 
             viewRender: function (view) {

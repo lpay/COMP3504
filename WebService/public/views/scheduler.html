@@ -123,3 +123,74 @@
         <button class="btn btn-success" ng-click="save()"><i class="fa fa-save">&nbsp;</i>Save</button>
     </div>
 </script>
+
+<script type="text/ng-template" id="editEvent.html">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Edit Event</h4>
+    </div>
+    <div class="modal-body">
+        <form>
+            <div class="row">
+                <div class="col-xs-12 form-group">
+                    <label for="eventTitle" class="control-label">Title</label>
+                    <input id="eventTitle" class="form-control" ng-model="event.title">
+                </div>
+            </div>
+            <hr/>
+            <div class="row">
+                <div class="col-xs-6 form-group">
+                    <label for="startTime" class="control-label">Start Time</label>
+                    <div class="input-group">
+                        <input id="startTime" type="text" ng-model="event.startTime" style="width: 50% !important" class="form-control">
+                        <input id="startDate" type="text" ng-model="event.startDate" style="width: 50% !important" class="form-control">
+                    </div>
+                </div>
+                <div class="col-xs-6 form-group">
+                    <label for="endTime" class="control-label">End Time</label>
+                    <div class="input-group">
+                        <input id="endTime" type="text" ng-model="event.endTime" style="width: 50% !important" class="form-control">
+                        <input id="endDate" type="text" ng-model="event.endDate" style="width: 50% !important" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <hr/>
+            <div ng-show="event.client">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <label>Client Information</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        {{event.client.name.first}} {{event.client.name.last}}
+                    </div>
+                    <div class="col-xs-12">
+                        {{event.client.email}}
+                    </div>
+                </div>
+            </div>
+            <div class="row" ng-show="!event.client">
+                <div class="col-xs-3">
+                    <label>Availability:</label>
+                </div>
+                <div class="col-xs-9">
+                    <label class="radio-inline"><input type="radio" ng-model="event.available" value="unavailable">Unavailable</label>
+                    <label class="radio-inline"><input type="radio" ng-model="event.available" value="available">Available</label>
+                </div>
+            </div>
+            <hr/>
+            <div class="row">
+                <div class="col-xs-12 form-group">
+                    <label for="notes">Notes:</label>
+                    <textarea id="notes" ng-model="event.notes" class="form-control"></textarea>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+        <button class="btn btn-danger" ng-click="delete()"><i class="fa fa-remove">&nbsp;</i>Delete</button>
+        <button class="btn btn-success" ng-click="save()"><i class="fa fa-save">&nbsp;</i>Save</button>
+    </div>
+</script>

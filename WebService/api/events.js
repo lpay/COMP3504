@@ -57,7 +57,7 @@ router.post('/events', ensureAuthenticated, function(req, res, next) {
                 'members.$.events': event
             }
         })
-        .then(() => res.status(201).send(event))
+        .then(() => res.status(201).send())
         .catch(next);
 });
 
