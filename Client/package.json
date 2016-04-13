@@ -1,7 +1,7 @@
 {
-  "name": "client",
+  "name": "scheduleUP",
   "version": "1.1.1",
-  "description": "Client: An Ionic project",
+  "description": "Scheduling & appointment management.",
   "dependencies": {
     "express": "^4.13.4",
     "gulp": "^3.5.6",

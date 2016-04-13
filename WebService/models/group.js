@@ -180,16 +180,13 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, appointment
             groupAvailability[entry.day].push({ start: hours.start, end: hours.end, available: hours.available, rank: 0});
         })
     });
-
-    // organize available timeslots by member
-    var members = [];
-    var totalTimeslots = 0;
-
+    
     // serialize (for a deep copy)
     groupAvailability = JSON.stringify(groupAvailability);
 
+    var timeslots = [];
     group.members.forEach(function(member) {
-        var timeslots = [];
+
 
         interval = member.interval || interval;
 
@@ -296,9 +293,11 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, appointment
                 appointmentTypes.forEach(function (appointmentType) {
                     if (checkAvailability(appointmentType.length)) {
                         timeslots.push({
+                            user: member.user._id,
+                            name: member.user.name,
                             start: date.clone(),
                             end: date.clone().add(appointmentType.length, 'seconds'),
-                            title: appointmentType.name
+                            type: appointmentType.name
                         });
                     }
                 });
@@ -308,27 +307,11 @@ groupSchema.methods.generateTimeslots = function(startDate, endDate, appointment
             if (limit && --limit == 0)
                 break;
         }
-
-        if (timeslots.length > 0) {
-            members.push({
-                // expose minimal member information
-                _id: member.user._id,
-                name: member.user.name,
-                timeslots: timeslots
-            });
-
-            totalTimeslots += timeslots.length;
-        }
     });
 
     console.timeEnd('generateTimeslots');
 
-    return {
-        startDate: startDate,
-        endDate: endDate,
-        members: members,
-        totalTimeslots: totalTimeslots
-    };
+    return timeslots;
 };
 
 groupSchema.methods.join = function(user, group) {

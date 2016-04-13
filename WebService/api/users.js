@@ -55,9 +55,22 @@ router.route('/users/:id')
     /**
      * Update user details.
      */
-    .put(function (req, res) {
-        // not implemented
-        res.status(501);
+    .put(ensureAuthenticated, function(req, res, next) {
+
+        if (!req.params.id) return res.status(400).send({message: 'user is required'});
+
+        if (req.params.id != req.user._id)
+            return res.status(403).send({message: 'not authorized'});
+
+        var update = {};
+
+        if (req.body.name) update['name'] = req.body.name;
+        if (req.body.email) update['eamil'] = req.body.email;
+        if (req.body.password) update['password'] = req.body.password;
+
+        return User.update(req.params.id, update)
+            .then(() => res.send())
+            .catch(next);
     })
 
     /**

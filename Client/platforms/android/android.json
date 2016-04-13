@@ -34,6 +34,17 @@
                         }
                     ]
                 }
+            },
+            "res/values/strings.xml": {
+                "parents": {
+                    "/resources": []
+                }
+            },
+            "AndroidManifest.xml": {
+                "parents": {
+                    "/manifest": [],
+                    "/manifest/application": []
+                }
             }
         }
     },

@@ -1,0 +1,20 @@
+<ion-view title="Timeslots">
+  <ion-content>
+    <div class="subheader">
+      {{member.name.first}} {{member.name.last}}
+
+    </div>
+
+        <ion-list class="list list-inset">
+          <ion-item ng-repeat="timeslot in member.timeslots" ui-sref="dashboard.bookappointmenttime({timeslot: timeslot, member: member, group: group})">
+           <div class="item item-borderless">
+             {{timeslot.start | date: "MMMM dd, yyyy - H:mm"}}
+               <br>
+               {{timeslot.title}}
+           </div>
+          </ion-item>
+
+        </ion-list>
+
+  </ion-content>
+</ion-view>

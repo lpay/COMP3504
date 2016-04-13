@@ -6,7 +6,9 @@
     angular
         .module('app')
         .controller('ProfileController', ProfileController)
-        .controller('ProfileAptSettingController', ProfileAptSettingController);
+        .controller('ProfileAptSettingController', ProfileAptSettingController)
+        .controller('ProfileAccountController', ProfileAccountController)
+        .controller('ProfileHoursController', ProfileHoursController);
 
     function ProfileController($scope) {
         $scope.alerts = [];
@@ -17,12 +19,67 @@
     }
 
     /**
+     * PROFILE ACCOUNT SETTINGS CONTROLLER
+     */
+
+    function ProfileAccountController($http, $scope) {
+        $scope.alerts.length = 0;
+        $scope.user = angular.copy($scope.currentMember.user);
+
+        $scope.save = function() {
+
+            $http.put('/users/' + encodeURIComponent($scope.user._id), {
+                    name: $scope.user.name,
+                    email: $scope.user.email,
+                    password: $scope.user.password
+                })
+                .success(function() {
+                    angular.copy($scope.user, $scope.currentMember.user);
+
+                    $scope.alerts.push({type: 'success', msg: 'Changes saved.'});
+                })
+                .error(function (err) {
+                    console.log(err);
+                    if (err.message)
+                        $scope.alerts.push({type: 'danger', msg: 'Error: ' + err.message});
+                    else
+                        $scope.alerts.push({type: 'danger', msg: 'An unknown error has occurred.'});
+                });
+        }
+    }
+
+    /**
+     * PROFILE WEEKLY HOURS SETTINGS/CONTROLLER
+     */
+    function ProfileHoursController($http, $scope) {
+        $scope.alerts.length = 0;
+        $scope.group = angular.copy($scope.currentGroup);
+
+        $scope.$on('OnHoursChanged', function(event) {
+            $http.put('/groups/' + encodeURIComponent($scope.currentGroup._id) + "/members/" + encodeURIComponent($scope.currentMember.user._id), {
+                    availability: $scope.currentMember.availability
+                })
+                .success(function (group) {
+                    angular.copy(group, $scope.currentGroup);
+
+                    $scope.alerts.push({type: 'success', msg: 'Changes saved.'});
+                })
+                .error(function (err) {
+                    if (err.message)
+                        $scope.alerts.push({type: 'danger', msg: 'Error: ' + err.message});
+                    else
+                        $scope.alerts.push({type: 'danger', msg: 'An unknown error has occurred.'});
+                })
+        });
+    }
+
+    /**
      * PROFILE Appointment Time Settings
      */
 
     function ProfileAptSettingController($http, $scope) {
         $scope.alerts.length = 0;
-        //$scope.interval = $scope.currentGroup.defaultInterval || 15;
+        $scope.interval = $scope.currentMember.interval || 15;
         $scope.appointmentTypes = $scope.appointmentTypes || [];
         $scope.appointmentTypes.length = 0;
 
@@ -56,11 +113,11 @@
                     length: entry.length * 60
                 });
             });
-
+            console.log($scope.interval);
             // TODO: we will have to put to /groups/:groupId/members/:memberId - need to create the route in the api
             $http.put('/groups/' + encodeURIComponent($scope.currentGroup._id) + "/members/" + encodeURIComponent($scope.currentMember.user._id), {
                     interval: $scope.interval,
-                    "appointmentTypes": appointmentTypes
+                    appointmentTypes: appointmentTypes
                 })
                 .success(function(group) {
                     angular.copy(group, $scope.currentGroup);
