@@ -73,7 +73,7 @@
         };
 
         $scope.$watch('date', function(newDate, oldDate) {
-            $ionicLoading.show();
+            $ionicLoading.show({template: '<p>Searching</p><ion-spinner></ion-spinner>'});
 
             $http.post('http://scheduleup.crazyirish.ca/appointments/search', {
                     group: $scope.group._id,
