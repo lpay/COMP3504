@@ -1,0 +1,32 @@
+<ion-view title="Book Appointment">
+    <ion-content>
+        <ui-gmap-google-map center="map.center" zoom="map.zoom">
+            <ui-gmap-marker coords="marker.coords" options="marker.options" events="marker.events" idkey="marker.id"></ui-gmap-marker>
+        </ui-gmap-google-map>
+
+        <div class="row">
+            <div class="col text-center">
+                <strong>{{group.name}}</strong>
+                <br/>
+                <br/>
+                {{timeslot.name.title}} {{timeslot.name.first}} {{timeslot.name.last}}
+                <br/>
+                {{timeslot.start | date: "EEEE, MMMM dd, yyyy"}}
+                <br/>
+                {{timeslot.start | date: "h:mm a"}} - {{timeslot.end | date: "h:mm a"}}
+                <br/>
+                <br/>
+                {{group.address}}
+                <br/>
+                {{group.city}} {{group.province}}
+                <br/>
+                {{group.postalCode}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <button class="button button-block button-calm" ng-click="book()">Book Appointment</button>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>

@@ -27,10 +27,6 @@
         },
         "cordova-plugin-inappbrowser": {
             "PACKAGE_NAME": "com.ionicframework.client446029"
-        },
-        "phonegap-plugin-push": {
-            "SENDER_ID": "crazyirish-web-api",
-            "PACKAGE_NAME": "com.scheduleup"
         }
     },
     "dependent_plugins": {}

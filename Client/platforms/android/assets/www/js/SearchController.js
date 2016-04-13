@@ -7,7 +7,7 @@
         .module('app')
         .controller('SearchController', SearchController);
 
-    function SearchController($scope, $http, $ionicLoading, ionicDatePicker) {
+    function SearchController($scope, $http, $ionicLoading) {
         $scope.groups = [];
 
         $scope.search = {string: ''};

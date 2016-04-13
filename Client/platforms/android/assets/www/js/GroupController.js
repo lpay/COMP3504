@@ -7,7 +7,7 @@
         .module('app')
         .controller('GroupController', GroupController);
 
-    function GroupController($http, $scope, $stateParams, $timeout, uiGmapGoogleMapApi, ionicDatePicker) {
+    function GroupController($http, $scope, $stateParams, $timeout, $ionicLoading, uiGmapGoogleMapApi, ionicDatePicker) {
         $scope.group = $stateParams.group;
         $scope.date = moment().startOf('day').toDate();
 
@@ -43,7 +43,6 @@
                     }
                 }, 0);
             });
-            
         });
 
         $scope.prev = function() {
@@ -74,6 +73,8 @@
         };
 
         $scope.$watch('date', function(newDate, oldDate) {
+            $ionicLoading.show();
+
             $http.post('http://scheduleup.crazyirish.ca/appointments/search', {
                     group: $scope.group._id,
                     start: $scope.date
@@ -83,6 +84,9 @@
                 })
                 .error(function(err) {
 
+                })
+                .finally(function() {
+                    $ionicLoading.hide();
                 });
         });
 
