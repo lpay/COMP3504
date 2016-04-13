@@ -174,7 +174,8 @@
 
             .state('dashboard.profile.profileSettings', {
                 url: '/confirmPassword',
-                templateUrl: 'views/profile/account.html'
+                templateUrl: 'views/profile/account.html',
+                controller: 'ProfileAccountController'
             });
     }
 

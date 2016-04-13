@@ -7,6 +7,7 @@
         .module('app')
         .controller('ProfileController', ProfileController)
         .controller('ProfileAptSettingController', ProfileAptSettingController)
+        .controller('ProfileAccountController', ProfileAccountController)
         .controller('ProfileHoursController', ProfileHoursController);
 
     function ProfileController($scope) {
@@ -15,6 +16,42 @@
         $scope.closeAlert = function(index) {
             $scope.alerts.splice(index, 1);
         };
+    }
+
+    /**
+     * PROFILE ACCOUNT SETTINGS CONTROLLER
+     */
+
+    function ProfileAccountController($http, $scope) {
+        $scope.alerts.length = 0;
+        $scope.group = angular.copy($scope.currentGroup);
+
+        $scope.save = function () {
+
+            console.log($scope.currentMember.user);
+            console.log($scope.currentMember.user.name);
+            console.log($scope.currentMember.user.email);
+            console.log($scope.currentMember.user.password);
+
+            $http.put('/users/' + encodeURIComponent($scope.currentMember.user._id), {
+
+                name: $scope.currentMember.user.name,
+                email: $scope.currentMember.user.email,
+                password: $scope.currentMember.user.password
+                })
+                .success(function (user) {
+                    angular.copy(user, $scope.currentMember.user);
+
+                    $scope.alerts.push({type: 'success', msg: 'Changes saved.'});
+                })
+                .error(function (err) {
+                    console.log(err);
+                    if (err.message)
+                        $scope.alerts.push({type: 'danger', msg: 'Error: ' + err.message});
+                    else
+                        $scope.alerts.push({type: 'danger', msg: 'An unknown error has occurred.'});
+                });
+        }
     }
 
     /**

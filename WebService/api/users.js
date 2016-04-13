@@ -42,7 +42,7 @@ router.get('/users', function (req, res, next) {
         .catch(next);
 });
 
-router.route('/users/:email')
+router.route('/users/:id')
 
     /**
      * Get user details.
@@ -55,9 +55,19 @@ router.route('/users/:email')
     /**
      * Update user details.
      */
-    .put(function (req, res) {
-        // not implemented
-        res.status(501);
+    .put(function (req, res, next) {
+
+        if(!req.params.id) return res.status(400).send({message: 'user is required'});
+
+        var update = {};
+
+        if (req.body.name) update['user.$.name'] = req.body.name;
+        if (req.body.email) update['user.$.eamil'] = req.body.email;
+        if (req.body.password) update['user.$.password'] = req.body.password;
+
+        return User.update(req.params.id , update, {new: true})
+            .then(user => res.send(user) )
+            .catch(next);
     })
 
     /**
