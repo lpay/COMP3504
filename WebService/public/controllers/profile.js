@@ -24,24 +24,18 @@
 
     function ProfileAccountController($http, $scope) {
         $scope.alerts.length = 0;
-        $scope.group = angular.copy($scope.currentGroup);
+        $scope.user = angular.copy($scope.currentMember.user);
 
         $scope.save = function () {
 
-            console.log($scope.currentMember.user);
-            console.log($scope.currentMember.user.name);
-            console.log($scope.currentMember.user.email);
-            console.log($scope.currentMember.user.password);
-
-            $http.put('/users/' + encodeURIComponent($scope.currentMember.user._id), {
-
-                name: $scope.currentMember.user.name,
-                email: $scope.currentMember.user.email,
-                password: $scope.currentMember.user.password
+            $http.put('/users/' + encodeURIComponent($scope.user._id), {
+                    name: $scope.user.name,
+                    email: $scope.user.email,
+                    password: $scope.user.password
                 })
-                .success(function (user) {
-                    angular.copy(user, $scope.currentMember.user);
-
+                .success(function() {
+                    angular.copy($scope.user, $scope.currentMember.user);
+                    
                     $scope.alerts.push({type: 'success', msg: 'Changes saved.'});
                 })
                 .error(function (err) {
