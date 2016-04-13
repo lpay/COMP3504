@@ -23,6 +23,9 @@
     <feature name="InAppBrowser">
         <param name="android-package" value="org.apache.cordova.inappbrowser.InAppBrowser" />
     </feature>
+    <feature name="PushNotification">
+        <param name="android-package" value="com.adobe.phonegap.push.PushPlugin" />
+    </feature>
     <icon density="ldpi" src="resources/android/icon/drawable-ldpi-icon.png" />
     <icon density="mdpi" src="resources/android/icon/drawable-mdpi-icon.png" />
     <icon density="hdpi" src="resources/android/icon/drawable-hdpi-icon.png" />
@@ -45,12 +48,12 @@
     <description>
         Schedule and appointment management.
     </description>
-    <author email="mark@crazyirish.ca" href="http://scheduleup.crazyirish.ca/">
+    <author email="mark@crazyirish.ca" href="http://localhost:3504/">
       John Apostalakos, Nolan Walker, Liddy Pay, Mark O'Donnell
     </author>
     <content src="index.html" />
     <access origin="*" />
-    <allow-navigation href="http://scheduleup.crazyirish.ca/*" />
+    <allow-navigation href="http://localhost:3504/*" />
     <preference name="webviewbounce" value="false" />
     <preference name="UIWebViewBounce" value="false" />
     <preference name="DisallowOverscroll" value="true" />

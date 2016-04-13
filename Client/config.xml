@@ -4,12 +4,12 @@
   <description>
         Schedule and appointment management.
     </description>
-  <author email="mark@crazyirish.ca" href="http://scheduleup.crazyirish.ca/">
+  <author email="mark@crazyirish.ca" href="http://localhost:3504/">
       John Apostalakos, Nolan Walker, Liddy Pay, Mark O'Donnell
     </author>
   <content src="index.html"/>
   <access origin="*"/>
-  <allow-navigation href="http://scheduleup.crazyirish.ca/*" />
+  <allow-navigation href="http://localhost:3504/*" />
   <preference name="webviewbounce" value="false"/>
   <preference name="UIWebViewBounce" value="false"/>
   <preference name="DisallowOverscroll" value="true"/>

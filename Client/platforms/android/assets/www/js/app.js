@@ -37,10 +37,7 @@
 
             .state('logout', {
                 url: '/logout',
-                controller: 'LogoutController',
-                resolve: {
-                    loginRequired: loginRequired
-                }
+                controller: 'LogoutController'
             })
 
             .state('app', {
@@ -56,7 +53,22 @@
                 views: {
                     'home-tab': {
                         templateUrl: 'views/Home.html',
-                        controller: 'HomeController'
+                        controller: 'HomeController',
+                        resolve: {
+                            appointments: function($q, $http) {
+                                var deferred = $q.defer();
+
+                                $http.get('http://localhost:3504/appointments')
+                                .success(function(appointments) {
+                                    deferred.resolve(appointments);
+                                })
+                                .error(function(err){
+                                    deferred.resolve([]);
+                                });
+
+                                return deferred.promise;
+                            }
+                        }
                     }
                 }
             })
@@ -91,20 +103,19 @@
                         controller: 'BookController'
                     }
                 }
-            });
+            })
 
-            /*
-            .state('app.appointmentdetail', {
-                url: '/appointmentdetail',
-                params: { appointment: undefined },
+            .state('app.appointment', {
+                url: '/appointment',
+                params: {appointment: undefined},
                 views: {
                     'home-tab': {
                         templateUrl: 'views/Appointment.html',
-                        controller: 'AppointmentDetailController'
+                        controller: 'AppointmentController'
                     }
                 }
-            })
-            */
+            });
+
 
         uiGmapGoogleMapApiProvider.configure({
             key: 'AIzaSyB7xdB1LlQv-J5H7TaxczIRGU2ZCroAweI',
@@ -151,17 +162,17 @@
             commonConfig.redirectUri = 'http://localhost:8100';
         }
 
-        $authProvider.loginUrl = 'http://scheduleup.crazyirish.ca/auth/login';
-        $authProvider.signupUrl = 'http://scheduleup.crazyirish.ca/auth/signup';
+        $authProvider.loginUrl = 'http://localhost:3504/auth/login';
+        $authProvider.signupUrl = 'http://localhost:3504/auth/signup';
 
         $authProvider.google(angular.extend({}, commonConfig, {
             clientId: '870728536471-ilmvcb2obgo6ioucqokrgvcj211nj7t3.apps.googleusercontent.com',
-            url: 'http://scheduleup.crazyirish.ca/auth/google'
+            url: 'http://localhost:3504/auth/google'
         }));
     }
 
 
-    function Run($ionicPlatform, $stateParams) {
+    function Run($rootScope, $ionicPlatform, $stateParams) {
         $ionicPlatform.ready(function() {
             if(window.cordova && window.cordova.plugins.Keyboard) {
                 // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard

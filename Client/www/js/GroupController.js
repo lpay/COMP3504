@@ -7,7 +7,7 @@
         .module('app')
         .controller('GroupController', GroupController);
 
-    function GroupController($http, $scope, $stateParams, uiGmapGoogleMapApi, ionicDatePicker) {
+    function GroupController($http, $scope, $stateParams, $timeout, $ionicLoading, uiGmapGoogleMapApi, ionicDatePicker) {
         $scope.group = $stateParams.group;
         $scope.date = moment().startOf('day').toDate();
 
@@ -20,29 +20,29 @@
             var address = $scope.group.address + ' ' + $scope.group.city + ', ' + $scope.group.province + ' ' + $scope.group.postalCode;
 
             geocoder.geocode({address: address}, function(results, status) {
+                $timeout(function() {
+                    if (status === "OK" && results.length > 0) {
 
-                if (status === "OK" && results.length > 0) {
+                        var lat = results[0].geometry.location.lat();
+                        var lng = results[0].geometry.location.lng();
 
-                    var lat = results[0].geometry.location.lat();
-                    var lng = results[0].geometry.location.lng();
+                        $scope.map = {
+                            center: {latitude: lat, longitude: lng},
+                            zoom: 15
+                        };
 
-                    $scope.map = {
-                        center: {latitude: lat, longitude: lng},
-                        zoom: 15
-                    };
-
-                    $scope.marker = {
-                        id: 0,
-                        coords: {
-                            latitude: lat,
-                            longitude: lng
-                        }
-                    };
-                } else {
-                    console.log(status);
-                }
+                        $scope.marker = {
+                            id: 0,
+                            coords: {
+                                latitude: lat,
+                                longitude: lng
+                            }
+                        };
+                    } else {
+                        console.log(status);
+                    }
+                }, 0);
             });
-            
         });
 
         $scope.prev = function() {
@@ -73,7 +73,9 @@
         };
 
         $scope.$watch('date', function(newDate, oldDate) {
-            $http.post('http://scheduleup.crazyirish.ca/appointments/search', {
+            $ionicLoading.show();
+
+            $http.post('http://localhost:3504/appointments/search', {
                     group: $scope.group._id,
                     start: $scope.date
                 })
@@ -82,6 +84,9 @@
                 })
                 .error(function(err) {
 
+                })
+                .finally(function() {
+                    $ionicLoading.hide();
                 });
         });
 

@@ -7,14 +7,11 @@
         .module('app')
         .controller('HomeController', HomeController);
 
-    function HomeController($scope, $stateParams, $http) {
+    function HomeController($scope, $ionicHistory, appointments) {
+        $scope.appointments = appointments;
 
-        $http.get('http://scheduleup.crazyirish.ca/appointments')
-            .success(function(appointments) {
-                $scope.appointments = appointments;
-            })
-            .error(function(err){
-                // TODO: visual error
-            });
+        $scope.$on("$ionicView.afterLeave", function () {
+            $ionicHistory.clearCache();
+        });
     }
 })();

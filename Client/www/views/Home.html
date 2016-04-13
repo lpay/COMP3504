@@ -1,43 +1,49 @@
 <ion-view title="Upcoming Appointments">
-  <ion-content>
-    <!--<div class="subheader">Upcoming Appointments</div>-->
+    <ion-content>
+        <ion-list class="list list-inset" style="margin: 0">
+            <ion-item ng-repeat="appointment in appointments" ui-sref="app.appointment({appointment: appointment})" style="font-size: 0.9em">
+                <div class="row">
+                    <div class="col-50">
+                        <strong>{{appointment.member.name.title}} {{appointment.member.name.first}} {{appointment.member.name.last}}</strong>
+                    </div>
+                    <div class="col-50 text-right">
+                        <strong>{{appointment.name}}</strong>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-50">
+                        {{appointment.start | date: "MMMM dd, yyyy"}}
+                    </div>
+                    <div class="col-50 text-right">
+                        {{appointment.address}}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-50">
+                        {{appointment.start | date: "h:mm a"}} - {{appointment.end | date: "h:mm a"}}
+                    </div>
+                    <div class="col-50 text-right">
+                        {{appointment.city}}, {{appointment.province}}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-50">
+                        {{appointment.phone}}
+                    </div>
+                    <div class="col-50 text-right">
+                        {{appointment.email}}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-50 col-offset-50 text-right">
+                        {{appointment.phone}}
+                    </div>
+                </div>
+            </ion-item>
+        </ion-list>
 
-    <ion-list class="list list-inset">
-      <!--
-      <div ng-repeat="group in groups">
-        <div ng-repeat="member in group.members">
-          <ion-item ng-repeat="event in member.events">
-            <div class="row">
-              <div class="col-50">
-                {{member.user.name.first}} {{member.user.name.last}}
-              </div>
-              <div class="col-50">
-                {{event.start | date: "MMMM dd, yyyy"}}<br/>
-                {{event.start | date: "H:mm"}} - {{event.end | date: "H:mm"}}
-              </div>
-            </div>
-          </ion-item>
-        </div>
-      </div>
-      -->
-
-      <ion-item ng-repeat="appointment in appointments" ui-sref="dashboard.appointmentdetail({appointment: appointment})">
-        <div class="item item-borderless">
-          <div class="row">
-          <div class="col-50">
-              {{appointment.member.name.first}} {{appointment.member.name.last}}
-          </div>
-          <div class="col-50">
-              {{appointment.start | date: "MMMM dd, yyyy"}}<br/>
-              {{appointment.start | date: "H:mm"}} - {{appointment.end | date: "H:mm"}}
-            </div>
-        </div></div>
-      </ion-item>
-    </ion-list>
-
-    <span ng-if="appointments.length == 0">
-      You currently have no appointments...
-    </span>
-
-  </ion-content>
+        <span ng-show="appointments.length == 0">
+            You currently have no appointments...
+        </span>
+    </ion-content>
 </ion-view>

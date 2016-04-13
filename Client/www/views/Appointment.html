@@ -1,33 +1,36 @@
 <ion-view title="Appointment Detail">
-  <ion-content>
-    <ion-item>
-      <div class="item item-borderless">
-        <div class="membername">
-          {{appointment.member.name.first}} {{appointment.member.name.last}}<br/><br/>
-        </div>
-        {{appointment.name}}<br/>
-        {{appointment.address}}<br/>
-        {{appointment.city}} {{appointment.province}}, {{appointment.postalCode}}
-      </div>
-    </ion-item>
-    <ion-item>
-      <div class="item item-borderless">
+    <ion-content>
+
+        <ui-gmap-google-map center="map.center" zoom="map.zoom">
+            <ui-gmap-marker coords="marker.coords" options="marker.options" events="marker.events" idkey="marker.id"></ui-gmap-marker>
+        </ui-gmap-google-map>
+
         <div class="row">
-          <div class="col-50">
-              {{appointment.start | date: "MMMM dd, yyyy"}}
-          </div>
-          <div class="col-50 text-right">
-            {{appointment.start | date: "H:mm"}} - {{appointment.end | date: "H:mm"}}
-          </div>
+            <div class="col text-center">
+                <strong>{{appointment.name}}</strong>
+                <br/>
+                <br/>
+                {{appointment.member.name.title}} {{appointment.member.name.first}} {{appointment.member.name.last}}
+                <br/>
+                {{appointment.start | date: "EEEE, MMMM dd, yyyy"}}
+                <br/>
+                {{appointment.start | date: "h:mm a"}} - {{appointment.end | date: "h:mm a"}}
+                <br/>
+                <br/>
+                {{appointment.address}}
+                <br/>
+                {{appointment.city}} {{appointment.province}}
+                <br/>
+                {{appointment.postalCode}}
+            </div>
         </div>
-      </div>
-    </ion-item>
-    <div class="row">
 
-      <div class="col-100 text-right">
-        <button class="button button-calm">Cancel Appointment</button>
-      </div>
-    </div>
+        <div class="row">
+            <div class="col text-center">
+                <button class="button button-block button-stable" ng-click="confirm()">Confirm Appointment</button>
+                <button class="button button-block button-assertive" ng-click="cancel()">Cancel Appointment</button>
+            </div>
+        </div>
 
-  </ion-content>
+    </ion-content>
 </ion-view>

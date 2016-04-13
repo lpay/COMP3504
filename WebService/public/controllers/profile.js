@@ -26,7 +26,7 @@
         $scope.alerts.length = 0;
         $scope.user = angular.copy($scope.currentMember.user);
 
-        $scope.save = function () {
+        $scope.save = function() {
 
             $http.put('/users/' + encodeURIComponent($scope.user._id), {
                     name: $scope.user.name,
@@ -35,7 +35,7 @@
                 })
                 .success(function() {
                     angular.copy($scope.user, $scope.currentMember.user);
-                    
+
                     $scope.alerts.push({type: 'success', msg: 'Changes saved.'});
                 })
                 .error(function (err) {

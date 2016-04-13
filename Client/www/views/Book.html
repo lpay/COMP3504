@@ -1,28 +1,31 @@
 <ion-view title="Book Appointment">
     <ion-content>
-        <ion-item>
-            <strong>{{group.name}}</strong>
-            <br/>
-            {{timeslot.name.title}} {{timeslot.name.first}} {{timeslot.name.last}}
-            <br/>
-            {{group.address}}
-            <br/>
-            {{group.city}} {{group.province}}, {{group.postalCode}}
-        </ion-item>
-        <ion-item>
-            {{timeslot.start | date: "EEEE, MMMM d, y"}}
-            <br/>
-            {{timeslot.start | date: "H:mma"}} - {{timeslot.end | date: "H:mma"}}
-            <br/>
-            {{timeslot.type}}
-        </ion-item>
+        <ui-gmap-google-map center="map.center" zoom="map.zoom">
+            <ui-gmap-marker coords="marker.coords" options="marker.options" events="marker.events" idkey="marker.id"></ui-gmap-marker>
+        </ui-gmap-google-map>
 
         <div class="row">
-            <div class="col-50">
-                <button class="button button-calm" ng-click="book()">Book Appointment</button>
+            <div class="col text-center">
+                <strong>{{group.name}}</strong>
+                <br/>
+                <br/>
+                {{timeslot.name.title}} {{timeslot.name.first}} {{timeslot.name.last}}
+                <br/>
+                {{timeslot.start | date: "EEEE, MMMM dd, yyyy"}}
+                <br/>
+                {{timeslot.start | date: "h:mm a"}} - {{timeslot.end | date: "h:mm a"}}
+                <br/>
+                <br/>
+                {{group.address}}
+                <br/>
+                {{group.city}} {{group.province}}
+                <br/>
+                {{group.postalCode}}
             </div>
-            <div class="col-50 text-right">
-                <button class="button button-calm" ng-click="$window.history.back()">Back</button>
+        </div>
+        <div class="row">
+            <div class="col">
+                <button class="button button-block button-calm" ng-click="book()">Book Appointment</button>
             </div>
         </div>
     </ion-content>
