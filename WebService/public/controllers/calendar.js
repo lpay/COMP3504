@@ -120,7 +120,7 @@
                         };
 
                         $scope.delete = function() {
-                            $http.delete('http://localhost:3504/events/' + encodeURIComponent(event.event._id))
+                            $http.delete('/events/' + encodeURIComponent(event.event._id))
                                 .success(function() {
                                     $state.reload();
                                 })
