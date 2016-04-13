@@ -18,6 +18,7 @@
                     member: $scope.timeslot.user,
                     start: $scope.timeslot.start,
                     end: $scope.timeslot.end,
+                    type: $scope.timeslot.type
                 })
                 .success(function() {
                     // TODO: redirect to appointment details/cancellation page
