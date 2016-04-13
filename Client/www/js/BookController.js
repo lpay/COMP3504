@@ -13,7 +13,7 @@
 
         $scope.book = function() {
 
-            $http.post('http://localhost:3504/appointments', {
+            $http.post('http://scheduleup.crazyirish.ca/appointments', {
                     group: $scope.group._id,
                     member: $scope.timeslot.user,
                     start: $scope.timeslot.start,

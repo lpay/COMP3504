@@ -5,7 +5,7 @@
         .service('PushService', PushService);
 
     function PushService($http, $q, $ionicLoading) {
-        var base_url = 'http://localhost:3504';
+        var base_url = 'http://scheduleup.crazyirish.ca';
 
         function register(device_token){
 

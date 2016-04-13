@@ -74,7 +74,7 @@
         };
 
         $scope.$watch('date', function(newDate, oldDate) {
-            $http.post('http://localhost:3504/appointments/search', {
+            $http.post('http://scheduleup.crazyirish.ca/appointments/search', {
                     group: $scope.group._id,
                     start: $scope.date
                 })

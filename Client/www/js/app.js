@@ -58,7 +58,7 @@
                             appointments: function($q, $http) {
                                 var deferred = $q.defer();
 
-                                $http.get('http://localhost:3504/appointments')
+                                $http.get('http://scheduleup.crazyirish.ca/appointments')
                                 .success(function(appointments) {
                                     deferred.resolve(appointments);
                                 })
@@ -162,12 +162,12 @@
             commonConfig.redirectUri = 'http://localhost:8100';
         }
 
-        $authProvider.loginUrl = 'http://localhost:3504/auth/login';
-        $authProvider.signupUrl = 'http://localhost:3504/auth/signup';
+        $authProvider.loginUrl = 'http://scheduleup.crazyirish.ca/auth/login';
+        $authProvider.signupUrl = 'http://scheduleup.crazyirish.ca/auth/signup';
 
         $authProvider.google(angular.extend({}, commonConfig, {
             clientId: '870728536471-ilmvcb2obgo6ioucqokrgvcj211nj7t3.apps.googleusercontent.com',
-            url: 'http://localhost:3504/auth/google'
+            url: 'http://scheduleup.crazyirish.ca/auth/google'
         }));
     }
 
